@@ -162,7 +162,7 @@ collation_oid_from_name(char *schema_name, char *collation_name)
  * partial state of numeric aggregates also changing format.
  *
  * If a user that has stored partials (by using Continuous Aggregates or calling
- * _timescaledb_functions.finalize_agg()) upgrades to PG14 then the partial state deserialization
+ * _timeudb_functions.finalize_agg()) upgrades to PG14 then the partial state deserialization
  * will lead to errors due to the mismatch with the PG14 code.
  *
  * For F_NUMERIC_AVG_DESERIALIZE and F_NUMERIC_DESERIALIZE the length of the serialized aggregate
@@ -190,7 +190,7 @@ collation_oid_from_name(char *schema_name, char *collation_name)
  * 6. stddev(int8)
  * ================================================================================================
  * F_NUMERIC_POLY_DESERIALIZE depends on compiler support for HAVE_INT128. As a result, recompiling
- * the same versions of PostgreSQL and TimescaleDB with a different compiler can lead to corruption
+ * the same versions of PostgreSQL and TIMEUDB with a different compiler can lead to corruption
  * if the same database is reused.
  *
  * Non-numeric aggregate functions affected:
@@ -421,7 +421,7 @@ fa_perquery_state_init(FunctionCallInfo fcinfo)
 	 * condition)*/
 	if (inner_agg_form->aggnumdirectargs != 0)
 		elog(ERROR,
-			 "function calls with direct args are not supported by TimescaleDB finalize agg");
+			 "function calls with direct args are not supported by TIMEUDB finalize agg");
 	tstate = (FAPerQueryState *) MemoryContextAlloc(qcontext, sizeof(FAPerQueryState));
 
 	tstate->final_meta.finalfnoid = inner_agg_form->aggfinalfn;

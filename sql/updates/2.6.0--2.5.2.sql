@@ -1,6 +1,6 @@
 
 DROP PROCEDURE IF EXISTS @extschema@.recompress_chunk;
-DROP FUNCTION IF EXISTS _timescaledb_internal.chunk_status;
+DROP FUNCTION IF EXISTS _timeudb_internal.chunk_status;
 DROP FUNCTION IF EXISTS @extschema@.delete_data_node;
 DROP FUNCTION IF EXISTS @extschema@.get_telemetry_report;
 
@@ -19,7 +19,7 @@ DECLARE
     caggs text[];
     caggs_nr int;
 BEGIN
-    SELECT array_agg(format('%I.%I', user_view_schema, user_view_name)) FROM _timescaledb_catalog.continuous_agg WHERE bucket_width < 0 INTO caggs;
+    SELECT array_agg(format('%I.%I', user_view_schema, user_view_name)) FROM _timeudb_catalog.continuous_agg WHERE bucket_width < 0 INTO caggs;
     SELECT array_length(caggs, 1) INTO caggs_nr;
     IF caggs_nr > 0 THEN
         RAISE EXCEPTION 'Downgrade is impossible since % continuous aggregates exist which use variable buckets: %', caggs_nr, caggs
@@ -31,16 +31,16 @@ $$ LANGUAGE 'plpgsql';
 -- It's safe to drop the table.
 -- ALTER EXTENSION is required to revert the effect of pg_extension_config_dump()
 -- See "The list of tables configured to be dumped" test in test/sql/updates/post.catalog.sql
-ALTER EXTENSION timescaledb DROP TABLE _timescaledb_catalog.continuous_aggs_bucket_function;
+ALTER EXTENSION timeudb DROP TABLE _timeudb_catalog.continuous_aggs_bucket_function;
 
 -- Actually drop the table.
 -- ALTER EXTENSION only removes the table from the extension but doesn't drop it.
-DROP TABLE IF EXISTS _timescaledb_catalog.continuous_aggs_bucket_function;
+DROP TABLE IF EXISTS _timeudb_catalog.continuous_aggs_bucket_function;
 
 -- Drop overloaded versions of invalidation_process_hypertable_log() and invalidation_process_cagg_log()
 -- with bucket_functions argument.
 
-ALTER EXTENSION timescaledb DROP FUNCTION _timescaledb_internal.invalidation_process_hypertable_log(
+ALTER EXTENSION timeudb DROP FUNCTION _timeudb_internal.invalidation_process_hypertable_log(
     mat_hypertable_id INTEGER,
     raw_hypertable_id INTEGER,
     dimtype REGTYPE,
@@ -50,7 +50,7 @@ ALTER EXTENSION timescaledb DROP FUNCTION _timescaledb_internal.invalidation_pro
     bucket_functions TEXT[]
 );
 
-DROP FUNCTION IF EXISTS _timescaledb_internal.invalidation_process_hypertable_log(
+DROP FUNCTION IF EXISTS _timeudb_internal.invalidation_process_hypertable_log(
     mat_hypertable_id INTEGER,
     raw_hypertable_id INTEGER,
     dimtype REGTYPE,
@@ -60,7 +60,7 @@ DROP FUNCTION IF EXISTS _timescaledb_internal.invalidation_process_hypertable_lo
     bucket_functions TEXT[]
 );
 
-ALTER EXTENSION timescaledb DROP FUNCTION _timescaledb_internal.invalidation_process_cagg_log(
+ALTER EXTENSION timeudb DROP FUNCTION _timeudb_internal.invalidation_process_cagg_log(
     mat_hypertable_id INTEGER,
     raw_hypertable_id INTEGER,
     dimtype REGTYPE,
@@ -74,7 +74,7 @@ ALTER EXTENSION timescaledb DROP FUNCTION _timescaledb_internal.invalidation_pro
     OUT ret_window_end BIGINT
 );
 
-DROP FUNCTION IF EXISTS _timescaledb_internal.invalidation_process_cagg_log(
+DROP FUNCTION IF EXISTS _timeudb_internal.invalidation_process_cagg_log(
     mat_hypertable_id INTEGER,
     raw_hypertable_id INTEGER,
     dimtype REGTYPE,
@@ -101,7 +101,7 @@ BEGIN
         SELECT view_name,
                materialization_hypertable_schema,
                materialization_hypertable_name
-        FROM timescaledb_information.continuous_aggregates
+        FROM timeudb_information.continuous_aggregates
         WHERE compression_enabled is TRUE
     LOOP
         RAISE NOTICE 'compression is enabled for continuous aggregate: %', cagg_name;
@@ -110,10 +110,10 @@ BEGIN
     IF cnt > 0 THEN
        RAISE EXCEPTION 'cannot downgrade as compression is enabled for continuous aggregates'
             USING DETAIL = 'Please disable compression on all continuous aggregates before downgrading.',
-            HINT = 'To disable compression, call decompress_chunk to decompress chunks, then drop any existing compression policy on the continuous aggregate, and finally run ALTER MATERIALIZED VIEW % SET timescaledb.compress = ''false''. ';
+            HINT = 'To disable compression, call decompress_chunk to decompress chunks, then drop any existing compression policy on the continuous aggregate, and finally run ALTER MATERIALIZED VIEW % SET timeudb.compress = ''false''. ';
     END IF;
 END $$;
 
 -- revert changes to continuous aggregates view definition
-DROP VIEW IF EXISTS timescaledb_information.continuous_aggregates;
+DROP VIEW IF EXISTS timeudb_information.continuous_aggregates;
 

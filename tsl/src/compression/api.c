@@ -228,7 +228,7 @@ compresschunkcxt_init(CompressChunkCxt *cxt, Cache *hcache, Oid hypertable_relid
 				 errdetail("It is not possible to compress chunks on a hypertable or"
 						   " continuous aggregate that does not have compression enabled."),
 				 errhint("Enable compression using ALTER TABLE/MATERIALIZED VIEW with"
-						 " the timescaledb.compress option.")));
+						 " the timeudb.compress option.")));
 	}
 	compress_ht = ts_hypertable_get_by_id(srcht->fd.compressed_hypertable_id);
 	if (compress_ht == NULL)

@@ -7,8 +7,8 @@ CREATE DATABASE test;
 \c test
 \timing
 
-DROP EXTENSION IF EXISTS timescaledb CASCADE;
-CREATE EXTENSION timescaledb;
+DROP EXTENSION IF EXISTS timeudb CASCADE;
+CREATE EXTENSION timeudb;
 
 SELECT pg_backend_pid();
 SELECT pg_sleep(5);

@@ -39,7 +39,7 @@ def get_referenced_issues(pr_number):
         string.Template(
             """
         query {
-            repository(owner: "timescale", name: "timescaledb") {
+            repository(owner: "timescale", name: "timeudb") {
               pullRequest(number: $pr_number) {
                 closingIssuesReferences(first: 100) {
                   edges {
@@ -84,7 +84,7 @@ def main():
         sys.exit(1)
 
     github_obj = github.Github(github_token)
-    repo = github_obj.get_repo("timescale/timescaledb")
+    repo = github_obj.get_repo("timescale/timeudb")
     # Get the file name from the command line argument
     if len(sys.argv) != 2:
         print("Please provide a file name as a command-line argument.")

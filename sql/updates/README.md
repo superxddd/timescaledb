@@ -51,10 +51,10 @@ by using multiple modfiles in order. There are two types of modfiles:
   version, but are no longer present in the transition modfiles.
 
 Notes on post_update.sql
-   We use a special config var (timescaledb.update_script_stage )
-to notify that dependencies have been setup and now timescaledb
+   We use a special config var (timeudb.update_script_stage )
+to notify that dependencies have been setup and now timeudb
 specific queries can be enabled. This is useful if we want to,
-for example, modify objects that need timescaledb specific syntax as
+for example, modify objects that need timeudb specific syntax as
 part of the extension update).
 The scripts in post_update.sql are executed as part of the `ALTER
 EXTENSION` stmt.

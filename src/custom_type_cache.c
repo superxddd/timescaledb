@@ -37,7 +37,7 @@ ts_custom_type_cache_get(CustomType type)
 	CustomTypeInfo *tinfo;
 
 	if (type >= _CUSTOM_TYPE_MAX_INDEX)
-		elog(ERROR, "invalid timescaledb type %d", type);
+		elog(ERROR, "invalid timeudb type %d", type);
 
 	tinfo = &typeinfo[type];
 
@@ -49,7 +49,7 @@ ts_custom_type_cache_get(CustomType type)
 									   CStringGetDatum(tinfo->type_name),
 									   ObjectIdGetDatum(schema_oid));
 		if (!OidIsValid(type_oid))
-			elog(ERROR, "unknown timescaledb type %s", tinfo->type_name);
+			elog(ERROR, "unknown timeudb type %s", tinfo->type_name);
 
 		tinfo->type_oid = type_oid;
 	}

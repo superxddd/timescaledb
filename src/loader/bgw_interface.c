@@ -20,7 +20,7 @@
  * Update ts_bgw_loader_api_version if the loader changes are needed for newer extension updates.
  * e.g. adding a LWLock to loader is required for some future change coming to OSM extension version
  * xxxx. RENDEZVOUS_BGW_LOADER_API_VERSION is used to verify if the loader in use is compatible with
- * the current TimescaleDB version. This check happens in bgw/bgw_launcher.c When
+ * the current TIMEUDB version. This check happens in bgw/bgw_launcher.c When
  * ts_bgw_loader_api_version is updated, check the compatibility in bgw/bgw_launcher.c as well
  */
 const int32 ts_bgw_loader_api_version = 4;

@@ -15,7 +15,7 @@ PSQL=("${PSQL}" "${CI_STATS_DB}" -qtAX "--set=ON_ERROR_STOP=1")
 # have to create them manually. After you manually change the actual DB schema,
 # don't forget to append the needed migration code below.
 : "
-create extension if not exists timescaledb;
+create extension if not exists timeudb;
 
 create table job(
     job_date timestamptz, -- Serves as a unique id.
@@ -79,7 +79,7 @@ insert into job values (
     now(), '$COMMIT_SHA', '$JOB_NAME',
     '$GITHUB_REPOSITORY', '$GITHUB_REF_NAME', '$GITHUB_EVENT_NAME',
     '$GITHUB_PR_NUMBER', '$JOB_STATUS',
-    'https://github.com/timescale/timescaledb/actions/runs/$GITHUB_RUN_ID/attempts/$GITHUB_RUN_ATTEMPT',
+    'https://github.com/timescale/timeudb/actions/runs/$GITHUB_RUN_ID/attempts/$GITHUB_RUN_ATTEMPT',
     '$GITHUB_RUN_ATTEMPT', '$GITHUB_RUN_ID', '$GITHUB_RUN_NUMBER')
 returning job_date;
 ")

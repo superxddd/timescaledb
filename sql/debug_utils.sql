@@ -4,7 +4,7 @@
 
 -- This file contains utility functions and views that are used for
 -- debugging in release builds. These are all placed in the schema
--- _timescaledb_debug.
+-- _timeudb_debug.
 
-CREATE OR REPLACE FUNCTION _timescaledb_debug.extension_state() RETURNS TEXT
+CREATE OR REPLACE FUNCTION _timeudb_debug.extension_state() RETURNS TEXT
 AS '@MODULE_PATHNAME@', 'ts_extension_get_state' LANGUAGE C;

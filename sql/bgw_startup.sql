@@ -2,4 +2,4 @@
 -- Please see the included NOTICE for copyright information and
 -- LICENSE-APACHE for a copy of the license.
 
-SELECT _timescaledb_functions.restart_background_workers();
+SELECT _timeudb_functions.restart_background_workers();

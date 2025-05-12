@@ -1,10 +1,10 @@
-DROP FUNCTION IF EXISTS _timescaledb_internal.time_col_name_for_chunk(name,name);
-DROP FUNCTION IF EXISTS _timescaledb_internal.time_col_type_for_chunk(name,name);
+DROP FUNCTION IF EXISTS _timeudb_internal.time_col_name_for_chunk(name,name);
+DROP FUNCTION IF EXISTS _timeudb_internal.time_col_type_for_chunk(name,name);
 
 -- Handle column renames for continuous aggregates that were not
 -- handled correctly and fix it in the update. We save the information
 -- in a table.
-CREATE TABLE _timescaledb_internal.rename_tables (
+CREATE TABLE _timeudb_internal.rename_tables (
        user_view regclass,
        user_column text,
        partial_view regclass,
@@ -26,8 +26,8 @@ WITH
                format('%I.%I', partial_view_schema, partial_view_name)::regclass AS partial_view,
                format('%I.%I', schema_name, table_name)::regclass AS mat_table,
                mat_hypertable_id AS mat_id
-          FROM _timescaledb_catalog.continuous_agg
-          JOIN _timescaledb_catalog.hypertable ON mat_hypertable_id = id),
+          FROM _timeudb_catalog.continuous_agg
+          JOIN _timeudb_catalog.hypertable ON mat_hypertable_id = id),
   user_view AS (
         SELECT attrelid, attname, attnum, mat_id
           FROM objs, pg_attribute
@@ -40,7 +40,7 @@ WITH
         SELECT attrelid, attname, attnum, mat_id
           FROM objs, pg_attribute
          WHERE attrelid = objs.direct_view)
-INSERT INTO _timescaledb_internal.rename_tables
+INSERT INTO _timeudb_internal.rename_tables
 SELECT (SELECT user_view FROM objs WHERE uv.attrelid = user_view),
        uv.attname AS user_column,
        (SELECT partial_view FROM objs WHERE uv.attrelid = user_view),
@@ -53,7 +53,7 @@ SELECT (SELECT user_view FROM objs WHERE uv.attrelid = user_view),
                     JOIN partial_view pv USING (mat_id, attnum)
  WHERE uv.attname != dv.attname;
 
-CREATE PROCEDURE _timescaledb_internal.alter_table_column(cagg regclass, relation regclass, old_column_name name, new_column_name name) AS $$
+CREATE PROCEDURE _timeudb_internal.alter_table_column(cagg regclass, relation regclass, old_column_name name, new_column_name name) AS $$
 BEGIN
     IF old_column_name != new_column_name THEN
         EXECUTE format('ALTER TABLE %s RENAME COLUMN %I TO %I', relation, old_column_name, new_column_name);
@@ -77,18 +77,18 @@ DECLARE
     ht_id int;
 BEGIN
   FOR user_view, user_column, partial_view, partial_column, direct_view, direct_column, mat_table, ht_id IN
-  SELECT * FROM _timescaledb_internal.rename_tables
+  SELECT * FROM _timeudb_internal.rename_tables
   LOOP
     -- There is no RENAME COLUMN for views, but we can use ALTER TABLE
     -- to rename a column in a view.
-    CALL _timescaledb_internal.alter_table_column(user_view, partial_view, partial_column, user_column);
-    CALL _timescaledb_internal.alter_table_column(user_view, direct_view, direct_column, user_column);
-    CALL _timescaledb_internal.alter_table_column(user_view, mat_table, partial_column, user_column);
-    UPDATE _timescaledb_catalog.dimension SET column_name = user_column
+    CALL _timeudb_internal.alter_table_column(user_view, partial_view, partial_column, user_column);
+    CALL _timeudb_internal.alter_table_column(user_view, direct_view, direct_column, user_column);
+    CALL _timeudb_internal.alter_table_column(user_view, mat_table, partial_column, user_column);
+    UPDATE _timeudb_catalog.dimension SET column_name = user_column
      WHERE hypertable_id = ht_id AND column_name = direct_column;
   END LOOP;
 END
 $$;
 
-DROP PROCEDURE _timescaledb_internal.alter_table_column;
-DROP TABLE _timescaledb_internal.rename_tables;
+DROP PROCEDURE _timeudb_internal.alter_table_column;
+DROP TABLE _timeudb_internal.rename_tables;

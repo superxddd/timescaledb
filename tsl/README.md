@@ -1,6 +1,6 @@
-## TimescaleDB TSL Library ##
+## TIMEUDB TSL Library ##
 
-The TimescaleDB TSL library is licensed under the [Timescale License](LICENSE-TIMESCALE).
+The TIMEUDB TSL library is licensed under the [Timescale License](LICENSE-TIMESCALE).
 
 - [Continuous Aggregates](src/continuous_aggs/README.md)
 - [Compression](src/compression/README.md)

@@ -14,7 +14,7 @@ extern bool ts_loader_extension_exists(void);
 extern void ts_loader_extension_check(void);
 
 /* WaitLatch expects a long, so make sure to cast the value */
-/* Default value for timescaledb.launcher_poll_time */
+/* Default value for timeudb.launcher_poll_time */
 #ifdef TS_DEBUG
 #define BGW_LAUNCHER_POLL_TIME_MS 10
 #else

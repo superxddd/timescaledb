@@ -3,21 +3,21 @@
 The loader has two main purposes:
 
 1) Load the correct versioned library for each database. Multiple databases in
-   the same Postgres instance may have different versions of TimescaleDB
+   the same Postgres instance may have different versions of TIMEUDB
    installed. The loader is responsible for loading the shared library
-   corresponding to the correct TimescaleDB version for the database as soon as
-   possible. For example, a database containing TimescaleDB version 0.8.0 will
-   have timescaledb-0.8.0.so loaded.
+   corresponding to the correct TIMEUDB version for the database as soon as
+   possible. For example, a database containing TIMEUDB version 0.8.0 will
+   have timeudb-0.8.0.so loaded.
 
 2) Starting a background task called the launcher at server startup. The
    launcher is responsible for launching schedulers (one for each database) that
-   are responsible for checking whether the TimescaleDB extension is installed
-   in a database. In case of no TimescaleDB extension, the scheduler exits until
+   are responsible for checking whether the TIMEUDB extension is installed
+   in a database. In case of no TIMEUDB extension, the scheduler exits until
    it is reactivated for that database, which happens, for instance, when the
    extension is installed. If a scheduler finds an extension, its task is to
    schedule jobs for that database. The launcher controls when schedulers are
    started up or shut down in response to events that necessitate such actions.
-   It also instantiates a counter from which TimescaleDB background workers are
+   It also instantiates a counter from which TIMEUDB background workers are
    allocated to be sure we are not using more `worker_processes` than we should.
 
 
@@ -52,8 +52,8 @@ Server startup: no message sent. However, the launcher takes essentially the
 `start` action for each database (without the message handling/signalling bit).
 It cannot figure out whether a scheduler should exist for a given database
 because it can only connect to shared catalogs. The scheduler is responsible for
-shutting down if it should not exist (because either TimescaleDB is not
-installed in the database or the version of TimescaleDB installed does not have
+shutting down if it should not exist (because either TIMEUDB is not
+installed in the database or the version of TIMEUDB installed does not have
 a scheduler function to call). 
 
 `CREATE DATABASE`: essentially the same as server startup. The launcher checks

@@ -1,24 +1,24 @@
-CREATE TYPE _timescaledb_internal.dimension_info;
+CREATE TYPE _timeudb_internal.dimension_info;
 
-CREATE OR REPLACE FUNCTION _timescaledb_functions.dimension_info_in(cstring)
-    RETURNS _timescaledb_internal.dimension_info
+CREATE OR REPLACE FUNCTION _timeudb_functions.dimension_info_in(cstring)
+    RETURNS _timeudb_internal.dimension_info
     LANGUAGE C STRICT IMMUTABLE
     AS '@MODULE_PATHNAME@', 'ts_dimension_info_in';
 
-CREATE OR REPLACE FUNCTION _timescaledb_functions.dimension_info_out(_timescaledb_internal.dimension_info)
+CREATE OR REPLACE FUNCTION _timeudb_functions.dimension_info_out(_timeudb_internal.dimension_info)
     RETURNS cstring
     LANGUAGE C STRICT IMMUTABLE
     AS '@MODULE_PATHNAME@', 'ts_dimension_info_out';
 
-CREATE TYPE _timescaledb_internal.dimension_info (
-    INPUT = _timescaledb_functions.dimension_info_in,
-    OUTPUT = _timescaledb_functions.dimension_info_out,
+CREATE TYPE _timeudb_internal.dimension_info (
+    INPUT = _timeudb_functions.dimension_info_in,
+    OUTPUT = _timeudb_functions.dimension_info_out,
     INTERNALLENGTH = VARIABLE
 );
 
 CREATE FUNCTION @extschema@.create_hypertable(
     relation                REGCLASS,
-    dimension               _timescaledb_internal.dimension_info,
+    dimension               _timeudb_internal.dimension_info,
     create_default_indexes  BOOLEAN = TRUE,
     if_not_exists           BOOLEAN = FALSE,
     migrate_data            BOOLEAN = FALSE
@@ -26,7 +26,7 @@ CREATE FUNCTION @extschema@.create_hypertable(
 
 CREATE FUNCTION @extschema@.add_dimension(
     hypertable              REGCLASS,
-    dimension               _timescaledb_internal.dimension_info,
+    dimension               _timeudb_internal.dimension_info,
     if_not_exists           BOOLEAN = FALSE
 ) RETURNS TABLE(dimension_id INT, created BOOL)
 AS '@MODULE_PATHNAME@', 'ts_dimension_add_general' LANGUAGE C VOLATILE;
@@ -39,57 +39,57 @@ CREATE FUNCTION @extschema@.set_partitioning_interval(
 
 CREATE FUNCTION @extschema@.by_hash(column_name NAME, number_partitions INTEGER,
                                     partition_func regproc = NULL)
-    RETURNS _timescaledb_internal.dimension_info LANGUAGE C
+    RETURNS _timeudb_internal.dimension_info LANGUAGE C
     AS '@MODULE_PATHNAME@', 'ts_hash_dimension';
 
 CREATE FUNCTION @extschema@.by_range(column_name NAME,
                                      partition_interval ANYELEMENT = NULL::bigint,
                                      partition_func regproc = NULL)
-    RETURNS _timescaledb_internal.dimension_info LANGUAGE C
+    RETURNS _timeudb_internal.dimension_info LANGUAGE C
     AS '@MODULE_PATHNAME@', 'ts_range_dimension';
 
 --
--- Rebuild the catalog table `_timescaledb_catalog.chunk` to
+-- Rebuild the catalog table `_timeudb_catalog.chunk` to
 -- add new column `creation_time`
 --
-CREATE TABLE _timescaledb_internal.chunk_tmp
-AS SELECT * from _timescaledb_catalog.chunk;
+CREATE TABLE _timeudb_internal.chunk_tmp
+AS SELECT * from _timeudb_catalog.chunk;
 
-CREATE TABLE _timescaledb_internal.tmp_chunk_seq_value AS
-SELECT last_value, is_called FROM _timescaledb_catalog.chunk_id_seq;
+CREATE TABLE _timeudb_internal.tmp_chunk_seq_value AS
+SELECT last_value, is_called FROM _timeudb_catalog.chunk_id_seq;
 
 --drop foreign keys on chunk table
-ALTER TABLE _timescaledb_catalog.chunk_constraint DROP CONSTRAINT
+ALTER TABLE _timeudb_catalog.chunk_constraint DROP CONSTRAINT
 chunk_constraint_chunk_id_fkey;
-ALTER TABLE _timescaledb_catalog.chunk_index DROP CONSTRAINT
+ALTER TABLE _timeudb_catalog.chunk_index DROP CONSTRAINT
 chunk_index_chunk_id_fkey;
-ALTER TABLE _timescaledb_catalog.chunk_data_node DROP CONSTRAINT
+ALTER TABLE _timeudb_catalog.chunk_data_node DROP CONSTRAINT
 chunk_data_node_chunk_id_fkey;
-ALTER TABLE _timescaledb_internal.bgw_policy_chunk_stats DROP CONSTRAINT
+ALTER TABLE _timeudb_internal.bgw_policy_chunk_stats DROP CONSTRAINT
 bgw_policy_chunk_stats_chunk_id_fkey;
-ALTER TABLE _timescaledb_catalog.compression_chunk_size DROP CONSTRAINT
+ALTER TABLE _timeudb_catalog.compression_chunk_size DROP CONSTRAINT
 compression_chunk_size_chunk_id_fkey;
-ALTER TABLE _timescaledb_catalog.compression_chunk_size DROP CONSTRAINT
+ALTER TABLE _timeudb_catalog.compression_chunk_size DROP CONSTRAINT
 compression_chunk_size_compressed_chunk_id_fkey;
-ALTER TABLE _timescaledb_catalog.chunk_copy_operation DROP CONSTRAINT
+ALTER TABLE _timeudb_catalog.chunk_copy_operation DROP CONSTRAINT
 chunk_copy_operation_chunk_id_fkey;
 
 --drop dependent views
-DROP VIEW IF EXISTS timescaledb_information.hypertables;
-DROP VIEW IF EXISTS timescaledb_information.chunks;
-DROP VIEW IF EXISTS _timescaledb_internal.hypertable_chunk_local_size;
-DROP VIEW IF EXISTS _timescaledb_internal.compressed_chunk_stats;
-DROP VIEW IF EXISTS timescaledb_experimental.chunk_replication_status;
+DROP VIEW IF EXISTS timeudb_information.hypertables;
+DROP VIEW IF EXISTS timeudb_information.chunks;
+DROP VIEW IF EXISTS _timeudb_internal.hypertable_chunk_local_size;
+DROP VIEW IF EXISTS _timeudb_internal.compressed_chunk_stats;
+DROP VIEW IF EXISTS timeudb_experimental.chunk_replication_status;
 
-ALTER EXTENSION timescaledb DROP TABLE _timescaledb_catalog.chunk;
-ALTER EXTENSION timescaledb DROP SEQUENCE _timescaledb_catalog.chunk_id_seq;
-DROP TABLE _timescaledb_catalog.chunk;
+ALTER EXTENSION timeudb DROP TABLE _timeudb_catalog.chunk;
+ALTER EXTENSION timeudb DROP SEQUENCE _timeudb_catalog.chunk_id_seq;
+DROP TABLE _timeudb_catalog.chunk;
 
-CREATE SEQUENCE _timescaledb_catalog.chunk_id_seq MINVALUE 1;
+CREATE SEQUENCE _timeudb_catalog.chunk_id_seq MINVALUE 1;
 
 -- now create table without self referential foreign key
-CREATE TABLE _timescaledb_catalog.chunk (
-  id integer NOT NULL DEFAULT nextval('_timescaledb_catalog.chunk_id_seq'),
+CREATE TABLE _timeudb_catalog.chunk (
+  id integer NOT NULL DEFAULT nextval('_timeudb_catalog.chunk_id_seq'),
   hypertable_id int NOT NULL,
   schema_name name NOT NULL,
   table_name name NOT NULL,
@@ -103,16 +103,16 @@ CREATE TABLE _timescaledb_catalog.chunk (
   CONSTRAINT chunk_schema_name_table_name_key UNIQUE (schema_name, table_name)
 );
 
-INSERT INTO _timescaledb_catalog.chunk
+INSERT INTO _timeudb_catalog.chunk
 ( id, hypertable_id, schema_name, table_name,
   compressed_chunk_id, dropped, status, osm_chunk)
 SELECT id, hypertable_id, schema_name, table_name,
   compressed_chunk_id, dropped, status, osm_chunk
-FROM _timescaledb_internal.chunk_tmp;
+FROM _timeudb_internal.chunk_tmp;
 
 -- update creation_time for chunks
 UPDATE
-    _timescaledb_catalog.chunk c
+    _timeudb_catalog.chunk c
 SET
     creation_time = (pg_catalog.pg_stat_file(pg_catalog.pg_relation_filepath(r.oid))).modification
 FROM
@@ -125,77 +125,77 @@ WHERE
     AND c.dropped IS FALSE;
 
 -- Make sure that there are no record with empty creation time
-UPDATE _timescaledb_catalog.chunk SET creation_time = now() WHERE creation_time IS NULL;
+UPDATE _timeudb_catalog.chunk SET creation_time = now() WHERE creation_time IS NULL;
 
 --add indexes to the chunk table
-CREATE INDEX chunk_hypertable_id_idx ON _timescaledb_catalog.chunk (hypertable_id);
-CREATE INDEX chunk_compressed_chunk_id_idx ON _timescaledb_catalog.chunk (compressed_chunk_id);
-CREATE INDEX chunk_osm_chunk_idx ON _timescaledb_catalog.chunk (osm_chunk, hypertable_id);
-CREATE INDEX chunk_hypertable_id_creation_time_idx ON _timescaledb_catalog.chunk(hypertable_id, creation_time);
+CREATE INDEX chunk_hypertable_id_idx ON _timeudb_catalog.chunk (hypertable_id);
+CREATE INDEX chunk_compressed_chunk_id_idx ON _timeudb_catalog.chunk (compressed_chunk_id);
+CREATE INDEX chunk_osm_chunk_idx ON _timeudb_catalog.chunk (osm_chunk, hypertable_id);
+CREATE INDEX chunk_hypertable_id_creation_time_idx ON _timeudb_catalog.chunk(hypertable_id, creation_time);
 
-ALTER SEQUENCE _timescaledb_catalog.chunk_id_seq OWNED BY _timescaledb_catalog.chunk.id;
-SELECT setval('_timescaledb_catalog.chunk_id_seq', last_value, is_called) FROM _timescaledb_internal.tmp_chunk_seq_value;
+ALTER SEQUENCE _timeudb_catalog.chunk_id_seq OWNED BY _timeudb_catalog.chunk.id;
+SELECT setval('_timeudb_catalog.chunk_id_seq', last_value, is_called) FROM _timeudb_internal.tmp_chunk_seq_value;
 
 -- add self referential foreign key
-ALTER TABLE _timescaledb_catalog.chunk ADD CONSTRAINT chunk_compressed_chunk_id_fkey FOREIGN KEY ( compressed_chunk_id )
- REFERENCES _timescaledb_catalog.chunk( id );
+ALTER TABLE _timeudb_catalog.chunk ADD CONSTRAINT chunk_compressed_chunk_id_fkey FOREIGN KEY ( compressed_chunk_id )
+ REFERENCES _timeudb_catalog.chunk( id );
 
 --add foreign key constraint
-ALTER TABLE _timescaledb_catalog.chunk
+ALTER TABLE _timeudb_catalog.chunk
       ADD CONSTRAINT chunk_hypertable_id_fkey
-      FOREIGN KEY (hypertable_id) REFERENCES _timescaledb_catalog.hypertable (id);
+      FOREIGN KEY (hypertable_id) REFERENCES _timeudb_catalog.hypertable (id);
 
-SELECT pg_catalog.pg_extension_config_dump('_timescaledb_catalog.chunk', '');
-SELECT pg_catalog.pg_extension_config_dump('_timescaledb_catalog.chunk_id_seq', '');
+SELECT pg_catalog.pg_extension_config_dump('_timeudb_catalog.chunk', '');
+SELECT pg_catalog.pg_extension_config_dump('_timeudb_catalog.chunk_id_seq', '');
 
 -- Add non-null constraint
-ALTER TABLE _timescaledb_catalog.chunk
+ALTER TABLE _timeudb_catalog.chunk
   ALTER COLUMN creation_time SET NOT NULL;
 
 --add the foreign key constraints
-ALTER TABLE _timescaledb_catalog.chunk_constraint ADD CONSTRAINT
-chunk_constraint_chunk_id_fkey FOREIGN KEY (chunk_id) REFERENCES _timescaledb_catalog.chunk(id);
-ALTER TABLE _timescaledb_catalog.chunk_index ADD CONSTRAINT
+ALTER TABLE _timeudb_catalog.chunk_constraint ADD CONSTRAINT
+chunk_constraint_chunk_id_fkey FOREIGN KEY (chunk_id) REFERENCES _timeudb_catalog.chunk(id);
+ALTER TABLE _timeudb_catalog.chunk_index ADD CONSTRAINT
 chunk_index_chunk_id_fkey FOREIGN KEY (chunk_id)
-REFERENCES _timescaledb_catalog.chunk(id) ON DELETE CASCADE;
-ALTER TABLE _timescaledb_catalog.chunk_data_node ADD CONSTRAINT
-chunk_data_node_chunk_id_fkey FOREIGN KEY (chunk_id) REFERENCES _timescaledb_catalog.chunk(id);
-ALTER TABLE _timescaledb_internal.bgw_policy_chunk_stats ADD CONSTRAINT
+REFERENCES _timeudb_catalog.chunk(id) ON DELETE CASCADE;
+ALTER TABLE _timeudb_catalog.chunk_data_node ADD CONSTRAINT
+chunk_data_node_chunk_id_fkey FOREIGN KEY (chunk_id) REFERENCES _timeudb_catalog.chunk(id);
+ALTER TABLE _timeudb_internal.bgw_policy_chunk_stats ADD CONSTRAINT
 bgw_policy_chunk_stats_chunk_id_fkey FOREIGN KEY (chunk_id)
-REFERENCES _timescaledb_catalog.chunk(id) ON DELETE CASCADE;
-ALTER TABLE _timescaledb_catalog.compression_chunk_size ADD CONSTRAINT
+REFERENCES _timeudb_catalog.chunk(id) ON DELETE CASCADE;
+ALTER TABLE _timeudb_catalog.compression_chunk_size ADD CONSTRAINT
 compression_chunk_size_chunk_id_fkey FOREIGN KEY (chunk_id)
-REFERENCES _timescaledb_catalog.chunk(id) ON DELETE CASCADE;
-ALTER TABLE _timescaledb_catalog.compression_chunk_size ADD CONSTRAINT
+REFERENCES _timeudb_catalog.chunk(id) ON DELETE CASCADE;
+ALTER TABLE _timeudb_catalog.compression_chunk_size ADD CONSTRAINT
 compression_chunk_size_compressed_chunk_id_fkey FOREIGN KEY (compressed_chunk_id)
-REFERENCES _timescaledb_catalog.chunk(id) ON DELETE CASCADE;
-ALTER TABLE _timescaledb_catalog.chunk_copy_operation ADD CONSTRAINT
-chunk_copy_operation_chunk_id_fkey FOREIGN KEY (chunk_id) REFERENCES _timescaledb_catalog.chunk (id) ON DELETE CASCADE;
+REFERENCES _timeudb_catalog.chunk(id) ON DELETE CASCADE;
+ALTER TABLE _timeudb_catalog.chunk_copy_operation ADD CONSTRAINT
+chunk_copy_operation_chunk_id_fkey FOREIGN KEY (chunk_id) REFERENCES _timeudb_catalog.chunk (id) ON DELETE CASCADE;
 
 --cleanup
-DROP TABLE _timescaledb_internal.chunk_tmp;
-DROP TABLE _timescaledb_internal.tmp_chunk_seq_value;
+DROP TABLE _timeudb_internal.chunk_tmp;
+DROP TABLE _timeudb_internal.tmp_chunk_seq_value;
 
-GRANT SELECT ON _timescaledb_catalog.chunk_id_seq TO PUBLIC;
-GRANT SELECT ON _timescaledb_catalog.chunk TO PUBLIC;
--- end recreate _timescaledb_catalog.chunk table --
+GRANT SELECT ON _timeudb_catalog.chunk_id_seq TO PUBLIC;
+GRANT SELECT ON _timeudb_catalog.chunk TO PUBLIC;
+-- end recreate _timeudb_catalog.chunk table --
 
 --
--- Rebuild the catalog table `_timescaledb_catalog.compression_chunk_size` to
+-- Rebuild the catalog table `_timeudb_catalog.compression_chunk_size` to
 -- add new column `numrows_frozen_immediately`
 --
-CREATE TABLE _timescaledb_internal.compression_chunk_size_tmp
-    AS SELECT * from _timescaledb_catalog.compression_chunk_size;
+CREATE TABLE _timeudb_internal.compression_chunk_size_tmp
+    AS SELECT * from _timeudb_catalog.compression_chunk_size;
 
 -- Drop depended views
--- We assume that '_timescaledb_internal.compressed_chunk_stats' was already dropped in this update
+-- We assume that '_timeudb_internal.compressed_chunk_stats' was already dropped in this update
 -- (see above)
 
 -- Drop table
-ALTER EXTENSION timescaledb DROP TABLE _timescaledb_catalog.compression_chunk_size;
-DROP TABLE _timescaledb_catalog.compression_chunk_size;
+ALTER EXTENSION timeudb DROP TABLE _timeudb_catalog.compression_chunk_size;
+DROP TABLE _timeudb_catalog.compression_chunk_size;
 
-CREATE TABLE _timescaledb_catalog.compression_chunk_size (
+CREATE TABLE _timeudb_catalog.compression_chunk_size (
   chunk_id integer NOT NULL,
   compressed_chunk_id integer NOT NULL,
   uncompressed_heap_size bigint NOT NULL,
@@ -209,26 +209,26 @@ CREATE TABLE _timescaledb_catalog.compression_chunk_size (
   numrows_frozen_immediately bigint,
   -- table constraints
   CONSTRAINT compression_chunk_size_pkey PRIMARY KEY (chunk_id),
-  CONSTRAINT compression_chunk_size_chunk_id_fkey FOREIGN KEY (chunk_id) REFERENCES _timescaledb_catalog.chunk (id) ON DELETE CASCADE,
-  CONSTRAINT compression_chunk_size_compressed_chunk_id_fkey FOREIGN KEY (compressed_chunk_id) REFERENCES _timescaledb_catalog.chunk (id) ON DELETE CASCADE
+  CONSTRAINT compression_chunk_size_chunk_id_fkey FOREIGN KEY (chunk_id) REFERENCES _timeudb_catalog.chunk (id) ON DELETE CASCADE,
+  CONSTRAINT compression_chunk_size_compressed_chunk_id_fkey FOREIGN KEY (compressed_chunk_id) REFERENCES _timeudb_catalog.chunk (id) ON DELETE CASCADE
 );
 
-INSERT INTO _timescaledb_catalog.compression_chunk_size
+INSERT INTO _timeudb_catalog.compression_chunk_size
 (chunk_id, compressed_chunk_id, uncompressed_heap_size, uncompressed_toast_size,
   uncompressed_index_size, compressed_heap_size, compressed_toast_size,
   compressed_index_size, numrows_pre_compression, numrows_post_compression, numrows_frozen_immediately)
 SELECT chunk_id, compressed_chunk_id, uncompressed_heap_size, uncompressed_toast_size,
   uncompressed_index_size, compressed_heap_size, compressed_toast_size,
   compressed_index_size, numrows_pre_compression, numrows_post_compression, 0
-FROM _timescaledb_internal.compression_chunk_size_tmp;
+FROM _timeudb_internal.compression_chunk_size_tmp;
 
-DROP TABLE _timescaledb_internal.compression_chunk_size_tmp;
+DROP TABLE _timeudb_internal.compression_chunk_size_tmp;
 
-SELECT pg_catalog.pg_extension_config_dump('_timescaledb_catalog.compression_chunk_size', '');
+SELECT pg_catalog.pg_extension_config_dump('_timeudb_catalog.compression_chunk_size', '');
 
-GRANT SELECT ON _timescaledb_catalog.compression_chunk_size TO PUBLIC;
+GRANT SELECT ON _timeudb_catalog.compression_chunk_size TO PUBLIC;
 
--- End modify `_timescaledb_catalog.compression_chunk_size`
+-- End modify `_timeudb_catalog.compression_chunk_size`
 
 DROP FUNCTION @extschema@.drop_chunks(REGCLASS, "any", "any", BOOL);
 CREATE FUNCTION @extschema@.drop_chunks(
@@ -278,10 +278,10 @@ RETURNS INTEGER
 AS '@MODULE_PATHNAME@', 'ts_policy_compression_add'
 LANGUAGE C VOLATILE;
 
-DROP PROCEDURE IF EXISTS _timescaledb_functions.policy_compression_execute(INTEGER, INTEGER, ANYELEMENT, INTEGER, BOOLEAN, BOOLEAN);
-DROP PROCEDURE IF EXISTS _timescaledb_internal.policy_compression_execute(INTEGER, INTEGER, ANYELEMENT, INTEGER, BOOLEAN, BOOLEAN);
+DROP PROCEDURE IF EXISTS _timeudb_functions.policy_compression_execute(INTEGER, INTEGER, ANYELEMENT, INTEGER, BOOLEAN, BOOLEAN);
+DROP PROCEDURE IF EXISTS _timeudb_internal.policy_compression_execute(INTEGER, INTEGER, ANYELEMENT, INTEGER, BOOLEAN, BOOLEAN);
 CREATE PROCEDURE
-_timescaledb_functions.policy_compression_execute(
+_timeudb_functions.policy_compression_execute(
   job_id              INTEGER,
   htid                INTEGER,
   lag                 ANYELEMENT,
@@ -309,7 +309,7 @@ BEGIN
   SET LOCAL search_path TO pg_catalog, pg_temp;
 
   SELECT format('%I.%I', schema_name, table_name) INTO htoid
-  FROM _timescaledb_catalog.hypertable
+  FROM _timeudb_catalog.hypertable
   WHERE id = htid;
 
   -- for the integer cases, we have to compute the lag w.r.t
@@ -319,7 +319,7 @@ BEGIN
     IF use_creation_time IS TRUE THEN
         RAISE EXCEPTION 'job % cannot use creation time with integer_now function', job_id;
     END IF;
-    lag := _timescaledb_functions.subtract_integer_from_now(htoid, lag::BIGINT);
+    lag := _timeudb_functions.subtract_integer_from_now(htoid, lag::BIGINT);
   END IF;
 
   -- if use_creation_time has been specified then the lag needs to be used with the
@@ -337,7 +337,7 @@ BEGIN
       @extschema@.show_chunks(htoid, older_than => lag, created_before => creation_lag) AS show(oid)
       INNER JOIN pg_class pgc ON pgc.oid = show.oid
       INNER JOIN pg_namespace pgns ON pgc.relnamespace = pgns.oid
-      INNER JOIN _timescaledb_catalog.chunk ch ON ch.table_name = pgc.relname AND ch.schema_name = pgns.nspname AND ch.hypertable_id = htid
+      INNER JOIN _timeudb_catalog.chunk ch ON ch.table_name = pgc.relname AND ch.schema_name = pgns.nspname AND ch.hypertable_id = htid
     WHERE
       ch.dropped IS FALSE
       AND (
@@ -427,17 +427,17 @@ BEGIN
         att_ht.atttypmod AS ht_mod,
         att_ht.attcollation AS ht_coll,
         c.attname
-      FROM _timescaledb_catalog.hypertable_compression c
-      INNER JOIN _timescaledb_catalog.hypertable ht ON ht.id=c.hypertable_id
+      FROM _timeudb_catalog.hypertable_compression c
+      INNER JOIN _timeudb_catalog.hypertable ht ON ht.id=c.hypertable_id
       INNER JOIN pg_attribute att_ht ON att_ht.attname = c.attname AND att_ht.attrelid = format('%I.%I',ht.schema_name,ht.table_name)::regclass
-      INNER JOIN _timescaledb_catalog.hypertable htc ON htc.id=ht.compressed_hypertable_id
+      INNER JOIN _timeudb_catalog.hypertable htc ON htc.id=ht.compressed_hypertable_id
       WHERE c.segmentby_column_index > 0
     ) cat ON cat.htc::regclass = pga.attrelid AND cat.attname = pga.attname
     WHERE pga.atttypmod <> ht_mod OR pga.attcollation <> ht_coll
   LOOP
     -- fix typmod and collation for the compressed hypertable and all compressed chunks
     UPDATE pg_attribute SET atttypmod = _atttypmod, attcollation = _attcollation WHERE attname = _attname AND attrelid IN (
-      SELECT format('%I.%I',schema_name,table_name)::regclass from _timescaledb_catalog.chunk WHERE hypertable_id = htc_id AND NOT dropped UNION ALL SELECT htc
+      SELECT format('%I.%I',schema_name,table_name)::regclass from _timeudb_catalog.chunk WHERE hypertable_id = htc_id AND NOT dropped UNION ALL SELECT htc
     );
   END LOOP;
 END

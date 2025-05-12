@@ -5,15 +5,15 @@
 -- This file contains utility functions to get the relation size
 -- of hypertables, chunks, and indexes on hypertables.
 
-CREATE OR REPLACE FUNCTION _timescaledb_functions.relation_size(relation REGCLASS)
+CREATE OR REPLACE FUNCTION _timeudb_functions.relation_size(relation REGCLASS)
 RETURNS TABLE (total_size BIGINT, heap_size BIGINT, index_size BIGINT, toast_size BIGINT)
 AS '@MODULE_PATHNAME@', 'ts_relation_size' LANGUAGE C VOLATILE;
 
-CREATE OR REPLACE FUNCTION _timescaledb_functions.relation_approximate_size(relation REGCLASS)
+CREATE OR REPLACE FUNCTION _timeudb_functions.relation_approximate_size(relation REGCLASS)
 RETURNS TABLE (total_size BIGINT, heap_size BIGINT, index_size BIGINT, toast_size BIGINT)
 AS '@MODULE_PATHNAME@', 'ts_relation_approximate_size' LANGUAGE C STRICT VOLATILE;
 
-CREATE OR REPLACE VIEW _timescaledb_internal.hypertable_chunk_local_size AS
+CREATE OR REPLACE VIEW _timeudb_internal.hypertable_chunk_local_size AS
 SELECT
     h.schema_name AS hypertable_schema,
     h.table_name AS hypertable_name,
@@ -30,15 +30,15 @@ SELECT
     COALESCE((relcompsize).index_size, 0) AS compressed_index_size,
     COALESCE((relcompsize).toast_size, 0) AS compressed_toast_size
 FROM
-    _timescaledb_catalog.hypertable h
-    JOIN _timescaledb_catalog.chunk c ON h.id = c.hypertable_id
+    _timeudb_catalog.hypertable h
+    JOIN _timeudb_catalog.chunk c ON h.id = c.hypertable_id
         AND c.dropped IS FALSE
     JOIN pg_class cl ON cl.relname = c.table_name AND cl.relkind = 'r'
     JOIN pg_namespace n ON n.oid = cl.relnamespace
     AND n.nspname = c.schema_name
-    JOIN LATERAL _timescaledb_functions.relation_size(cl.oid) AS relsize ON TRUE
-    LEFT JOIN _timescaledb_catalog.chunk comp ON comp.id = c.compressed_chunk_id
-    LEFT JOIN LATERAL _timescaledb_functions.relation_size(
+    JOIN LATERAL _timeudb_functions.relation_size(cl.oid) AS relsize ON TRUE
+    LEFT JOIN _timeudb_catalog.chunk comp ON comp.id = c.compressed_chunk_id
+    LEFT JOIN LATERAL _timeudb_functions.relation_size(
         CASE WHEN comp.schema_name IS NOT NULL AND comp.table_name IS NOT NULL THEN
             format('%I.%I', comp.schema_name, comp.table_name)::regclass
         ELSE
@@ -46,9 +46,9 @@ FROM
         END
         ) AS relcompsize ON TRUE;
 
-GRANT SELECT ON  _timescaledb_internal.hypertable_chunk_local_size TO PUBLIC;
+GRANT SELECT ON  _timeudb_internal.hypertable_chunk_local_size TO PUBLIC;
 
-CREATE OR REPLACE FUNCTION _timescaledb_functions.hypertable_local_size(
+CREATE OR REPLACE FUNCTION _timeudb_functions.hypertable_local_size(
 	schema_name_in name,
 	table_name_in name)
 RETURNS TABLE (
@@ -71,11 +71,11 @@ $BODY$
             0::BIGINT AS compressed_toast_size,
             0::BIGINT AS compressed_heap_size
         FROM
-            _timescaledb_catalog.hypertable ht
+            _timeudb_catalog.hypertable ht
             JOIN pg_class c ON relname = ht.table_name AND c.relkind = 'r'
             JOIN pg_namespace n ON n.oid = c.relnamespace
             AND n.nspname = ht.schema_name
-            JOIN LATERAL _timescaledb_functions.relation_size(c.oid) AS relsize ON TRUE
+            JOIN LATERAL _timeudb_functions.relation_size(c.oid) AS relsize ON TRUE
         WHERE
             schema_name = schema_name_in
             AND table_name = table_name_in
@@ -93,7 +93,7 @@ $BODY$
             COALESCE(ch.compressed_toast_size, 0) AS compressed_toast_size,
             COALESCE(ch.compressed_heap_size, 0) AS compressed_heap_size
         FROM
-            _timescaledb_internal.hypertable_chunk_local_size ch
+            _timeudb_internal.hypertable_chunk_local_size ch
             JOIN _hypertable_sizes ht ON ht.id = ch.hypertable_id
         WHERE hypertable_schema = schema_name_in
           AND hypertable_name = table_name_in
@@ -138,7 +138,7 @@ BEGIN
         INTO table_name, schema_name
         FROM pg_class c
         INNER JOIN pg_namespace n ON (n.OID = c.relnamespace)
-        INNER JOIN _timescaledb_catalog.hypertable ht ON (ht.schema_name = n.nspname AND ht.table_name = c.relname)
+        INNER JOIN _timeudb_catalog.hypertable ht ON (ht.schema_name = n.nspname AND ht.table_name = c.relname)
         WHERE c.OID = hypertable;
 
         IF table_name IS NULL THEN
@@ -146,8 +146,8 @@ BEGIN
                 INTO schema_name, table_name
                 FROM pg_class c
                 INNER JOIN pg_namespace n ON (n.OID = c.relnamespace)
-                INNER JOIN _timescaledb_catalog.continuous_agg a ON (a.user_view_schema = n.nspname AND a.user_view_name = c.relname)
-                INNER JOIN _timescaledb_catalog.hypertable h ON h.id = a.mat_hypertable_id
+                INNER JOIN _timeudb_catalog.continuous_agg a ON (a.user_view_schema = n.nspname AND a.user_view_name = c.relname)
+                INNER JOIN _timeudb_catalog.hypertable h ON h.id = a.mat_hypertable_id
                 WHERE c.OID = hypertable;
 
 	        IF table_name IS NULL THEN
@@ -157,7 +157,7 @@ BEGIN
 
 			RETURN QUERY
 			SELECT *, NULL::name
-			FROM _timescaledb_functions.hypertable_local_size(schema_name, table_name);
+			FROM _timeudb_functions.hypertable_local_size(schema_name, table_name);
 END;
 $BODY$ SET search_path TO pg_catalog, pg_temp;
 
@@ -196,7 +196,7 @@ $BODY$
    FROM @extschema@.hypertable_approximate_detailed_size(hypertable);
 $BODY$ SET search_path TO pg_catalog, pg_temp;
 
-CREATE OR REPLACE FUNCTION _timescaledb_functions.chunks_local_size(
+CREATE OR REPLACE FUNCTION _timeudb_functions.chunks_local_size(
     schema_name_in name,
     table_name_in name)
 RETURNS TABLE (
@@ -218,7 +218,7 @@ $BODY$
       (COALESCE( ch.toast_bytes, 0 ) + COALESCE( ch.compressed_toast_size, 0 ))::bigint as toast_bytes,
       (ch.total_bytes + COALESCE( ch.compressed_total_size, 0 ))::bigint as total_bytes
    FROM
-	  _timescaledb_internal.hypertable_chunk_local_size ch
+	  _timeudb_internal.hypertable_chunk_local_size ch
    WHERE
       ch.hypertable_schema = schema_name_in
       AND ch.hypertable_name = table_name_in;
@@ -257,7 +257,7 @@ BEGIN
         INTO table_name, schema_name
         FROM pg_class c
         INNER JOIN pg_namespace n ON (n.OID = c.relnamespace)
-        INNER JOIN _timescaledb_catalog.hypertable ht ON (ht.schema_name = n.nspname AND ht.table_name = c.relname)
+        INNER JOIN _timeudb_catalog.hypertable ht ON (ht.schema_name = n.nspname AND ht.table_name = c.relname)
         WHERE c.OID = hypertable;
 
         IF table_name IS NULL THEN
@@ -265,8 +265,8 @@ BEGIN
             INTO schema_name, table_name
             FROM pg_class c
             INNER JOIN pg_namespace n ON (n.OID = c.relnamespace)
-            INNER JOIN _timescaledb_catalog.continuous_agg a ON (a.user_view_schema = n.nspname AND a.user_view_name = c.relname)
-            INNER JOIN _timescaledb_catalog.hypertable h ON h.id = a.mat_hypertable_id
+            INNER JOIN _timeudb_catalog.continuous_agg a ON (a.user_view_schema = n.nspname AND a.user_view_name = c.relname)
+            INNER JOIN _timeudb_catalog.hypertable h ON h.id = a.mat_hypertable_id
             WHERE c.OID = hypertable;
 
             IF table_name IS NULL THEN
@@ -276,12 +276,12 @@ BEGIN
 
     RETURN QUERY SELECT chl.chunk_schema, chl.chunk_name, chl.table_bytes, chl.index_bytes,
                         chl.toast_bytes, chl.total_bytes, NULL::NAME
-            FROM _timescaledb_functions.chunks_local_size(schema_name, table_name) chl;
+            FROM _timeudb_functions.chunks_local_size(schema_name, table_name) chl;
 END;
 $BODY$ SET search_path TO pg_catalog, pg_temp;
 ---------- end of detailed size functions ------
 
-CREATE OR REPLACE FUNCTION _timescaledb_functions.range_value_to_pretty(
+CREATE OR REPLACE FUNCTION _timeudb_functions.range_value_to_pretty(
     time_value      BIGINT,
     column_type     REGTYPE
 )
@@ -301,9 +301,9 @@ BEGIN
         RETURN format('%L', time_value); -- scale determined by user.
       WHEN 'TIMESTAMP'::regtype, 'TIMESTAMPTZ'::regtype THEN
         -- assume time_value is in microsec
-        RETURN format('%1$L', _timescaledb_functions.to_timestamp(time_value)); -- microseconds
+        RETURN format('%1$L', _timeudb_functions.to_timestamp(time_value)); -- microseconds
       WHEN 'DATE'::regtype THEN
-        RETURN format('%L', timezone('UTC',_timescaledb_functions.to_timestamp(time_value))::date);
+        RETURN format('%L', timezone('UTC',_timeudb_functions.to_timestamp(time_value))::date);
       ELSE
         RETURN time_value;
     END CASE;
@@ -340,8 +340,8 @@ BEGIN
     INTO mat_ht
     FROM pg_class c
     JOIN pg_namespace n ON (n.OID = c.relnamespace)
-    JOIN _timescaledb_catalog.continuous_agg a ON (a.user_view_schema = n.nspname AND a.user_view_name = c.relname)
-    JOIN _timescaledb_catalog.hypertable ht ON (a.mat_hypertable_id = ht.id)
+    JOIN _timeudb_catalog.continuous_agg a ON (a.user_view_schema = n.nspname AND a.user_view_name = c.relname)
+    JOIN _timeudb_catalog.hypertable ht ON (a.mat_hypertable_id = ht.id)
     WHERE c.OID = relation;
 
     IF mat_ht IS NOT NULL THEN
@@ -355,15 +355,15 @@ BEGIN
 
     -- Check for input relation is Hypertable
     IF EXISTS (SELECT 1
-               FROM _timescaledb_catalog.hypertable WHERE table_name = local_table_name AND schema_name = local_schema_name) THEN
-        SELECT compressed_hypertable_id FROM _timescaledb_catalog.hypertable INTO local_compressed_hypertable_id
+               FROM _timeudb_catalog.hypertable WHERE table_name = local_table_name AND schema_name = local_schema_name) THEN
+        SELECT compressed_hypertable_id FROM _timeudb_catalog.hypertable INTO local_compressed_hypertable_id
         WHERE table_name = local_table_name AND schema_name = local_schema_name;
         IF local_compressed_hypertable_id IS NOT NULL THEN
-           uncompressed_row_count = _timescaledb_functions.get_approx_row_count(relation);
+           uncompressed_row_count = _timeudb_functions.get_approx_row_count(relation);
 
            -- use the compression_chunk_size stats to fetch precompressed num rows
-           SELECT COALESCE(SUM(numrows_pre_compression), 0) FROM _timescaledb_catalog.chunk srcch,
-                _timescaledb_catalog.compression_chunk_size map, _timescaledb_catalog.hypertable srcht
+           SELECT COALESCE(SUM(numrows_pre_compression), 0) FROM _timeudb_catalog.chunk srcch,
+                _timeudb_catalog.compression_chunk_size map, _timeudb_catalog.hypertable srcht
                 INTO compressed_row_count
                 WHERE map.chunk_id = srcch.id
                 AND srcht.id = srcch.hypertable_id AND srcht.table_name = local_table_name
@@ -371,49 +371,49 @@ BEGIN
 
            RETURN (uncompressed_row_count + compressed_row_count);
         ELSE
-           uncompressed_row_count = _timescaledb_functions.get_approx_row_count(relation);
+           uncompressed_row_count = _timeudb_functions.get_approx_row_count(relation);
            RETURN uncompressed_row_count;
         END IF;
     END IF;
     -- Check for input relation is CHUNK
-    IF EXISTS (SELECT 1 FROM _timescaledb_catalog.chunk WHERE table_name = local_table_name AND schema_name = local_schema_name) THEN
-        with compressed_chunk as (select 1 as is_compressed_chunk from _timescaledb_catalog.chunk c
-        inner join _timescaledb_catalog.hypertable h on (c.hypertable_id = h.compressed_hypertable_id)
+    IF EXISTS (SELECT 1 FROM _timeudb_catalog.chunk WHERE table_name = local_table_name AND schema_name = local_schema_name) THEN
+        with compressed_chunk as (select 1 as is_compressed_chunk from _timeudb_catalog.chunk c
+        inner join _timeudb_catalog.hypertable h on (c.hypertable_id = h.compressed_hypertable_id)
         where c.table_name = local_table_name and c.schema_name = local_schema_name ),
-        chunk_temp as (select compressed_chunk_id from _timescaledb_catalog.chunk c where c.table_name = local_table_name and c.schema_name = local_schema_name)
+        chunk_temp as (select compressed_chunk_id from _timeudb_catalog.chunk c where c.table_name = local_table_name and c.schema_name = local_schema_name)
         select ct.compressed_chunk_id, cc.is_compressed_chunk from chunk_temp ct LEFT OUTER JOIN compressed_chunk cc ON 1 = 1
         INTO local_compressed_chunk_id, is_compressed_chunk;
         -- 'input is chunk #1';
         IF is_compressed_chunk IS NULL AND local_compressed_chunk_id IS NOT NULL THEN
         -- 'Include both uncompressed  and compressed chunk #2';
             -- use the compression_chunk_size stats to fetch precompressed num rows
-            SELECT COALESCE(numrows_pre_compression, 0) FROM _timescaledb_catalog.compression_chunk_size
+            SELECT COALESCE(numrows_pre_compression, 0) FROM _timeudb_catalog.compression_chunk_size
                 INTO compressed_row_count
                 WHERE compressed_chunk_id = local_compressed_chunk_id;
 
-            uncompressed_row_count = _timescaledb_functions.get_approx_row_count(relation);
+            uncompressed_row_count = _timeudb_functions.get_approx_row_count(relation);
             RETURN (uncompressed_row_count + compressed_row_count);
         ELSIF is_compressed_chunk IS NULL AND local_compressed_chunk_id IS NULL THEN
         -- 'input relation is uncompressed chunk #3';
-            uncompressed_row_count = _timescaledb_functions.get_approx_row_count(relation);
+            uncompressed_row_count = _timeudb_functions.get_approx_row_count(relation);
             RETURN uncompressed_row_count;
         ELSE
         -- 'compressed chunk only #4';
             -- use the compression_chunk_size stats to fetch precompressed num rows
-            SELECT COALESCE(SUM(numrows_pre_compression), 0) FROM _timescaledb_catalog.chunk srcch,
-                _timescaledb_catalog.compression_chunk_size map INTO compressed_row_count
+            SELECT COALESCE(SUM(numrows_pre_compression), 0) FROM _timeudb_catalog.chunk srcch,
+                _timeudb_catalog.compression_chunk_size map INTO compressed_row_count
                 WHERE map.compressed_chunk_id = srcch.id
                 AND srcch.table_name = local_table_name AND srcch.schema_name = local_schema_name;
             RETURN compressed_row_count;
         END IF;
     END IF;
     -- Check for input relation is Plain RELATION
-    uncompressed_row_count = _timescaledb_functions.get_approx_row_count(relation);
+    uncompressed_row_count = _timeudb_functions.get_approx_row_count(relation);
     RETURN uncompressed_row_count;
 END;
 $BODY$ SET search_path TO pg_catalog, pg_temp;
 
-CREATE OR REPLACE FUNCTION _timescaledb_functions.get_approx_row_count(relation REGCLASS)
+CREATE OR REPLACE FUNCTION _timeudb_functions.get_approx_row_count(relation REGCLASS)
 RETURNS BIGINT
 LANGUAGE SQL VOLATILE STRICT AS
 $BODY$
@@ -432,7 +432,7 @@ $BODY$
 $BODY$ SET search_path TO pg_catalog, pg_temp;
 
 -------- stats related to compression ------
-CREATE OR REPLACE VIEW _timescaledb_internal.compressed_chunk_stats AS
+CREATE OR REPLACE VIEW _timeudb_internal.compressed_chunk_stats AS
 SELECT
     srcht.schema_name AS hypertable_schema,
     srcht.table_name AS hypertable_name,
@@ -452,15 +452,15 @@ SELECT
     map.compressed_toast_size,
     map.compressed_heap_size + map.compressed_toast_size + map.compressed_index_size AS compressed_total_size
 FROM
-    _timescaledb_catalog.hypertable AS srcht
-    JOIN _timescaledb_catalog.chunk AS srcch ON srcht.id = srcch.hypertable_id
+    _timeudb_catalog.hypertable AS srcht
+    JOIN _timeudb_catalog.chunk AS srcch ON srcht.id = srcch.hypertable_id
         AND srcht.compressed_hypertable_id IS NOT NULL
         AND srcch.dropped = FALSE
-    LEFT JOIN _timescaledb_catalog.compression_chunk_size map ON srcch.id = map.chunk_id;
+    LEFT JOIN _timeudb_catalog.compression_chunk_size map ON srcch.id = map.chunk_id;
 
-GRANT SELECT ON _timescaledb_internal.compressed_chunk_stats TO PUBLIC;
+GRANT SELECT ON _timeudb_internal.compressed_chunk_stats TO PUBLIC;
 
-CREATE OR REPLACE FUNCTION _timescaledb_functions.compressed_chunk_local_stats(schema_name_in name, table_name_in name)
+CREATE OR REPLACE FUNCTION _timeudb_functions.compressed_chunk_local_stats(schema_name_in name, table_name_in name)
     RETURNS TABLE (
         chunk_schema name,
         chunk_name name,
@@ -490,7 +490,7 @@ $BODY$
         ch.compressed_toast_size,
         ch.compressed_total_size
     FROM
-        _timescaledb_internal.compressed_chunk_stats ch
+        _timeudb_internal.compressed_chunk_stats ch
     WHERE
         ch.hypertable_schema = schema_name_in
         AND ch.hypertable_name = table_name_in;
@@ -526,7 +526,7 @@ BEGIN
     FROM
         pg_class c
         INNER JOIN pg_namespace n ON (n.OID = c.relnamespace)
-        INNER JOIN _timescaledb_catalog.hypertable ht ON (ht.schema_name = n.nspname
+        INNER JOIN _timeudb_catalog.hypertable ht ON (ht.schema_name = n.nspname
                 AND ht.table_name = c.relname)
     WHERE
         c.OID = hypertable;
@@ -540,7 +540,7 @@ BEGIN
       *,
       NULL::name
   FROM
-      _timescaledb_functions.compressed_chunk_local_stats(schema_name, table_name);
+      _timeudb_functions.compressed_chunk_local_stats(schema_name, table_name);
 END;
 $BODY$ SET search_path TO pg_catalog, pg_temp;
 
@@ -586,7 +586,7 @@ $BODY$ SET search_path TO pg_catalog, pg_temp;
 -- index_name      - index on hyper table
 ---note that the query matches against the hypertable's schema name as
 -- the input is on the hypertable index and not the chunk index.
-CREATE OR REPLACE FUNCTION _timescaledb_functions.indexes_local_size(
+CREATE OR REPLACE FUNCTION _timeudb_functions.indexes_local_size(
     schema_name_in             NAME,
     index_name_in              NAME
 )
@@ -600,9 +600,9 @@ $BODY$
         FROM
             pg_class c,
             pg_namespace n,
-            _timescaledb_catalog.chunk ch,
-            _timescaledb_catalog.chunk_index ci,
-			_timescaledb_catalog.hypertable h
+            _timeudb_catalog.chunk ch,
+            _timeudb_catalog.chunk_index ci,
+			_timeudb_catalog.hypertable h
          WHERE ch.schema_name = n.nspname
              AND c.relnamespace = n.oid
              AND c.relname = ci.index_name
@@ -615,7 +615,7 @@ $BODY$
 		  -- Add size of index on all chunks + index size on root table
 		  (SELECT num_bytes FROM chunk_index_size) + pg_relation_size(format('%I.%I', schema_name_in, index_name_in)::regclass)::bigint
 	  FROM
-	      pg_class c, pg_index i, _timescaledb_catalog.hypertable h
+	      pg_class c, pg_index i, _timeudb_catalog.hypertable h
 	  WHERE
 	     i.indexrelid = format('%I.%I', schema_name_in, index_name_in)::regclass
 		 AND c.oid = i.indrelid
@@ -646,7 +646,7 @@ BEGIN
    SELECT c.relname, cl.relname, nsp.nspname
    INTO ht_index_name, ht_name, ht_schema_name
    FROM pg_class c, pg_index cind, pg_class cl,
-        pg_namespace nsp, _timescaledb_catalog.hypertable ht
+        pg_namespace nsp, _timeudb_catalog.hypertable ht
    WHERE c.oid = cind.indexrelid AND cind.indrelid = cl.oid
          AND cl.relnamespace = nsp.oid AND c.oid = index_name
 		 AND ht.schema_name = nsp.nspname ANd ht.table_name = cl.relname;
@@ -658,7 +658,7 @@ BEGIN
    -- get the local size or size of access node indexes
    SELECT il.total_bytes
    INTO index_bytes
-   FROM _timescaledb_functions.indexes_local_size(ht_schema_name, ht_index_name) il;
+   FROM _timeudb_functions.indexes_local_size(ht_schema_name, ht_index_name) il;
 
    IF index_bytes IS NULL THEN
        index_bytes = 0;

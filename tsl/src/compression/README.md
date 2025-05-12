@@ -93,11 +93,11 @@ not optimal for certain setups.
 
 # Picking default for `segment_by` and `order_by`.
 
-We have two functions to determine the columns for `timescaledb.compress_segmentby` and `timescaledb.compress_orderby` . These functions can be called
+We have two functions to determine the columns for `timeudb.compress_segmentby` and `timeudb.compress_orderby` . These functions can be called
 by the UI to give good defaults. They can also be called internally when a hypertable has compression enabled
 but no values are provided to specify these options.
 
-## `_timescaledb_functions.get_segmentby_defaults`
+## `_timeudb_functions.get_segmentby_defaults`
 
 This function determines a segment-by column to use. It returns a JSONB with the following top-level keys:
 - columns: an array of column names that should be used for segment by. Right now it always returns a single column.
@@ -116,7 +116,7 @@ Thus, our preference is based on the whether the column is from a unique or regu
 
 One final point: a number of tables don't have any indexed columns that aren't dimensions or serial columns. In this case, we have medium confidence that an empty segment by is correct.
 
-## `_timescaledb_functions.get_orderby_defaults`
+## `_timeudb_functions.get_orderby_defaults`
 
 This function determines which order by columns to use. It returns a JSONB with the following top-level keys:
 

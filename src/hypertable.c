@@ -1386,13 +1386,13 @@ ts_hypertable_insert_blocker(PG_FUNCTION_ARGS)
 		ereport(ERROR,
 				(errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
 				 errmsg("cannot INSERT into hypertable \"%s\" during restore", relname),
-				 errhint("Set 'timescaledb.restoring' to 'off' after the restore process has "
+				 errhint("Set 'timeudb.restoring' to 'off' after the restore process has "
 						 "finished.")));
 	else
 		ereport(ERROR,
 				(errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
 				 errmsg("invalid INSERT on the root table of hypertable \"%s\"", relname),
-				 errhint("Make sure the TimescaleDB extension has been preloaded.")));
+				 errhint("Make sure the TIMEUDB extension has been preloaded.")));
 
 	PG_RETURN_NULL();
 }
@@ -1470,11 +1470,11 @@ ts_hypertable_insert_blocker_trigger_add(PG_FUNCTION_ARGS)
 						   "UPDATE again."),
 				 errhint("Data can be migrated as follows:\n"
 						 "> BEGIN;\n"
-						 "> SET timescaledb.restoring = 'off';\n"
+						 "> SET timeudb.restoring = 'off';\n"
 						 "> INSERT INTO \"%1$s\" SELECT * FROM ONLY \"%1$s\";\n"
-						 "> SET timescaledb.restoring = 'on';\n"
+						 "> SET timeudb.restoring = 'on';\n"
 						 "> TRUNCATE ONLY \"%1$s\";\n"
-						 "> SET timescaledb.restoring = 'off';\n"
+						 "> SET timeudb.restoring = 'off';\n"
 						 "> COMMIT;",
 						 get_rel_name(relid))));
 
@@ -2046,7 +2046,7 @@ ts_hypertable_create_from_info(Oid table_relid, int32 hypertable_id, uint32 flag
 				(errmsg("migrating data to chunks"),
 				 errdetail("Migration might take a while depending on the amount of data.")));
 
-		timescaledb_move_from_table_to_chunks(ht, RowExclusiveLock);
+		timeudb_move_from_table_to_chunks(ht, RowExclusiveLock);
 	}
 
 	insert_blocker_trigger_add(table_relid);
@@ -2535,7 +2535,7 @@ ts_chunk_get_osm_slice_and_lock(int32 osm_chunk_id, int32 time_dim_id, LockTuple
  * 3 empty=false
  * If empty is set to true then the range will be set to invalid range
  * but the overlap flag will be unset, indicating that no data is managed
- * by OSM and therefore timescaledb optimizations can be applied.
+ * by OSM and therefore timeudb optimizations can be applied.
  */
 TS_FUNCTION_INFO_V1(ts_hypertable_osm_range_update);
 Datum
@@ -2625,7 +2625,7 @@ ts_hypertable_osm_range_update(PG_FUNCTION_ARGS)
 										  range_end_internal);
 	/*
 	 * It should not be possible for OSM chunks to overlap with the range
-	 * managed by timescaledb. OSM extension should update the range of the
+	 * managed by timeudb. OSM extension should update the range of the
 	 * OSM chunk to [INT64_MAX -1, infinity) when it detects that it is
 	 * noncontiguous, so we should not end up detecting overlaps anyway.
 	 * But throw an error in case we encounter this situation.

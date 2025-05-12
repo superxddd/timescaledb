@@ -123,7 +123,7 @@ missing_versions() {
 	SELECT * FROM (VALUES ('$1'), ('$2')) AS foo
 	EXCEPT
 	SELECT version FROM pg_available_extension_versions
-	WHERE name = 'timescaledb' AND version IN ('$1', '$2');
+	WHERE name = 'timeudb' AND version IN ('$1', '$2');
 	EOF
 }
 
@@ -137,8 +137,8 @@ $PSQL -c '\conninfo'
 # shellcheck disable=SC2207 # Prefer mapfile or read -a to split command output (or quote to avoid splitting).
 missing=($(missing_versions $UPDATE_FROM_TAG $UPDATE_TO_TAG))
 if [[ ${#missing[@]} -gt 0 ]]; then
-    echo "ERROR: Missing version(s) ${missing[*]} of 'timescaledb'"
-    echo "Available versions: " "$($PSQL -tc "SELECT version FROM pg_available_extension_versions WHERE name = 'timescaledb'")"
+    echo "ERROR: Missing version(s) ${missing[*]} of 'timeudb'"
+    echo "Available versions: " "$($PSQL -tc "SELECT version FROM pg_available_extension_versions WHERE name = 'timeudb'")"
     exit 1
 fi
 
@@ -149,16 +149,16 @@ fi
 # Create a 1.7.5 version Upgrade
 echo "---- Connecting to ${FORGE_CONNINFO} and running setup ----"
 $PSQL -f cleanup.${TEST_VERSION}.sql >>$LOGFILE 2>&1
-$PSQL -c "DROP EXTENSION IF EXISTS timescaledb CASCADE" >>$LOGFILE 2>&1
+$PSQL -c "DROP EXTENSION IF EXISTS timeudb CASCADE" >>$LOGFILE 2>&1
 $PSQL -f pre.cleanup.sql >>$LOGFILE 2>&1
-$PSQL -c "CREATE EXTENSION timescaledb VERSION '${UPDATE_FROM_TAG}'" >>$LOGFILE 2>&1
+$PSQL -c "CREATE EXTENSION timeudb VERSION '${UPDATE_FROM_TAG}'" >>$LOGFILE 2>&1
 $PSQL -c "\dx"
 
 # Run setup on Upgrade
 $PSQL -f pre.smoke.sql >>$LOGFILE 2>&1
 $PSQL -f setup.${TEST_VERSION}.sql >>$LOGFILE 2>&1
 # Run update on Upgrade. You now have a 2.0.2 version in Upgrade.
-$PSQL -c "ALTER EXTENSION timescaledb UPDATE TO '${UPDATE_TO_TAG}'" >>$LOGFILE 2>&1
+$PSQL -c "ALTER EXTENSION timeudb UPDATE TO '${UPDATE_TO_TAG}'" >>$LOGFILE 2>&1
 
 echo -n "Dumping the contents of Upgrade..."
 pg_dump -Fc -f $DUMPFILE >>$LOGFILE 2>&1
@@ -173,9 +173,9 @@ echo "done"
 $PSQL -f cleanup.${TEST_VERSION}.sql >>$LOGFILE 2>&1
 
 echo "---- Create a ${UPDATE_TO_TAG} version Clean ----"
-$PSQL -c "DROP EXTENSION IF EXISTS timescaledb CASCADE" >>$LOGFILE 2>&1
+$PSQL -c "DROP EXTENSION IF EXISTS timeudb CASCADE" >>$LOGFILE 2>&1
 $PSQL -f pre.cleanup.sql >>$LOGFILE 2>&1
-$PSQL -c "CREATE EXTENSION timescaledb VERSION '${UPDATE_TO_TAG}'" >>$LOGFILE 2>&1
+$PSQL -c "CREATE EXTENSION timeudb VERSION '${UPDATE_TO_TAG}'" >>$LOGFILE 2>&1
 $PSQL -c "\dx"
 
 echo "---- Run the setup scripts on Clean, with post-update actions ----"
@@ -188,16 +188,16 @@ $PSQL -f post.${TEST_VERSION}.sql >$CLEAN_OUT
 $PSQL -f cleanup.${TEST_VERSION}.sql >>$LOGFILE 2>&1
 
 echo "---- Create a ${UPDATE_TO_TAG} version Restore ----"
-$PSQL -c "DROP EXTENSION IF EXISTS timescaledb CASCADE" >>$LOGFILE 2>&1
+$PSQL -c "DROP EXTENSION IF EXISTS timeudb CASCADE" >>$LOGFILE 2>&1
 $PSQL -f pre.cleanup.sql >>$LOGFILE 2>&1
-$PSQL -c "CREATE EXTENSION timescaledb VERSION '${UPDATE_TO_TAG}'" >>$LOGFILE 2>&1
+$PSQL -c "CREATE EXTENSION timeudb VERSION '${UPDATE_TO_TAG}'" >>$LOGFILE 2>&1
 $PSQL -c "\dx"
 
 echo "---- Restore the UpgradeDump into Restore ----"
 echo -n "Restoring dump..."
-$PSQL -c "SELECT timescaledb_pre_restore()" >>$LOGFILE 2>&1
+$PSQL -c "SELECT timeudb_pre_restore()" >>$LOGFILE 2>&1
 pg_restore -d $PGDATABASE $DUMPFILE >>$LOGFILE 2>&1 || true
-$PSQL -c "SELECT timescaledb_post_restore()" >>$LOGFILE 2>&1
+$PSQL -c "SELECT timeudb_post_restore()" >>$LOGFILE 2>&1
 echo "done"
 
 echo "---- Run the post scripts on Restore to get a RestoreOut ----"

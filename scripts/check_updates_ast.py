@@ -9,13 +9,13 @@ class SQLVisitor(Visitor):
     def __init__(self):
         self.errors = 0
         self.catalog_schemata = [
-            "_timescaledb_catalog",
-            "_timescaledb_config",
-            "_timescaledb_internal",
+            "_timeudb_catalog",
+            "_timeudb_config",
+            "_timeudb_internal",
         ]
         super().__init__()
 
-    # ALTER TABLE _timescaledb_catalog.<tablename> ADD/DROP COLUMN
+    # ALTER TABLE _timeudb_catalog.<tablename> ADD/DROP COLUMN
     def visit_AlterTableStmt(self, ancestors, node):  # pylint: disable=unused-argument
         if (
             "schemaname" in node.relation
@@ -40,7 +40,7 @@ class SQLVisitor(Visitor):
                             f"ERROR: Attempting to DROP COLUMN {column} from catalog table {schema}.{table}"
                         )
 
-    # ALTER TABLE _timescaledb_catalog.<tablename> RENAME TO
+    # ALTER TABLE _timeudb_catalog.<tablename> RENAME TO
     def visit_RenameStmt(self, ancestors, node):  # pylint: disable=unused-argument
         if (
             node.renameType == enums.ObjectType.OBJECT_TABLE
@@ -104,11 +104,11 @@ class SQLVisitor(Visitor):
             self.errors += 1
             print(f"ERROR: Attempting to CREATE INDEX IF NOT EXISTS {node.idxname}")
 
-    # CREATE FUNCTION / PROCEDURE _timescaledb_internal...
+    # CREATE FUNCTION / PROCEDURE _timeudb_internal...
     def visit_CreateFunctionStmt(
         self, ancestors, node
     ):  # pylint: disable=unused-argument
-        if len(node.funcname) == 2 and node.funcname[0].sval == "_timescaledb_internal":
+        if len(node.funcname) == 2 and node.funcname[0].sval == "_timeudb_internal":
             self.errors += 1
             functype = "procedure" if node.is_procedure else "function"
             print(

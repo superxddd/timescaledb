@@ -428,7 +428,7 @@ chunk_dispatch_exec(CustomScanState *node)
 							   ts_guc_max_tuples_decompressed_per_dml,
 							   (long long int) cis->cds->tuples_decompressed),
 					 errhint("Consider increasing "
-							 "timescaledb.max_tuples_decompressed_per_dml_transaction or set "
+							 "timeudb.max_tuples_decompressed_per_dml_transaction or set "
 							 "to 0 (unlimited).")));
 		}
 	}

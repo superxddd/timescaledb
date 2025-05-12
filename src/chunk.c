@@ -711,7 +711,7 @@ copy_hypertable_acl_to_relid(const Hypertable *ht, const Oid owner_id, const Oid
  * Create a chunk's table.
  *
  * A chunk inherits from the main hypertable and will have the same owner. Since
- * chunks can be created either in the TimescaleDB internal schema or in a
+ * chunks can be created either in the TIMEUDB internal schema or in a
  * user-specified schema, some care has to be taken to use the right
  * permissions, depending on the case:
  *
@@ -1047,7 +1047,7 @@ chunk_create_from_hypercube_after_lock(const Hypertable *ht, Hypercube *cube,
 	{
 		/* OSM only uses first dimension. */
 		Dimension *dim = &ht->space->dimensions[0];
-		/* convert to PG timestamp from timescaledb internal format */
+		/* convert to PG timestamp from timeudb internal format */
 		int64 range_start =
 			ts_internal_to_time_int64(cube->slices[0]->fd.range_start, dim->fd.column_type);
 		int64 range_end =
@@ -3254,7 +3254,7 @@ chunk_update_catalog_tuple(ItemPointer tid, FormData_chunk *update)
 	relation_close(chunk_rel, NoLock);
 }
 /*
- * This function locks the  timescaledb_catalog.chunk tuple (corresponding to chunk_id ) in
+ * This function locks the  timeudb_catalog.chunk tuple (corresponding to chunk_id ) in
  * LockTupleExclusiveMode. It blocks till the lock is acquired. The tid and data (corresponding to
  * the locked tuple) are returned via tid and form arguments. Anyone updating/deleting a chunk entry
  * from the catalog table is expected to first call this function. Refer to
@@ -3962,7 +3962,7 @@ ts_chunk_do_drop_chunks(Hypertable *ht, int64 older_than, int64 newer_than, int3
 		{
 			ListCell *lc;
 			Dimension *dim = &ht->space->dimensions[0];
-			/* convert to PG timestamp from timescaledb internal format */
+			/* convert to PG timestamp from timeudb internal format */
 			int64 range_start = ts_internal_to_time_int64(newer_than, dim->fd.column_type);
 			int64 range_end = ts_internal_to_time_int64(older_than, dim->fd.column_type);
 			Chunk *osm_chunk = ts_chunk_get_by_id(osm_chunk_id, true);

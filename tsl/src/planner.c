@@ -27,7 +27,7 @@
 
 #include <math.h>
 
-#define OSM_EXTENSION_NAME "timescaledb_osm"
+#define OSM_EXTENSION_NAME "timeudb_osm"
 
 #if PG14_GE
 static int osm_present = -1;

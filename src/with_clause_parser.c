@@ -143,7 +143,7 @@ parse_arg(WithClauseDefinition arg, DefElem *def)
 		value = defGetString(def);
 	else if (arg.type_id == BOOLOID)
 		/* for booleans, postgres defines the option timescale.foo to be the same as
-		 * timescaledb.foo='true' so if no value is found set it to "true" here */
+		 * timeudb.foo='true' so if no value is found set it to "true" here */
 		value = "true";
 	else
 		ereport(ERROR,

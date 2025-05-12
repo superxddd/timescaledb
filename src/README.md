@@ -1,7 +1,7 @@
-# Basic TimescaleDB Features
+# Basic TIMEUDB Features
 
-- [TimescaleDB Abstract Data Types](adts/README.md)
-- [TimescaleDB Scheduler](bgw/README.md)
-- [TimescaleDB Multi-version Loader](loader/README.md)
+- [TIMEUDB Abstract Data Types](adts/README.md)
+- [TIMEUDB Scheduler](bgw/README.md)
+- [TIMEUDB Multi-version Loader](loader/README.md)
 
 

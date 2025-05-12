@@ -409,7 +409,7 @@ gapfill_path_create(PlannerInfo *root, Path *subpath, FuncExpr *func)
 
 /*
  * Prepend GapFill node to every group_rel path.
- * The implementation assumes that TimescaleDB planning hook is called only once
+ * The implementation assumes that TIMEUDB planning hook is called only once
  * per grouping.
  */
 void

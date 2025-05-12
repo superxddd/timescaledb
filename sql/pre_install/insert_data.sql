@@ -3,7 +3,7 @@
 -- LICENSE-APACHE for a copy of the license.
 
 --insert data for compression_algorithm --
-insert into _timescaledb_catalog.compression_algorithm( id, version, name, description) values
+insert into _timeudb_catalog.compression_algorithm( id, version, name, description) values
 ( 0, 1, 'COMPRESSION_ALGORITHM_NONE', 'no compression'),
 ( 1, 1, 'COMPRESSION_ALGORITHM_ARRAY', 'array'),
 ( 2, 1, 'COMPRESSION_ALGORITHM_DICTIONARY', 'dictionary'),

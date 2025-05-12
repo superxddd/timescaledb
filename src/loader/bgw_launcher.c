@@ -99,15 +99,15 @@ launcher_sighup(SIGNAL_ARGS)
 /*
  * Main bgw launcher for the cluster.
  *
- * Run through the TimescaleDB loader, so needs to have a small footprint as
+ * Run through the TIMEUDB loader, so needs to have a small footprint as
  * any interactions it has will need to remain backwards compatible for the
  * foreseeable future.
  *
- * Notes: multiple databases in an instance (PG cluster) can have TimescaleDB
- * installed. They are not necessarily the same version of TimescaleDB (though
+ * Notes: multiple databases in an instance (PG cluster) can have TIMEUDB
+ * installed. They are not necessarily the same version of TIMEUDB (though
  * they could be) Shared memory is allocated and background workers are
  * registered at shared_preload_libraries time We do not know what databases
- * exist, nor which databases TimescaleDB is installed in (if any) at
+ * exist, nor which databases TIMEUDB is installed in (if any) at
  * shared_preload_libraries time.
  */
 
@@ -132,7 +132,7 @@ bgw_on_postmaster_death(void)
 					  * out quickly */
 	ereport(FATAL,
 			(errcode(ERRCODE_ADMIN_SHUTDOWN),
-			 errmsg("postmaster exited while TimescaleDB background worker launcher was working")));
+			 errmsg("postmaster exited while TIMEUDB background worker launcher was working")));
 }
 
 static void
@@ -141,9 +141,9 @@ report_bgw_limit_exceeded(DbHashEntry *entry)
 	if (entry->state_transition_failures == 0)
 		ereport(LOG,
 				(errcode(ERRCODE_CONFIGURATION_LIMIT_EXCEEDED),
-				 errmsg("TimescaleDB background worker limit of %d exceeded",
+				 errmsg("TIMEUDB background worker limit of %d exceeded",
 						ts_guc_max_background_workers),
-				 errhint("Consider increasing timescaledb.max_background_workers.")));
+				 errhint("Consider increasing timeudb.max_background_workers.")));
 	entry->state_transition_failures++;
 }
 
@@ -155,7 +155,7 @@ report_error_on_worker_register_failure(DbHashEntry *entry)
 				(errcode(ERRCODE_INSUFFICIENT_RESOURCES),
 				 errmsg("no available background worker slots"),
 				 errhint("Consider increasing max_worker_processes in tandem with "
-						 "timescaledb.max_background_workers.")));
+						 "timeudb.max_background_workers.")));
 	entry->state_transition_failures++;
 }
 
@@ -244,7 +244,7 @@ ts_bgw_cluster_launcher_register(void)
 
 	memset(&worker, 0, sizeof(worker));
 	/* set up worker settings for our main worker */
-	snprintf(worker.bgw_name, BGW_MAXLEN, "TimescaleDB Background Worker Launcher");
+	snprintf(worker.bgw_name, BGW_MAXLEN, "TIMEUDB Background Worker Launcher");
 	worker.bgw_flags = BGWORKER_SHMEM_ACCESS | BGWORKER_BACKEND_DATABASE_CONNECTION;
 	worker.bgw_restart_time = BGW_LAUNCHER_RESTART_TIME_S;
 
@@ -262,7 +262,7 @@ ts_bgw_cluster_launcher_register(void)
 }
 
 /*
- * Register a background worker that calls the main TimescaleDB background
+ * Register a background worker that calls the main TIMEUDB background
  * worker launcher library (i.e. loader) and uses the scheduler entrypoint
  * function.  The scheduler entrypoint will deal with starting a new worker,
  * and waiting on any txns that it needs to, if we pass along a vxid in the
@@ -274,7 +274,7 @@ register_entrypoint_for_db(Oid db_id, VirtualTransactionId vxid, BackgroundWorke
 	BackgroundWorker worker;
 
 	memset(&worker, 0, sizeof(worker));
-	snprintf(worker.bgw_name, BGW_MAXLEN, "TimescaleDB Background Worker Scheduler");
+	snprintf(worker.bgw_name, BGW_MAXLEN, "TIMEUDB Background Worker Scheduler");
 	worker.bgw_flags = BGWORKER_SHMEM_ACCESS | BGWORKER_BACKEND_DATABASE_CONNECTION;
 	worker.bgw_restart_time = BGW_NEVER_RESTART;
 	worker.bgw_start_time = BgWorkerStart_RecoveryFinished;
@@ -663,7 +663,7 @@ launcher_handle_message(HTAB *db_htab)
 	if (sender == NULL)
 	{
 		ereport(LOG,
-				(errmsg("TimescaleDB background worker launcher received message from non-existent "
+				(errmsg("TIMEUDB background worker launcher received message from non-existent "
 						"backend")));
 		return true;
 	}
@@ -699,7 +699,7 @@ launcher_handle_message(HTAB *db_htab)
  * condition. However, because it cannot exit 0, the launcher will be
  * restarted by the postmaster, even when it has received a SIGTERM, which we
  * decided was the proper behavior. If users want to disable the launcher,
- * they can set `timescaledb.max_background_workers = 0` and then we will
+ * they can set `timeudb.max_background_workers = 0` and then we will
  * `proc_exit(0)` before doing anything else.
  */
 
@@ -718,7 +718,7 @@ ts_bgw_cluster_launcher_main(PG_FUNCTION_ARGS)
 	got_SIGHUP = false;
 	ProcessConfigFile(PGC_SIGHUP);
 	BackgroundWorkerUnblockSignals();
-	ereport(DEBUG1, (errmsg("TimescaleDB background worker launcher started")));
+	ereport(DEBUG1, (errmsg("TIMEUDB background worker launcher started")));
 
 	/* set counter back to zero on restart */
 	ts_bgw_counter_reinit();
@@ -732,14 +732,14 @@ ts_bgw_cluster_launcher_main(PG_FUNCTION_ARGS)
 		 */
 		ereport(LOG,
 				(errcode(ERRCODE_CONFIGURATION_LIMIT_EXCEEDED),
-				 errmsg("TimescaleDB background worker is set to 0"),
-				 errhint("TimescaleDB background worker launcher shutting down.")));
+				 errmsg("TIMEUDB background worker is set to 0"),
+				 errhint("TIMEUDB background worker launcher shutting down.")));
 		proc_exit(0);
 	}
 	/* Connect to the db, no db name yet, so can only access shared catalogs */
 	BackgroundWorkerInitializeConnection(NULL, NULL, 0);
 	pgstat_report_appname(MyBgworkerEntry->bgw_name);
-	ereport(LOG, (errmsg("TimescaleDB background worker launcher connected to shared catalogs")));
+	ereport(LOG, (errmsg("TIMEUDB background worker launcher connected to shared catalogs")));
 
 	htab_storage = MemoryContextAllocZero(TopMemoryContext, sizeof(void *));
 
@@ -806,13 +806,13 @@ database_is_template_check(void)
 	tuple = SearchSysCache1(DATABASEOID, ObjectIdGetDatum(MyDatabaseId));
 	if (!HeapTupleIsValid(tuple))
 		ereport(ERROR,
-				(errmsg("TimescaleDB background worker failed to find entry for database in "
+				(errmsg("TIMEUDB background worker failed to find entry for database in "
 						"syscache")));
 
 	pgdb = (Form_pg_database) GETSTRUCT(tuple);
 	if (pgdb->datistemplate)
 		ereport(ERROR,
-				(errmsg("TimescaleDB background worker connected to template database, exiting")));
+				(errmsg("TIMEUDB background worker connected to template database, exiting")));
 
 	ReleaseSysCache(tuple);
 }
@@ -916,7 +916,7 @@ ts_bgw_db_scheduler_entrypoint(PG_FUNCTION_ARGS)
 			load_external_function(soname, BGW_DB_SCHEDULER_FUNCNAME, false, NULL);
 		if (versioned_scheduler_main == NULL)
 			ereport(LOG,
-					(errmsg("TimescaleDB version %s does not have a background worker, exiting",
+					(errmsg("TIMEUDB version %s does not have a background worker, exiting",
 							soname)));
 		else /* essentially we morph into the versioned
 			  * worker here */

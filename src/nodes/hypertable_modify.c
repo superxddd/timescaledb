@@ -773,7 +773,7 @@ ExecModifyTable(CustomScanState *cs_node, PlanState *pstate)
 									   ts_guc_max_tuples_decompressed_per_dml,
 									   (long long int) ht_state->tuples_decompressed),
 							 errhint("Consider increasing "
-									 "timescaledb.max_tuples_decompressed_per_dml_transaction or "
+									 "timeudb.max_tuples_decompressed_per_dml_transaction or "
 									 "set to 0 (unlimited).")));
 				}
 			}

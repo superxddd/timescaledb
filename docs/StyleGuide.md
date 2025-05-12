@@ -1,4 +1,4 @@
-# TimescaleDB code style guide
+# TIMEUDB code style guide
 
 Source code should follow the
 [PostgreSQL coding conventions](https://www.postgresql.org/docs/current/static/source.html). This
@@ -16,7 +16,7 @@ the future.
 
 ## Error messages
 
-Error messages in TimescaleDB should obey the PostgreSQL
+Error messages in TIMEUDB should obey the PostgreSQL
 [error message style guide](https://www.postgresql.org/docs/current/static/error-style-guide.html).
 
 ## C style
@@ -104,7 +104,7 @@ typedef struct my_type
 When possible, code should be grouped into logical modules. Such modules
 typically resemble classes in object-oriented programming (OOP)
 languages and should use namespaced function and variable names that
-have the module name as prefix. TimescaleDB's [Cache](../src/cache.c)
+have the module name as prefix. TIMEUDB's [Cache](../src/cache.c)
 implementation is a good example of such a module where one would use
 
 ```C
@@ -132,7 +132,7 @@ fairly straight-forward to write C code with an OOP flavor. While we
 do not mandate that C code has an OOP flavor, we recommend it when it
 makes sense (e.g., to achieve modularity and code reuse).
 
-For example, TimescaleDB's [cache.c](../src/cache.c) module can be
+For example, TIMEUDB's [cache.c](../src/cache.c) module can be
 seen as a _base class_ with multiple derived _subclasses_, such as
 [hypertable_cache.c](../src/hypertable_cache.c) and
 [chunk_cache.c](../src/chunk_cache.c). Here's another example of
@@ -218,7 +218,7 @@ in the PostgreSQL documentation.
 We require running C code through clang-format before submitting a PR.
 This will ensure your code is properly formatted according to our style
 (which is similar to the PostgreSQL style but implement in clang-format).
-You can run clang-format on all of the TimescaleDB code using `make format`
+You can run clang-format on all of the TIMEUDB code using `make format`
 if you have clang-format (version >= 7) or docker installed.
 
 

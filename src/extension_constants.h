@@ -8,10 +8,10 @@
 /* No function definitions here, only potentially globally available defines as this is used by the
  * loader*/
 
-#define EXTENSION_NAME "timescaledb"	  /* Name of the actual extension */
-#define EXTENSION_NAMESPACE "timescaledb" /* Namespace for extension objects */
-#define EXTENSION_FDW_NAME "timescaledb_fdw"
-#define TSL_LIBRARY_NAME "timescaledb-tsl"
+#define EXTENSION_NAME "timeudb"	  /* Name of the actual extension */
+#define EXTENSION_NAMESPACE "timeudb" /* Namespace for extension objects */
+#define EXTENSION_FDW_NAME "timeudb_fdw"
+#define TSL_LIBRARY_NAME "timeudb-tsl"
 #define TS_LIBDIR "$libdir/"
 #define EXTENSION_SO TS_LIBDIR "" EXTENSION_NAME
 #define EXTENSION_TSL_SO TS_LIBDIR TSL_LIBRARY_NAME "-" TIMESCALEDB_VERSION_MOD
@@ -37,13 +37,13 @@ typedef enum TsExtensionSchemas
 
 #define NUM_TIMESCALEDB_SCHEMAS _TS_MAX_SCHEMA
 
-#define CATALOG_SCHEMA_NAME "_timescaledb_catalog"
-#define FUNCTIONS_SCHEMA_NAME "_timescaledb_functions"
-#define INTERNAL_SCHEMA_NAME "_timescaledb_internal"
-#define CACHE_SCHEMA_NAME "_timescaledb_cache"
-#define CONFIG_SCHEMA_NAME "_timescaledb_config"
-#define EXPERIMENTAL_SCHEMA_NAME "timescaledb_experimental"
-#define INFORMATION_SCHEMA_NAME "timescaledb_information"
+#define CATALOG_SCHEMA_NAME "_timeudb_catalog"
+#define FUNCTIONS_SCHEMA_NAME "_timeudb_functions"
+#define INTERNAL_SCHEMA_NAME "_timeudb_internal"
+#define CACHE_SCHEMA_NAME "_timeudb_cache"
+#define CONFIG_SCHEMA_NAME "_timeudb_config"
+#define EXPERIMENTAL_SCHEMA_NAME "timeudb_experimental"
+#define INFORMATION_SCHEMA_NAME "timeudb_information"
 
 extern const char *const ts_extension_schema_names[];
 

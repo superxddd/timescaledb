@@ -1,1 +1,1 @@
-DROP FUNCTION IF EXISTS _timescaledb_internal.refresh_continuous_aggregate;
+DROP FUNCTION IF EXISTS _timeudb_internal.refresh_continuous_aggregate;

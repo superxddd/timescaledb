@@ -1,14 +1,14 @@
 --
 -- This file is licensed under the Apache License, see LICENSE-APACHE
--- at the top level directory of the TimescaleDB distribution.
+-- at the top level directory of the TIMEUDB distribution.
 
--- This script will dump relevant meta data from internal TimescaleDB tables
+-- This script will dump relevant meta data from internal TIMEUDB tables
 -- that can help our engineers trouble shoot.
 --
 -- usage:
 -- psql [your connect flags] -d your_timescale_db < dump_meta_data.sql > dumpfile.txt
 
-\echo 'TimescaleDB meta data dump'
+\echo 'TIMEUDB meta data dump'
 \echo '<exclude_from_test>'
 \echo 'Date, git commit, and extension version can change without it being an error.'
 \echo 'Adding this tag allows us to run regression tests on this script file.'
@@ -18,7 +18,7 @@ select version();
 
 \echo 'Build tag'
 \set ON_ERROR_STOP 0
-SELECT * FROM _timescaledb_internal.get_git_commit();
+SELECT * FROM _timeudb_internal.get_git_commit();
 \set ON_ERROR_STOP 1
 \dx
 
@@ -28,10 +28,10 @@ SELECT * FROM _timescaledb_internal.get_git_commit();
 \dt
 
 \echo 'List of hypertables'
-SELECT * FROM _timescaledb_catalog.hypertable;
+SELECT * FROM _timeudb_catalog.hypertable;
 
 \echo 'List of chunk indexes'
-SELECT * FROM _timescaledb_catalog.chunk_index;
+SELECT * FROM _timeudb_catalog.chunk_index;
 
 \echo 'Size of hypertables'
 SELECT hypertable,
@@ -47,8 +47,8 @@ SELECT hypertable,
               sum(pg_indexes_size('"' || c.schema_name || '"."' || c.table_name || '"'))::bigint AS index_bytes,
               sum(pg_total_relation_size(reltoastrelid))::bigint AS toast_bytes
               FROM
-              _timescaledb_catalog.hypertable h,
-              _timescaledb_catalog.chunk c,
+              _timeudb_catalog.hypertable h,
+              _timeudb_catalog.chunk c,
               pg_class pgc,
               pg_namespace pns
               WHERE c.hypertable_id = h.id
@@ -84,15 +84,15 @@ SELECT *,
        array_agg(d.column_name ORDER BY d.interval_length, d.column_name ASC) as partitioning_columns,
        array_agg(d.column_type ORDER BY d.interval_length, d.column_name ASC) as partitioning_column_types,
        array_agg(d.partitioning_func_schema || '.' || d.partitioning_func ORDER BY d.interval_length, d.column_name ASC) as partitioning_hash_functions,
-       array_agg('[' || _timescaledb_functions.range_value_to_pretty(range_start, column_type) ||
+       array_agg('[' || _timeudb_functions.range_value_to_pretty(range_start, column_type) ||
                  ',' ||
-                 _timescaledb_functions.range_value_to_pretty(range_end, column_type) || ')' ORDER BY d.interval_length, d.column_name ASC) as ranges
+                 _timeudb_functions.range_value_to_pretty(range_end, column_type) || ')' ORDER BY d.interval_length, d.column_name ASC) as ranges
        FROM
-       _timescaledb_catalog.hypertable h,
-       _timescaledb_catalog.chunk c,
-       _timescaledb_catalog.chunk_constraint cc,
-       _timescaledb_catalog.dimension d,
-       _timescaledb_catalog.dimension_slice ds,
+       _timeudb_catalog.hypertable h,
+       _timeudb_catalog.chunk c,
+       _timeudb_catalog.chunk_constraint cc,
+       _timeudb_catalog.dimension d,
+       _timeudb_catalog.dimension_slice ds,
        pg_class pgc,
        pg_namespace pns
        WHERE pgc.relname = h.table_name
@@ -115,9 +115,9 @@ SELECT h.schema_name || '.' || h.table_name AS hypertable,
 FROM
 pg_class c,
 pg_namespace n,
-_timescaledb_catalog.hypertable h,
-_timescaledb_catalog.chunk ch,
-_timescaledb_catalog.chunk_index ci
+_timeudb_catalog.hypertable h,
+_timeudb_catalog.chunk ch,
+_timeudb_catalog.chunk_index ci
 WHERE ch.schema_name = n.nspname
       AND c.relnamespace = n.oid
       AND c.relname = ci.index_name

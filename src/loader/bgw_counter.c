@@ -62,8 +62,8 @@ extern void
 ts_bgw_counter_setup_gucs(void)
 {
 	DefineCustomIntVariable(MAKE_EXTOPTION("max_background_workers"),
-							"Maximum background worker processes allocated to TimescaleDB",
-							"Max background worker processes allocated to TimescaleDB - set to at "
+							"Maximum background worker processes allocated to TIMEUDB",
+							"Max background worker processes allocated to TIMEUDB - set to at "
 							"least 1 + number of databases in Postgres instance to use background "
 							"workers ",
 							&ts_guc_max_background_workers,
@@ -142,9 +142,9 @@ ts_bgw_total_workers_decrement_by(int decrement_by)
 	{
 		SpinLockRelease(&ct->mutex);
 		ereport(FATAL,
-				(errmsg("TimescaleDB background worker cannot decrement workers below 1"),
+				(errmsg("TIMEUDB background worker cannot decrement workers below 1"),
 				 errhint("The background worker scheduler is in an invalid state and may not be "
-						 "keeping track of workers allocated to TimescaleDB properly, please "
+						 "keeping track of workers allocated to TIMEUDB properly, please "
 						 "submit a bug report.")));
 	}
 }

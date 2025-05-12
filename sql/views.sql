@@ -3,14 +3,14 @@
 -- LICENSE-APACHE for a copy of the license.
 
 -- Convenience view to list all hypertables
-CREATE OR REPLACE VIEW timescaledb_information.hypertables AS
+CREATE OR REPLACE VIEW timeudb_information.hypertables AS
 SELECT ht.schema_name AS hypertable_schema,
   ht.table_name AS hypertable_name,
   t.tableowner AS owner,
   ht.num_dimensions,
   (
     SELECT count(1)
-    FROM _timescaledb_catalog.chunk ch
+    FROM _timeudb_catalog.chunk ch
     WHERE ch.hypertable_id = ht.id AND ch.dropped IS FALSE AND ch.osm_chunk IS FALSE) AS num_chunks,
   (
     CASE WHEN compression_state = 1 THEN
@@ -19,19 +19,19 @@ SELECT ht.schema_name AS hypertable_schema,
       FALSE
     END) AS compression_enabled,
   srchtbs.tablespace_list AS tablespaces
-FROM _timescaledb_catalog.hypertable ht
+FROM _timeudb_catalog.hypertable ht
   INNER JOIN pg_tables t ON ht.table_name = t.tablename
     AND ht.schema_name = t.schemaname
-  LEFT OUTER JOIN _timescaledb_catalog.continuous_agg ca ON ca.mat_hypertable_id = ht.id
+  LEFT OUTER JOIN _timeudb_catalog.continuous_agg ca ON ca.mat_hypertable_id = ht.id
   LEFT OUTER JOIN (
     SELECT hypertable_id,
       array_agg(tablespace_name ORDER BY id) AS tablespace_list
-    FROM _timescaledb_catalog.tablespace
+    FROM _timeudb_catalog.tablespace
     GROUP BY hypertable_id) srchtbs ON ht.id = srchtbs.hypertable_id
 WHERE ht.compression_state != 2 --> no internal compression tables
   AND ca.mat_hypertable_id IS NULL;
 
-CREATE OR REPLACE VIEW timescaledb_information.job_stats AS
+CREATE OR REPLACE VIEW timeudb_information.job_stats AS
 SELECT ht.schema_name AS hypertable_schema,
   ht.table_name AS hypertable_name,
   j.id AS job_id,
@@ -62,16 +62,16 @@ SELECT ht.schema_name AS hypertable_schema,
   js.total_runs,
   js.total_successes,
   js.total_failures
-FROM _timescaledb_config.bgw_job j
-  INNER JOIN _timescaledb_internal.bgw_job_stat js ON j.id = js.job_id
-  LEFT JOIN _timescaledb_catalog.hypertable ht ON j.hypertable_id = ht.id
+FROM _timeudb_config.bgw_job j
+  INNER JOIN _timeudb_internal.bgw_job_stat js ON j.id = js.job_id
+  LEFT JOIN _timeudb_catalog.hypertable ht ON j.hypertable_id = ht.id
   LEFT JOIN pg_stat_activity pgs ON pgs.datname = current_database()
     AND pgs.application_name = j.application_name
   ORDER BY ht.schema_name,
     ht.table_name;
 
 -- view for background worker jobs
-CREATE OR REPLACE VIEW timescaledb_information.jobs AS
+CREATE OR REPLACE VIEW timeudb_information.jobs AS
 SELECT j.id AS job_id,
   j.application_name,
   j.schedule_interval,
@@ -90,12 +90,12 @@ SELECT j.id AS job_id,
   ht.table_name AS hypertable_name,
   j.check_schema,
   j.check_name
-FROM _timescaledb_config.bgw_job j
-  LEFT JOIN _timescaledb_catalog.hypertable ht ON ht.id = j.hypertable_id
-  LEFT JOIN _timescaledb_internal.bgw_job_stat js ON js.job_id = j.id;
+FROM _timeudb_config.bgw_job j
+  LEFT JOIN _timeudb_catalog.hypertable ht ON ht.id = j.hypertable_id
+  LEFT JOIN _timeudb_internal.bgw_job_stat js ON js.job_id = j.id;
 
 -- views for continuous aggregate queries ---
-CREATE OR REPLACE VIEW timescaledb_information.continuous_aggregates AS
+CREATE OR REPLACE VIEW timeudb_information.continuous_aggregates AS
 SELECT ht.schema_name AS hypertable_schema,
   ht.table_name AS hypertable_name,
   cagg.user_view_schema AS view_schema,
@@ -110,8 +110,8 @@ SELECT ht.schema_name AS hypertable_schema,
   mat_ht.table_name AS materialization_hypertable_name,
   directview.viewdefinition AS view_definition,
   cagg.finalized
-FROM _timescaledb_catalog.continuous_agg cagg,
-  _timescaledb_catalog.hypertable ht,
+FROM _timeudb_catalog.continuous_agg cagg,
+  _timeudb_catalog.hypertable ht,
   LATERAL (
     SELECT C.oid,
       pg_get_userbyid(C.relowner) AS viewowner
@@ -129,7 +129,7 @@ FROM _timescaledb_catalog.continuous_agg cagg,
     AND N.nspname = cagg.direct_view_schema) directview,
   LATERAL (
     SELECT schema_name, table_name, compressed_hypertable_id
-    FROM _timescaledb_catalog.hypertable
+    FROM _timeudb_catalog.hypertable
     WHERE cagg.mat_hypertable_id = id) mat_ht
 WHERE cagg.raw_hypertable_id = ht.id;
 
@@ -137,7 +137,7 @@ WHERE cagg.raw_hypertable_id = ht.id;
 -- query plans with CTEs are not always optimized by PG. So use in-line
 -- tables.
 
-CREATE OR REPLACE VIEW timescaledb_information.chunks AS
+CREATE OR REPLACE VIEW timeudb_information.chunks AS
 SELECT hypertable_schema,
   hypertable_name,
   schema_name AS chunk_schema,
@@ -160,12 +160,12 @@ FROM (
     dim.column_type AS primary_dimension_type,
     row_number() OVER (PARTITION BY chcons.chunk_id ORDER BY dim.id) AS chunk_dimension_num,
     CASE WHEN dim.column_type = ANY(ARRAY['timestamp','timestamptz','date']::regtype[]) THEN
-      _timescaledb_functions.to_timestamp(dimsl.range_start)
+      _timeudb_functions.to_timestamp(dimsl.range_start)
     ELSE
       NULL
     END AS range_start,
     CASE WHEN dim.column_type = ANY(ARRAY['timestamp','timestamptz','date']::regtype[]) THEN
-      _timescaledb_functions.to_timestamp(dimsl.range_end)
+      _timeudb_functions.to_timestamp(dimsl.range_end)
     ELSE
       NULL
     END AS range_end,
@@ -185,11 +185,11 @@ FROM (
     END AS is_compressed,
     pgtab.spcname AS chunk_table_space,
 	srcch.creation_time AS creation_time
-  FROM _timescaledb_catalog.chunk srcch
-    INNER JOIN _timescaledb_catalog.hypertable ht ON ht.id = srcch.hypertable_id
-    INNER JOIN _timescaledb_catalog.chunk_constraint chcons ON srcch.id = chcons.chunk_id
-    INNER JOIN _timescaledb_catalog.dimension dim ON srcch.hypertable_id = dim.hypertable_id
-    INNER JOIN _timescaledb_catalog.dimension_slice dimsl ON dim.id = dimsl.dimension_id
+  FROM _timeudb_catalog.chunk srcch
+    INNER JOIN _timeudb_catalog.hypertable ht ON ht.id = srcch.hypertable_id
+    INNER JOIN _timeudb_catalog.chunk_constraint chcons ON srcch.id = chcons.chunk_id
+    INNER JOIN _timeudb_catalog.dimension dim ON srcch.hypertable_id = dim.hypertable_id
+    INNER JOIN _timeudb_catalog.dimension_slice dimsl ON dim.id = dimsl.dimension_id
       AND chcons.dimension_slice_id = dimsl.id
     INNER JOIN (
       SELECT relname,
@@ -208,7 +208,7 @@ WHERE chunk_dimension_num = 1;
 -- CTEs aren't used in the query as PG does not always optimize them
 -- as expected.
 
-CREATE OR REPLACE VIEW timescaledb_information.dimensions AS
+CREATE OR REPLACE VIEW timeudb_information.dimensions AS
 SELECT ht.schema_name AS hypertable_schema,
   ht.table_name AS hypertable_name,
   rank() OVER (PARTITION BY hypertable_id ORDER BY dim.id) AS dimension_number,
@@ -221,7 +221,7 @@ SELECT ht.schema_name AS hypertable_schema,
   END AS dimension_type,
   CASE WHEN dim.interval_length IS NOT NULL THEN
     CASE WHEN dim.column_type = ANY(ARRAY['timestamp','timestamptz','date']::regtype[]) THEN
-      _timescaledb_functions.to_interval(dim.interval_length)
+      _timeudb_functions.to_interval(dim.interval_length)
     ELSE
       NULL
     END
@@ -235,12 +235,12 @@ SELECT ht.schema_name AS hypertable_schema,
   END AS integer_interval,
   dim.integer_now_func,
   dim.num_slices AS num_partitions
-FROM _timescaledb_catalog.hypertable ht,
-  _timescaledb_catalog.dimension dim
+FROM _timeudb_catalog.hypertable ht,
+  _timeudb_catalog.dimension dim
 WHERE dim.hypertable_id = ht.id;
 
 ---compression parameters information ---
-CREATE OR REPLACE VIEW timescaledb_information.compression_settings AS
+CREATE OR REPLACE VIEW timeudb_information.compression_settings AS
 SELECT
 	schema_name AS hypertable_schema,
   table_name AS hypertable_name,
@@ -249,8 +249,8 @@ SELECT
   NULL::smallint AS orderby_column_index,
   NULL::bool AS orderby_asc,
   NULL::bool AS orderby_nullsfirst
-FROM _timescaledb_catalog.hypertable ht
-INNER JOIN _timescaledb_catalog.compression_settings cs ON cs.relid = format('%I.%I',ht.schema_name,ht.table_name)::regclass AND cs.segmentby IS NOT NULL
+FROM _timeudb_catalog.hypertable ht
+INNER JOIN _timeudb_catalog.compression_settings cs ON cs.relid = format('%I.%I',ht.schema_name,ht.table_name)::regclass AND cs.segmentby IS NOT NULL
 WHERE compressed_hypertable_id IS NOT NULL
 UNION ALL
 SELECT
@@ -261,15 +261,15 @@ SELECT
   generate_series(1,array_length(cs.orderby,1))::smallint AS orderby_column_index,
   unnest(array_replace(array_replace(array_replace(cs.orderby_desc,false,NULL),true,false),NULL,true)) AS orderby_asc,
   unnest(cs.orderby_nullsfirst) AS orderby_nullsfirst
-FROM _timescaledb_catalog.hypertable ht
-INNER JOIN _timescaledb_catalog.compression_settings cs ON cs.relid = format('%I.%I',ht.schema_name,ht.table_name)::regclass AND cs.orderby IS NOT NULL
+FROM _timeudb_catalog.hypertable ht
+INNER JOIN _timeudb_catalog.compression_settings cs ON cs.relid = format('%I.%I',ht.schema_name,ht.table_name)::regclass AND cs.orderby IS NOT NULL
 WHERE compressed_hypertable_id IS NOT NULL
 ORDER BY hypertable_name,
   segmentby_column_index,
   orderby_column_index;
 
 -- Job errors view that adds a security barrier on the bgw_job_stat_history
--- table in _timescaledb_internal. The view only allows users to view
+-- table in _timeudb_internal. The view only allows users to view
 -- log entries belonging to jobs that are owned by any of the users
 -- role. A special case is added so that the superuser or the database
 -- owner can see all job log entries, even those that do not have an
@@ -277,7 +277,7 @@ ORDER BY hypertable_name,
 --
 -- Note that we have to use a sub-select here since pg_database_owner
 -- does not exist before PostgreSQL 14.
-CREATE OR REPLACE VIEW timescaledb_information.job_errors
+CREATE OR REPLACE VIEW timeudb_information.job_errors
 WITH (security_barrier = true) AS
 SELECT
     job_id,
@@ -302,9 +302,9 @@ SELECT
     END
     AS err_message
 FROM
-    _timescaledb_internal.bgw_job_stat_history
+    _timeudb_internal.bgw_job_stat_history
 LEFT JOIN
-    _timescaledb_config.bgw_job ON (bgw_job.id = bgw_job_stat_history.job_id)
+    _timeudb_config.bgw_job ON (bgw_job.id = bgw_job_stat_history.job_id)
 WHERE
     succeeded IS FALSE
     AND (pg_catalog.pg_has_role(current_user,
@@ -314,7 +314,7 @@ WHERE
 			   'MEMBER') IS TRUE
     OR pg_catalog.pg_has_role(current_user, owner, 'MEMBER') IS TRUE);
 
-CREATE OR REPLACE VIEW timescaledb_information.job_history
+CREATE OR REPLACE VIEW timeudb_information.job_history
 WITH (security_barrier = true) AS
 SELECT
     h.id,
@@ -344,9 +344,9 @@ SELECT
         E'job didn\'t finish yet'
     END AS err_message
 FROM
-    _timescaledb_internal.bgw_job_stat_history h
+    _timeudb_internal.bgw_job_stat_history h
 LEFT JOIN
-    _timescaledb_config.bgw_job j ON (j.id = h.job_id)
+    _timeudb_config.bgw_job j ON (j.id = h.job_id)
 WHERE (pg_catalog.pg_has_role(current_user,
 			   (SELECT pg_catalog.pg_get_userbyid(datdba)
 			      FROM pg_catalog.pg_database
@@ -354,23 +354,23 @@ WHERE (pg_catalog.pg_has_role(current_user,
 			   'MEMBER') IS TRUE
     OR pg_catalog.pg_has_role(current_user, owner, 'MEMBER') IS TRUE);
 
-CREATE OR REPLACE VIEW timescaledb_information.hypertable_compression_settings AS
+CREATE OR REPLACE VIEW timeudb_information.hypertable_compression_settings AS
 	SELECT
 		format('%I.%I',ht.schema_name,ht.table_name)::regclass AS hypertable,
 		array_to_string(segmentby,',') AS segmentby,
 		un.orderby,
     d.compress_interval_length
-  FROM _timescaledb_catalog.hypertable ht
+  FROM _timeudb_catalog.hypertable ht
   JOIN LATERAL (
     SELECT
       CASE WHEN d.column_type = ANY(ARRAY['timestamp','timestamptz','date']::regtype[]) THEN
-        _timescaledb_functions.to_interval(d.compress_interval_length)::text
+        _timeudb_functions.to_interval(d.compress_interval_length)::text
       ELSE
         d.compress_interval_length::text
       END AS compress_interval_length
-    FROM _timescaledb_catalog.dimension d WHERE d.hypertable_id = ht.id ORDER BY id LIMIT 1
+    FROM _timeudb_catalog.dimension d WHERE d.hypertable_id = ht.id ORDER BY id LIMIT 1
   ) d ON true
-  LEFT JOIN _timescaledb_catalog.compression_settings s ON format('%I.%I',ht.schema_name,ht.table_name)::regclass = s.relid
+  LEFT JOIN _timeudb_catalog.compression_settings s ON format('%I.%I',ht.schema_name,ht.table_name)::regclass = s.relid
 	LEFT JOIN LATERAL (
 		SELECT
 			string_agg(
@@ -382,16 +382,16 @@ CREATE OR REPLACE VIEW timescaledb_information.hypertable_compression_settings A
 		FROM unnest(s.orderby, s.orderby_desc, s.orderby_nullsfirst) un(orderby, "desc", nullsfirst)
 	) un ON true;
 
-CREATE OR REPLACE VIEW timescaledb_information.chunk_compression_settings AS
+CREATE OR REPLACE VIEW timeudb_information.chunk_compression_settings AS
 	SELECT
 		format('%I.%I',ht.schema_name,ht.table_name)::regclass AS hypertable,
 		format('%I.%I',ch.schema_name,ch.table_name)::regclass AS chunk,
 		array_to_string(segmentby,',') AS segmentby,
 		un.orderby
-	FROM _timescaledb_catalog.hypertable ht
-	INNER JOIN _timescaledb_catalog.chunk ch ON ch.hypertable_id = ht.id
-  INNER JOIN _timescaledb_catalog.chunk ch2 ON ch2.id = ch.compressed_chunk_id
-  LEFT JOIN _timescaledb_catalog.compression_settings s ON format('%I.%I',ch2.schema_name,ch2.table_name)::regclass = s.relid
+	FROM _timeudb_catalog.hypertable ht
+	INNER JOIN _timeudb_catalog.chunk ch ON ch.hypertable_id = ht.id
+  INNER JOIN _timeudb_catalog.chunk ch2 ON ch2.id = ch.compressed_chunk_id
+  LEFT JOIN _timeudb_catalog.compression_settings s ON format('%I.%I',ch2.schema_name,ch2.table_name)::regclass = s.relid
 	LEFT JOIN LATERAL (
 		SELECT
 			string_agg(
@@ -403,5 +403,5 @@ CREATE OR REPLACE VIEW timescaledb_information.chunk_compression_settings AS
 		FROM unnest(s.orderby, s.orderby_desc, s.orderby_nullsfirst) un(orderby, "desc", nullsfirst)
 	) un ON true;
 
-GRANT SELECT ON ALL TABLES IN SCHEMA timescaledb_information TO PUBLIC;
+GRANT SELECT ON ALL TABLES IN SCHEMA timeudb_information TO PUBLIC;
 

@@ -181,7 +181,7 @@ ts_set_append_rel_pathlist(PlannerInfo *root, RelOptInfo *parent_rel, Index pare
 		 * type TS_REL_CHUNK_CHILD. We have to filter out all these cases here.
 		 *
 		 * For standalone chunks or UPDATE/DELETE, we do the same thing in
-		 * timescaledb_get_relation_info_hook().
+		 * timeudb_get_relation_info_hook().
 		 */
 		Hypertable *ht;
 		TsRelType reltype = ts_classify_relation(root, child_rel, &ht);

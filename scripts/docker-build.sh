@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# This script builds a development TimescaleDB image from the
+# This script builds a development TIMEUDB image from the
 # currently checked out source on the host.
 #
 SCRIPT_DIR=$(dirname $0)
@@ -9,7 +9,7 @@ PG_VERSION=${PG_VERSION:-14.3}
 PG_IMAGE_TAG=${PG_IMAGE_TAG:-${PG_VERSION}-alpine}
 BUILD_CONTAINER_NAME=${BUILD_CONTAINER_NAME:-pgbuild}
 BUILD_IMAGE_NAME=${BUILD_IMAGE_NAME:-$USER/pgbuild}
-IMAGE_NAME=${IMAGE_NAME:-$USER/timescaledb}
+IMAGE_NAME=${IMAGE_NAME:-$USER/timeudb}
 GIT_ID=$(git -C ${BASE_DIR} describe --dirty --always | sed -e "s|/|_|g")
 TAG_NAME=${TAG_NAME:-$GIT_ID}
 BUILD_TYPE=${BUILD_TYPE:-Release}
@@ -31,7 +31,7 @@ postgres_build_image_exists() {
     image_exists ${PG_IMAGE}
 }
 
-timescaledb_image_exists() {
+timeudb_image_exists() {
     image_exists ${TS_IMAGE}
 }
 
@@ -54,7 +54,7 @@ create_postgres_build_image() {
 
     # Install build dependencies
     docker exec -u root ${BUILD_CONTAINER_NAME} /bin/bash -c "apk add --no-cache --virtual .build-deps postgresql-dev gdb coreutils dpkg-dev gcc git libc-dev make cmake util-linux-dev diffutils libssl3 openssl-dev krb5-dev && mkdir -p /build/debug"
-    docker commit -a $USER -m "TimescaleDB build base image version $PG_IMAGE_TAG" ${BUILD_CONTAINER_NAME} ${image}
+    docker commit -a $USER -m "TIMEUDB build base image version $PG_IMAGE_TAG" ${BUILD_CONTAINER_NAME} ${image}
     remove_build_container ${BUILD_CONTAINER_NAME}
 
     if ${PUSH_PG_IMAGE}; then
@@ -68,38 +68,38 @@ run_postgres_build_image() {
     docker run -d --name ${BUILD_CONTAINER_NAME} -v ${BASE_DIR}:/src ${image}
 }
 
-build_timescaledb()
+build_timeudb()
 {
-    echo "Building TimescaleDB image \"${TS_IMAGE}\" with USE_OPENSSL=${USE_OPENSSL} BUILD_TYPE=${BUILD_TYPE}"
+    echo "Building TIMEUDB image \"${TS_IMAGE}\" with USE_OPENSSL=${USE_OPENSSL} BUILD_TYPE=${BUILD_TYPE}"
 
     run_postgres_build_image ${PG_IMAGE}
 
     # Build and install the extension with debug symbols and assertions
-    tar -c -C ${BASE_DIR} {cmake,src,sql,test,scripts,tsl,version.config,CMakeLists.txt,timescaledb.control.in} | docker cp - ${BUILD_CONTAINER_NAME}:/build/
+    tar -c -C ${BASE_DIR} {cmake,src,sql,test,scripts,tsl,version.config,CMakeLists.txt,timeudb.control.in} | docker cp - ${BUILD_CONTAINER_NAME}:/build/
     if ! docker exec -u root ${BUILD_CONTAINER_NAME} /bin/bash -c " \
         cd /build/debug \
         && git config --global --add safe.directory /src \
         && cmake -DGENERATE_DOWNGRADE_SCRIPT=${GENERATE_DOWNGRADE_SCRIPT} -DUSE_OPENSSL=${USE_OPENSSL} -DCMAKE_BUILD_TYPE=${BUILD_TYPE} /src \
         && make -j $(nproc) && make install \
-        && echo \"shared_preload_libraries = 'timescaledb'\" >> /usr/local/share/postgresql/postgresql.conf.sample \
-        && echo \"timescaledb.telemetry_level=off\" >> /usr/local/share/postgresql/postgresql.conf.sample \
+        && echo \"shared_preload_libraries = 'timeudb'\" >> /usr/local/share/postgresql/postgresql.conf.sample \
+        && echo \"timeudb.telemetry_level=off\" >> /usr/local/share/postgresql/postgresql.conf.sample \
         && cd / && rm -rf /build"
     then
-      echo "Building timescaledb failed"
+      echo "Building timeudb failed"
       return 1
     fi
-    docker commit -a $USER -m "TimescaleDB development image" ${BUILD_CONTAINER_NAME} ${TS_IMAGE}
+    docker commit -a $USER -m "TIMEUDB development image" ${BUILD_CONTAINER_NAME} ${TS_IMAGE}
 }
 
 message_and_exit() {
     echo
-    echo "Run 'docker run -d --name some-timescaledb -p 5432:5432 ${TS_IMAGE}' to launch"
+    echo "Run 'docker run -d --name some-timeudb -p 5432:5432 ${TS_IMAGE}' to launch"
     exit
 }
 
 remove_build_container
 
-if timescaledb_image_exists; then
+if timeudb_image_exists; then
     echo "Image \"${TS_IMAGE}\" already exists."
     message_and_exit
 fi
@@ -111,6 +111,6 @@ if ! postgres_build_image_exists; then
     fi
 fi
 
-build_timescaledb || exit 1
+build_timeudb || exit 1
 
 message_and_exit

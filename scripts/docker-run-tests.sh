@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# This script runs the TimescaleDB tests through a standard PostgreSQL
+# This script runs the TIMEUDB tests through a standard PostgreSQL
 # container, first installing the extension via a mounted host volume.
 #
 SCRIPT_DIR=$(dirname $0)
@@ -24,7 +24,7 @@ if [ "$(docker ps -q -f name=${CONTAINER_NAME} 2>/dev/null | wc -l)" == "0" ]; t
 fi
 
 # Copy the source files to build directory
-docker exec -u root -it ${CONTAINER_NAME} /bin/bash -c "cp -a /src/{src,sql,scripts,test,tsl,CMakeLists.txt,timescaledb.control.in,version.config} /build/ &&cd /build/debug/ && CFLAGS=-Werror cmake .. -DCMAKE_BUILD_TYPE=Debug && make -C /build/debug install && chown -R postgres /build/debug"
+docker exec -u root -it ${CONTAINER_NAME} /bin/bash -c "cp -a /src/{src,sql,scripts,test,tsl,CMakeLists.txt,timeudb.control.in,version.config} /build/ &&cd /build/debug/ && CFLAGS=-Werror cmake .. -DCMAKE_BUILD_TYPE=Debug && make -C /build/debug install && chown -R postgres /build/debug"
 
 # Run tests
 if ! docker exec -u postgres -it ${CONTAINER_NAME} /bin/bash -c "make -C /build/debug installcheck TEST_INSTANCE_OPTS='--temp-instance=/tmp/pgdata --temp-config=/build/test/postgresql.conf'"

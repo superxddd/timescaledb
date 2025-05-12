@@ -90,15 +90,15 @@ set(OLD_REV_FILES
     2.14.2--2.14.1.sql
     2.15.0--2.14.2.sql)
 
-set(MODULE_PATHNAME "$libdir/timescaledb-${PROJECT_VERSION_MOD}")
-set(LOADER_PATHNAME "$libdir/timescaledb")
+set(MODULE_PATHNAME "$libdir/timeudb-${PROJECT_VERSION_MOD}")
+set(LOADER_PATHNAME "$libdir/timeudb")
 
 set(TS_MODULE_PATHNAME
     ${MODULE_PATHNAME}
     PARENT_SCOPE)
 
 set(TSL_MODULE_PATHNAME
-    "$libdir/timescaledb-tsl-${PROJECT_VERSION_MOD}"
+    "$libdir/timeudb-tsl-${PROJECT_VERSION_MOD}"
     PARENT_SCOPE)
 
 if(NOT GENERATE_DOWNGRADE_SCRIPT)
@@ -293,7 +293,7 @@ foreach(transition_mod_file ${MOD_FILES_LIST})
   endif()
 
   set(UPDATE_SCRIPT
-      ${CMAKE_CURRENT_BINARY_DIR}/timescaledb--${START_VERSION}--${PROJECT_VERSION_MOD}.sql
+      ${CMAKE_CURRENT_BINARY_DIR}/timeudb--${START_VERSION}--${PROJECT_VERSION_MOD}.sql
   )
   list(APPEND UPDATE_SCRIPTS ${UPDATE_SCRIPT})
   if(CURR_MOD_FILES)

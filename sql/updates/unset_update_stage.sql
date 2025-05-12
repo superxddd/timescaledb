@@ -1,1 +1,1 @@
-set timescaledb.update_script_stage = '';
+set timeudb.update_script_stage = '';

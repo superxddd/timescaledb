@@ -113,7 +113,7 @@ typedef struct TSCopyMultiInsertBuffer
  * The HTAB is used to store the relationship between a chunk and a
  * TSCopyMultiInsertBuffer beyond the lifetime of the ChunkInsertState.
  *
- * Chunks can be closed (e.g., due to timescaledb.max_open_chunks_per_insert).
+ * Chunks can be closed (e.g., due to timeudb.max_open_chunks_per_insert).
  * When ts_chunk_dispatch_get_chunk_insert_state is called again for a closed
  * chunk, a new ChunkInsertState is returned.
  */
@@ -346,7 +346,7 @@ TSCopyMultiInsertBufferFlush(TSCopyMultiInsertInfo *miinfo, TSCopyMultiInsertBuf
 							   (long long int)
 								   miinfo->ccstate->dispatch->dispatch_state->tuples_decompressed),
 					 errhint("Consider increasing "
-							 "timescaledb.max_tuples_decompressed_per_dml_transaction or "
+							 "timeudb.max_tuples_decompressed_per_dml_transaction or "
 							 "set to 0 (unlimited).")));
 		}
 	}
@@ -366,7 +366,7 @@ TSCopyMultiInsertBufferFlush(TSCopyMultiInsertInfo *miinfo, TSCopyMultiInsertBuf
 	bool line_buf_valid = false;
 	CopyFromState cstate = miinfo->ccstate->cstate;
 
-	/* cstate can be NULL in calls that are invoked from timescaledb_move_from_table_to_chunks. */
+	/* cstate can be NULL in calls that are invoked from timeudb_move_from_table_to_chunks. */
 	if (cstate != NULL)
 	{
 		line_buf_valid = cstate->line_buf_valid;
@@ -441,7 +441,7 @@ TSCopyMultiInsertBufferFlush(TSCopyMultiInsertInfo *miinfo, TSCopyMultiInsertBuf
 	buffer->nused = 0;
 
 	/* Chunk could be closed on a subsequent call of ts_chunk_dispatch_get_chunk_insert_state
-	 * (e.g., due to timescaledb.max_open_chunks_per_insert). So, ensure the bulk insert is
+	 * (e.g., due to timeudb.max_open_chunks_per_insert). So, ensure the bulk insert is
 	 * finished after the flush is complete.
 	 */
 	ResultRelInfo *result_relation_info = cis->result_relation_info;
@@ -1209,7 +1209,7 @@ copyfrom(CopyChunkState *ccstate, ParseState *pstate, Hypertable *ht, MemoryCont
  * rel can be NULL ... it's only used for error reports.
  */
 static List *
-timescaledb_CopyGetAttnums(TupleDesc tupDesc, Relation rel, List *attnamelist)
+timeudb_CopyGetAttnums(TupleDesc tupDesc, Relation rel, List *attnamelist)
 {
 	List *attnums = NIL;
 
@@ -1342,7 +1342,7 @@ copy_constraints_and_check(ParseState *pstate, Relation rel, List *attnums)
 }
 
 void
-timescaledb_DoCopy(const CopyStmt *stmt, const char *queryString, uint64 *processed, Hypertable *ht)
+timeudb_DoCopy(const CopyStmt *stmt, const char *queryString, uint64 *processed, Hypertable *ht)
 {
 	CopyChunkState *ccstate;
 	CopyFromState cstate;
@@ -1383,7 +1383,7 @@ timescaledb_DoCopy(const CopyStmt *stmt, const char *queryString, uint64 *proces
 	 */
 	rel = table_openrv(stmt->relation, RowExclusiveLock);
 
-	attnums = timescaledb_CopyGetAttnums(RelationGetDescr(rel), rel, stmt->attlist);
+	attnums = timeudb_CopyGetAttnums(RelationGetDescr(rel), rel, stmt->attlist);
 
 	pstate = make_parsestate(NULL);
 	pstate->p_sourcetext = queryString;
@@ -1461,7 +1461,7 @@ next_copy_from_table_to_chunks(CopyChunkState *ccstate, ExprContext *econtext, D
  * followed by a TRUNCATE on the main table.
  */
 void
-timescaledb_move_from_table_to_chunks(Hypertable *ht, LOCKMODE lockmode)
+timeudb_move_from_table_to_chunks(Hypertable *ht, LOCKMODE lockmode)
 {
 	Relation rel;
 	CopyChunkState *ccstate;

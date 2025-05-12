@@ -46,12 +46,12 @@ cleanup() {
 
     if [[ $status -eq 0 ]]; then
         echo "All tests passed"
-        docker rm -vf timescaledb-san 2>/dev/null
+        docker rm -vf timeudb-san 2>/dev/null
     else
-        # docker logs timescaledb-san
+        # docker logs timeudb-san
         # only print respective postmaster.log when regression.diffs exists
-        docker_exec timescaledb-san "if [ -f /tsdb_build/timescaledb/build/test/regression.diffs ]; then cat /tsdb_build/timescaledb/build/test/regression.diffs /tsdb_build/timescaledb/build/test/log/postmaster.log; fi"
-        docker_exec timescaledb-san "if [ -f /tsdb_build/timescaledb/build/tsl/test/regression.diffs ]; then cat /tsdb_build/timescaledb/build/tsl/test/regression.diffs /tsdb_build/timescaledb/build/tsl/test/log/postmaster.log; fi"
+        docker_exec timeudb-san "if [ -f /tsdb_build/timeudb/build/test/regression.diffs ]; then cat /tsdb_build/timeudb/build/test/regression.diffs /tsdb_build/timeudb/build/test/log/postmaster.log; fi"
+        docker_exec timeudb-san "if [ -f /tsdb_build/timeudb/build/tsl/test/regression.diffs ]; then cat /tsdb_build/timeudb/build/tsl/test/regression.diffs /tsdb_build/timeudb/build/tsl/test/log/postmaster.log; fi"
     fi
 
     echo "Exit status is $status"
@@ -64,22 +64,22 @@ docker_exec() {
     docker exec "$1" /bin/bash -c "$2"
 }
 
-docker rm -f timescaledb-san 2>/dev/null || true
+docker rm -f timeudb-san 2>/dev/null || true
 
-docker run -d --privileged --name timescaledb-san --env POSTGRES_HOST_AUTH_METHOD=trust -v "${TIMESCALE_DIR}":/timescaledb "${REMOTE_ORG}/${REMOTE_NAME}":"${REMOTE_TAG}"
+docker run -d --privileged --name timeudb-san --env POSTGRES_HOST_AUTH_METHOD=trust -v "${TIMESCALE_DIR}":/timeudb "${REMOTE_ORG}/${REMOTE_NAME}":"${REMOTE_TAG}"
 
 # Run these commands as root to copy the source into the
 # container. Make sure that all files in the copy is owned by user
 # 'postgres', which we use to run tests below.
-docker exec -i timescaledb-san /bin/bash -Oe <<EOF
+docker exec -i timeudb-san /bin/bash -Oe <<EOF
 mkdir /tsdb_build
 chown postgres /tsdb_build
-cp -R /timescaledb tsdb_build
+cp -R /timeudb tsdb_build
 chown -R postgres:postgres /tsdb_build
 EOF
 
-# Build TimescaleDB as 'postgres' user
-docker exec -i -u postgres -w /tsdb_build/timescaledb timescaledb-san /bin/bash -Oe <<EOF
+# Build TIMEUDB as 'postgres' user
+docker exec -i -u postgres -w /tsdb_build/timeudb timeudb-san /bin/bash -Oe <<EOF
 export CFLAGS="-fsanitize=address,undefined -fno-omit-frame-pointer -O2"
 export PG_SOURCE_DIR="/usr/src/postgresql/"
 export BUILD_FORCE_REMOVE=true
@@ -88,8 +88,8 @@ cd build
 make
 EOF
 
-# Install TimescaleDB as root
-docker exec -i -w /tsdb_build/timescaledb/build timescaledb-san /bin/bash <<EOF
+# Install TIMEUDB as root
+docker exec -i -w /tsdb_build/timeudb/build timeudb-san /bin/bash <<EOF
 make install
 EOF
 
@@ -101,6 +101,6 @@ echo "Testing"
 # Run tests as 'postgres' user.
 #
 # IGNORE some test since they fail under ASAN.
-docker exec -i -u postgres -w /tsdb_build/timescaledb/build timescaledb-san /bin/bash <<EOF
+docker exec -i -u postgres -w /tsdb_build/timeudb/build timeudb-san /bin/bash <<EOF
 make -k regresscheck regresscheck-t IGNORES='bgw_db_scheduler bgw_db_scheduler_fixed bgw_launcher cluster-11 continuous_aggs_ddl-11'
 EOF

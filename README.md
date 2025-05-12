@@ -1,23 +1,23 @@
 |Linux/macOS|Linux i386|Windows|Coverity|Code Coverage|OpenSSF|
 |:---:|:---:|:---:|:---:|:---:|:---:|
-|[![Build Status Linux/macOS](https://github.com/timescale/timescaledb/actions/workflows/linux-build-and-test.yaml/badge.svg?branch=main&event=schedule)](https://github.com/timescale/timescaledb/actions/workflows/linux-build-and-test.yaml?query=workflow%3ARegression+branch%3Amain+event%3Aschedule)|[![Build Status Linux i386](https://github.com/timescale/timescaledb/actions/workflows/linux-32bit-build-and-test.yaml/badge.svg?branch=main&event=schedule)](https://github.com/timescale/timescaledb/actions/workflows/linux-32bit-build-and-test.yaml?query=workflow%3ARegression+branch%3Amain+event%3Aschedule)|[![Windows build status](https://github.com/timescale/timescaledb/actions/workflows/windows-build-and-test.yaml/badge.svg?branch=main&event=schedule)](https://github.com/timescale/timescaledb/actions/workflows/windows-build-and-test.yaml?query=workflow%3ARegression+branch%3Amain+event%3Aschedule)|[![Coverity Scan Build Status](https://scan.coverity.com/projects/timescale-timescaledb/badge.svg)](https://scan.coverity.com/projects/timescale-timescaledb)|[![Code Coverage](https://codecov.io/gh/timescale/timescaledb/branch/main/graphs/badge.svg?branch=main)](https://codecov.io/gh/timescale/timescaledb)|[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/8012/badge)](https://www.bestpractices.dev/projects/8012)|
+|[![Build Status Linux/macOS](https://github.com/timescale/timeudb/actions/workflows/linux-build-and-test.yaml/badge.svg?branch=main&event=schedule)](https://github.com/timescale/timeudb/actions/workflows/linux-build-and-test.yaml?query=workflow%3ARegression+branch%3Amain+event%3Aschedule)|[![Build Status Linux i386](https://github.com/timescale/timeudb/actions/workflows/linux-32bit-build-and-test.yaml/badge.svg?branch=main&event=schedule)](https://github.com/timescale/timeudb/actions/workflows/linux-32bit-build-and-test.yaml?query=workflow%3ARegression+branch%3Amain+event%3Aschedule)|[![Windows build status](https://github.com/timescale/timeudb/actions/workflows/windows-build-and-test.yaml/badge.svg?branch=main&event=schedule)](https://github.com/timescale/timeudb/actions/workflows/windows-build-and-test.yaml?query=workflow%3ARegression+branch%3Amain+event%3Aschedule)|[![Coverity Scan Build Status](https://scan.coverity.com/projects/timescale-timeudb/badge.svg)](https://scan.coverity.com/projects/timescale-timeudb)|[![Code Coverage](https://codecov.io/gh/timescale/timeudb/branch/main/graphs/badge.svg?branch=main)](https://codecov.io/gh/timescale/timeudb)|[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/8012/badge)](https://www.bestpractices.dev/projects/8012)|
 
 
-## TimescaleDB
+## TIMEUDB
 
-TimescaleDB is an open-source database designed to make SQL scalable for
+TIMEUDB is an open-source database designed to make SQL scalable for
 time-series data.  It is engineered up from PostgreSQL and packaged as a
 PostgreSQL extension, providing automatic partitioning across time and space
 (partitioning key), as well as full SQL support.
 
-If you prefer not to install or administer your instance of [TimescaleDB](https://tsdb.co/GitHubTimescale),
+If you prefer not to install or administer your instance of [TIMEUDB](https://tsdb.co/GitHubTimescale),
 try Timescale, our fully managed cloud offering (pay-as-you-go, with a free trial to start).
 
 To determine which option is best for you, see [Timescale Products](https://tsdb.co/GitHubTimescaleProducts)
-for more information about our Apache-2 version, TimescaleDB Community (self-hosted), and Timescale 
+for more information about our Apache-2 version, TIMEUDB Community (self-hosted), and Timescale 
 Cloud (hosted), including: feature comparisons, FAQ, documentation, and support.
 
-Below is an introduction to TimescaleDB. For more information, please check out 
+Below is an introduction to TIMEUDB. For more information, please check out 
 these other resources:
 - [Developer Documentation](https://tsdb.co/GitHubTimescaleDocs)
 - [Slack Channel](https://slack-login.timescale.com)
@@ -26,20 +26,20 @@ these other resources:
 
 For reference and clarity, all code files in this repository reference
 licensing in their header (either the Apache-2-open-source license
-or [Timescale License (TSL)](https://github.com/timescale/timescaledb/blob/main/tsl/LICENSE-TIMESCALE)
+or [Timescale License (TSL)](https://github.com/timescale/timeudb/blob/main/tsl/LICENSE-TIMESCALE)
 ). Apache-2 licensed binaries can be built by passing `-DAPACHE_ONLY=1` to `bootstrap`.
 
-[Contributors welcome.](https://github.com/timescale/timescaledb/blob/main/CONTRIBUTING.md)
+[Contributors welcome.](https://github.com/timescale/timeudb/blob/main/CONTRIBUTING.md)
 
-(To build TimescaleDB from source, see instructions in [_Building from source_](https://github.com/timescale/timescaledb/blob/main/docs/BuildSource.md).)
+(To build TIMEUDB from source, see instructions in [_Building from source_](https://github.com/timescale/timeudb/blob/main/docs/BuildSource.md).)
 
-### Using TimescaleDB
+### Using TIMEUDB
 
-TimescaleDB scales PostgreSQL for time-series data via automatic
+TIMEUDB scales PostgreSQL for time-series data via automatic
 partitioning across time and space (partitioning key), yet retains
 the standard PostgreSQL interface.
 
-In other words, TimescaleDB exposes what look like regular tables, but
+In other words, TIMEUDB exposes what look like regular tables, but
 are actually only an
 abstraction (or a virtual view) of many individual tables comprising the
 actual data. This single-table view, which we call a
@@ -47,29 +47,29 @@ actual data. This single-table view, which we call a
 is comprised of many chunks, which are created by partitioning
 the hypertable's data in either one or two dimensions: by a time
 interval, and by an (optional) "partition key" such as
-device id, location, user id, etc. ([Architecture discussion](https://docs.timescale.com/timescaledb/latest/overview/core-concepts/))
+device id, location, user id, etc. ([Architecture discussion](https://docs.timescale.com/timeudb/latest/overview/core-concepts/))
 
-Virtually all user interactions with TimescaleDB are with
+Virtually all user interactions with TIMEUDB are with
 hypertables. Creating tables and indexes, altering tables, inserting
 data, selecting data, etc., can (and should) all be executed on the
 hypertable.
 
-From the perspective of both use and management, TimescaleDB just
+From the perspective of both use and management, TIMEUDB just
 looks and feels like PostgreSQL, and can be managed and queried as
 such.
 
 #### Before you start
 
 PostgreSQL's out-of-the-box settings are typically too conservative for modern
-servers and TimescaleDB. You should make sure your `postgresql.conf`
-settings are tuned, either by using [timescaledb-tune](https://github.com/timescale/timescaledb-tune) 
+servers and TIMEUDB. You should make sure your `postgresql.conf`
+settings are tuned, either by using [timeudb-tune](https://github.com/timescale/timeudb-tune) 
 or doing it manually.
 
 #### Creating a hypertable
 
 ```sql
--- Do not forget to create timescaledb extension
-CREATE EXTENSION timescaledb;
+-- Do not forget to create timeudb extension
+CREATE EXTENSION timeudb;
 
 -- We start by creating a regular SQL table
 CREATE TABLE conditions (
@@ -106,44 +106,44 @@ SELECT time_bucket('15 minutes', time) AS fifteen_min,
   ORDER BY fifteen_min DESC, max_temp DESC;
 ```
 
-In addition, TimescaleDB includes additional functions for time-series
+In addition, TIMEUDB includes additional functions for time-series
 analysis that are not present in vanilla PostgreSQL. (For example, the `time_bucket` function above.)
 
 - [Quick start: Basic operations](https://tsdb.co/GitHubTimescaleBasicOperations)
 - [Reference examples](https://tsdb.co/GitHubTimescaleWriteData)
-- [TimescaleDB API](https://tsdb.co/GitHubTimescaleAPI)
+- [TIMEUDB API](https://tsdb.co/GitHubTimescaleAPI)
 
 ### Installation
 
-TimescaleDB is available pre-packaged for several platforms (Linux, Docker, MacOS, Windows).
+TIMEUDB is available pre-packaged for several platforms (Linux, Docker, MacOS, Windows).
 More information can be found in [our documentation](https://docs.timescale.com/self-hosted/latest/install/).
 
 To build from source, see instructions
-[here](https://github.com/timescale/timescaledb/blob/main/docs/BuildSource.md).
+[here](https://github.com/timescale/timeudb/blob/main/docs/BuildSource.md).
 
-[Timescale](https://tsdb.co/GitHubTimescale), a fully managed TimescaleDB in the cloud, is
-available via a free trial. Create a PostgreSQL database in the cloud with TimescaleDB pre-installed
-so you can power your application with TimescaleDB without the management overhead.
+[Timescale](https://tsdb.co/GitHubTimescale), a fully managed TIMEUDB in the cloud, is
+available via a free trial. Create a PostgreSQL database in the cloud with TIMEUDB pre-installed
+so you can power your application with TIMEUDB without the management overhead.
 
 ## Resources
 
 ### Architecture documents
 
-- [Basic TimescaleDB Features](tsl/README.md)
-- [Advanced TimescaleDB Features](tsl/README.md)
-- [Testing TimescaleDB](test/README.md)
+- [Basic TIMEUDB Features](tsl/README.md)
+- [Advanced TIMEUDB Features](tsl/README.md)
+- [Testing TIMEUDB](test/README.md)
 
 ### Useful tools
 
-- [timescaledb-tune](https://github.com/timescale/timescaledb-tune): Helps
+- [timeudb-tune](https://github.com/timescale/timeudb-tune): Helps
 set your PostgreSQL configuration settings based on your system's resources.
-- [timescaledb-parallel-copy](https://github.com/timescale/timescaledb-parallel-copy):
+- [timeudb-parallel-copy](https://github.com/timescale/timeudb-parallel-copy):
 Parallelize your initial bulk loading by using PostgreSQL's `COPY` across
 multiple workers.
 
 ### Additional documentation
 
-- [Why use TimescaleDB?](https://tsdb.co/GitHubTimescaleIntro)
+- [Why use TIMEUDB?](https://tsdb.co/GitHubTimescaleIntro)
 - [Migrating from PostgreSQL](https://tsdb.co/GitHubTimescalePostgresMigrate)
 - [Writing data](https://tsdb.co/GitHubTimescaleWriteData)
 - [Querying and data analytics](https://tsdb.co/GitHubTimescaleReadData)
@@ -152,7 +152,7 @@ multiple workers.
 ### Community & help
 
 - [Slack Channel](https://slack.timescale.com)
-- [Github Issues](https://github.com/timescale/timescaledb/issues)
+- [Github Issues](https://github.com/timescale/timeudb/issues)
 - [Timescale Support](https://tsdb.co/GitHubTimescaleSupport): see support options (community & subscription)
 
 ### Releases & updates
@@ -165,6 +165,6 @@ multiple workers.
 
 ### Contributing
 
-- [Contributor instructions](https://github.com/timescale/timescaledb/blob/main/CONTRIBUTING.md)
-- [Code style guide](https://github.com/timescale/timescaledb/blob/main/docs/StyleGuide.md)
+- [Contributor instructions](https://github.com/timescale/timeudb/blob/main/CONTRIBUTING.md)
+- [Code style guide](https://github.com/timescale/timeudb/blob/main/docs/StyleGuide.md)
 

@@ -48,7 +48,7 @@ ts_lwlocks_shmem_startup()
 	/*
 	 * We use a lock specific rendezvous variable to decouple the struct
 	 * from the individual lock users to have no constraints on the struct
-	 * across timescaledb versions.
+	 * across timeudb versions.
 	 */
 	lock_pointer = (LWLock **) find_rendezvous_variable(RENDEZVOUS_CHUNK_APPEND_LWLOCK);
 	*lock_pointer = ts_lwlocks->chunk_append;

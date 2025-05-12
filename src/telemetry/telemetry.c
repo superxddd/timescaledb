@@ -39,7 +39,7 @@
 #include <executor/spi.h>
 
 #define TS_TELEMETRY_VERSION 2
-#define TS_VERSION_JSON_FIELD "current_timescaledb_version"
+#define TS_VERSION_JSON_FIELD "current_timeudb_version"
 #define TS_IS_UPTODATE_JSON_FIELD "is_up_to_date"
 
 /*  HTTP request details */
@@ -55,7 +55,7 @@
 #define REQ_OS_RELEASE "os_release"
 #define REQ_OS_VERSION_PRETTY "os_name_pretty"
 #define REQ_PS_VERSION "postgresql_version"
-#define REQ_TS_VERSION "timescaledb_version"
+#define REQ_TS_VERSION "timeudb_version"
 #define REQ_BUILD_OS "build_os_name"
 #define REQ_BUILD_OS_VERSION "build_os_version"
 #define REQ_BUILD_ARCHITECTURE_BIT_SIZE "build_architecture_bit_size"
@@ -89,7 +89,7 @@
 #define PROMSCALE "promscale"
 #define POSTGIS "postgis"
 #define TIMESCALE_ANALYTICS "timescale_analytics"
-#define TIMESCALEDB_TOOLKIT "timescaledb_toolkit"
+#define TIMESCALEDB_TOOLKIT "timeudb_toolkit"
 
 #define REQ_JOB_STATS_BY_JOB_TYPE "stats_by_job_type"
 #define REQ_NUM_ERR_BY_SQLERRCODE "errors_by_sqlerrcode"
@@ -213,7 +213,7 @@ ts_validate_server_version(const char *json, VersionResult *result)
 
 /*
  * Parse the JSON response from the TS endpoint. There should be a field
- * called "current_timescaledb_version". Check this against the local
+ * called "current_timeudb_version". Check this against the local
  * version, and notify the user if it is behind.
  */
 void
@@ -236,7 +236,7 @@ ts_check_version_response(const char *json)
 	{
 		if (!ts_validate_server_version(json, &result))
 		{
-			elog(NOTICE, "server did not return a valid TimescaleDB version: %s", result.errhint);
+			elog(NOTICE, "server did not return a valid TIMEUDB version: %s", result.errhint);
 			return;
 		}
 
@@ -338,7 +338,7 @@ add_errors_by_sqlerrcode(JsonbParseState *parse_state)
 								 "("
 								 "	SELECT ("
 								 "		CASE "
-								 "			WHEN proc_schema = \'_timescaledb_functions\'"
+								 "			WHEN proc_schema = \'_timeudb_functions\'"
 								 " 			AND proc_name ~ "
 								 "\'^policy_(retention|compression|reorder|refresh_continuous_"
 								 "aggregate|telemetry|job_error_retention)$\' "
@@ -349,7 +349,7 @@ add_errors_by_sqlerrcode(JsonbParseState *parse_state)
 								 "	sqlerrcode, "
 								 "	pg_catalog.COUNT(*) "
 								 "	FROM "
-								 "	timescaledb_information.job_errors "
+								 "	timeudb_information.job_errors "
 								 "	WHERE sqlerrcode IS NOT NULL "
 								 "	GROUP BY job_type, sqlerrcode "
 								 "	ORDER BY job_type"
@@ -437,7 +437,7 @@ add_job_stats_by_job_type(JsonbParseState *parse_state)
 	const char *command_string =
 		"SELECT ("
 		"	CASE "
-		"		WHEN j.proc_schema = \'_timescaledb_functions\' AND j.proc_name ~ "
+		"		WHEN j.proc_schema = \'_timeudb_functions\' AND j.proc_name ~ "
 		"\'^policy_(retention|compression|reorder|refresh_continuous_aggregate|telemetry|job_error_"
 		"retention)$\' "
 		"		THEN j.proc_name::TEXT "
@@ -453,8 +453,8 @@ add_job_stats_by_job_type(JsonbParseState *parse_state)
 		"	MAX(consecutive_failures) AS max_consecutive_failures, "
 		"	MAX(consecutive_crashes) AS max_consecutive_crashes "
 		"FROM "
-		"	_timescaledb_internal.bgw_job_stat s "
-		"	JOIN _timescaledb_config.bgw_job j on j.id = s.job_id "
+		"	_timeudb_internal.bgw_job_stat s "
+		"	JOIN _timeudb_config.bgw_job j on j.id = s.job_id "
 		"GROUP BY "
 		"job_type";
 

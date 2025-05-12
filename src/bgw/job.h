@@ -13,7 +13,7 @@
 #include "ts_catalog/catalog.h"
 
 #define TELEMETRY_INITIAL_NUM_RUNS 12
-#define SCHEDULER_APPNAME "TimescaleDB Background Worker Scheduler"
+#define SCHEDULER_APPNAME "TIMEUDB Background Worker Scheduler"
 
 typedef struct BgwJobHistory
 {

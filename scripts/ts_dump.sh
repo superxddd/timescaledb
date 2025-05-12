@@ -8,9 +8,9 @@
 # tarball. The tarball contains two files: (1) a .sql file for recreating the
 # hypertable and its indices and (2) a .csv file containing the data as CSV.
 #
-# Because pg_dump/pg_restore dump all of TimescaleDB's internal tables when
+# Because pg_dump/pg_restore dump all of TIMEUDB's internal tables when
 # used, this script is useful if you want a backup that can be restored
-# regardless of TimescaleDB version running, or as part of a process where you
+# regardless of TIMEUDB version running, or as part of a process where you
 # do not want to always backup all your hypertables at once.
 
 
@@ -33,7 +33,7 @@ pg_dump "$@" --schema-only -t $HYPERTABLE -f $PREFIX-schema.sql
 echo >> $PREFIX-schema.sql "--
 -- Restore to hypertable
 --"
-psql "$@" -qAtX -c "SELECT _timescaledb_functions.get_create_command('$HYPERTABLE');" >> $PREFIX-schema.sql
+psql "$@" -qAtX -c "SELECT _timeudb_functions.get_create_command('$HYPERTABLE');" >> $PREFIX-schema.sql
 
 echo "Backing up data as $PREFIX-data.csv..."
 psql "$@" -c "\COPY (SELECT * FROM $HYPERTABLE) TO $PREFIX-data.csv DELIMITER ',' CSV"

@@ -17,7 +17,7 @@
 
 #define CAGGINVAL_TRIGGER_NAME "ts_cagg_invalidation_trigger"
 
-/*switch to ts user for _timescaledb_internal access */
+/*switch to ts user for _timeudb_internal access */
 #define SWITCH_TO_TS_USER(schemaname, newuid, saved_uid, saved_secctx)                             \
 	do                                                                                             \
 	{                                                                                              \

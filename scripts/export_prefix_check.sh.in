@@ -20,13 +20,13 @@ fi
 
 # this script outputs all symbols not starting with an allowed prefix
 # exported symbols are allowed to start with
-#    ts_      for regular timescaledb functions
+#    ts_      for regular timeudb functions
 #    pg_finfo for metadata defined by PG_FUNCTION_INFO_V1
 # we also whitelist a couple of special symbols
 #    _.*_init                     module startup functions
 #    _.*_fini                     module shutdown functions
 #    Pg_magic_func                used by postgres to check extension compatability
-#    timescaledb_hello            used to test that our name collision resistance works
+#    timeudb_hello            used to test that our name collision resistance works
 #    loader_hello                 used to test that our name collision resistance works
 #    test_symbol_conflict         used to test that our name collision resistance works
 #    tsl_license_update_check     used to check for valid license
@@ -59,7 +59,7 @@ exports=$(find @CMAKE_BINARY_DIR@ -not -path '*/\.*' -name '*.so' -print0 \
         -e '^_\?_.*_init$' \
         -e '^_\?_.*_fini$' \
         -e '^_\?Pg_magic_func$' \
-        -e '^_\?timescaledb_' \
+        -e '^_\?timeudb_' \
         -e '^_\?loader_hello$' \
         -e '^_\?test_symbol_conflict$' \
         -e '^_\?__sanitizer' \

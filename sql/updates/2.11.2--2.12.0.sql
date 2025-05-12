@@ -47,62 +47,62 @@ DECLARE
   }';
 BEGIN
   FOR foid IN
-    SELECT oid FROM pg_proc WHERE proname = ANY(funcs) AND pronamespace = '_timescaledb_internal'::regnamespace
+    SELECT oid FROM pg_proc WHERE proname = ANY(funcs) AND pronamespace = '_timeudb_internal'::regnamespace
   LOOP
-    EXECUTE format('ALTER FUNCTION %s SET SCHEMA _timescaledb_functions', foid);
+    EXECUTE format('ALTER FUNCTION %s SET SCHEMA _timeudb_functions', foid);
   END LOOP;
 END;
 $$;
 
-DROP FUNCTION IF EXISTS _timescaledb_internal.get_time_type(integer);
+DROP FUNCTION IF EXISTS _timeudb_internal.get_time_type(integer);
 
-ALTER FUNCTION _timescaledb_internal.insert_blocker() SET SCHEMA _timescaledb_functions;
-ALTER FUNCTION _timescaledb_internal.continuous_agg_invalidation_trigger() SET SCHEMA _timescaledb_functions;
-ALTER FUNCTION _timescaledb_internal.get_create_command(name) SET SCHEMA _timescaledb_functions;
+ALTER FUNCTION _timeudb_internal.insert_blocker() SET SCHEMA _timeudb_functions;
+ALTER FUNCTION _timeudb_internal.continuous_agg_invalidation_trigger() SET SCHEMA _timeudb_functions;
+ALTER FUNCTION _timeudb_internal.get_create_command(name) SET SCHEMA _timeudb_functions;
 
-ALTER FUNCTION _timescaledb_internal.to_unix_microseconds(timestamptz) SET SCHEMA _timescaledb_functions;
-ALTER FUNCTION _timescaledb_internal.to_timestamp(bigint) SET SCHEMA _timescaledb_functions;
-ALTER FUNCTION _timescaledb_internal.to_timestamp_without_timezone(bigint) SET SCHEMA _timescaledb_functions;
-ALTER FUNCTION _timescaledb_internal.to_date(bigint) SET SCHEMA _timescaledb_functions;
-ALTER FUNCTION _timescaledb_internal.to_interval(bigint) SET SCHEMA _timescaledb_functions;
-ALTER FUNCTION _timescaledb_internal.interval_to_usec(interval) SET SCHEMA _timescaledb_functions;
-ALTER FUNCTION _timescaledb_internal.time_to_internal(anyelement) SET SCHEMA _timescaledb_functions;
+ALTER FUNCTION _timeudb_internal.to_unix_microseconds(timestamptz) SET SCHEMA _timeudb_functions;
+ALTER FUNCTION _timeudb_internal.to_timestamp(bigint) SET SCHEMA _timeudb_functions;
+ALTER FUNCTION _timeudb_internal.to_timestamp_without_timezone(bigint) SET SCHEMA _timeudb_functions;
+ALTER FUNCTION _timeudb_internal.to_date(bigint) SET SCHEMA _timeudb_functions;
+ALTER FUNCTION _timeudb_internal.to_interval(bigint) SET SCHEMA _timeudb_functions;
+ALTER FUNCTION _timeudb_internal.interval_to_usec(interval) SET SCHEMA _timeudb_functions;
+ALTER FUNCTION _timeudb_internal.time_to_internal(anyelement) SET SCHEMA _timeudb_functions;
 
-ALTER FUNCTION _timescaledb_internal.set_dist_id(uuid) SET SCHEMA _timescaledb_functions;
-ALTER FUNCTION _timescaledb_internal.set_peer_dist_id(uuid) SET SCHEMA _timescaledb_functions;
-ALTER FUNCTION _timescaledb_internal.validate_as_data_node() SET SCHEMA _timescaledb_functions;
-ALTER FUNCTION _timescaledb_internal.show_connection_cache() SET SCHEMA _timescaledb_functions;
-ALTER FUNCTION _timescaledb_internal.ping_data_node(name, interval) SET SCHEMA _timescaledb_functions;
-ALTER FUNCTION _timescaledb_internal.remote_txn_heal_data_node(oid) SET SCHEMA _timescaledb_functions;
+ALTER FUNCTION _timeudb_internal.set_dist_id(uuid) SET SCHEMA _timeudb_functions;
+ALTER FUNCTION _timeudb_internal.set_peer_dist_id(uuid) SET SCHEMA _timeudb_functions;
+ALTER FUNCTION _timeudb_internal.validate_as_data_node() SET SCHEMA _timeudb_functions;
+ALTER FUNCTION _timeudb_internal.show_connection_cache() SET SCHEMA _timeudb_functions;
+ALTER FUNCTION _timeudb_internal.ping_data_node(name, interval) SET SCHEMA _timeudb_functions;
+ALTER FUNCTION _timeudb_internal.remote_txn_heal_data_node(oid) SET SCHEMA _timeudb_functions;
 
-ALTER FUNCTION _timescaledb_internal.relation_size(regclass) SET SCHEMA _timescaledb_functions;
-ALTER FUNCTION _timescaledb_internal.data_node_hypertable_info(name, name, name) SET SCHEMA _timescaledb_functions;
-ALTER FUNCTION _timescaledb_internal.data_node_chunk_info(name, name, name) SET SCHEMA _timescaledb_functions;
-ALTER FUNCTION _timescaledb_internal.hypertable_local_size(name, name) SET SCHEMA _timescaledb_functions;
-ALTER FUNCTION _timescaledb_internal.hypertable_remote_size(name, name) SET SCHEMA _timescaledb_functions;
-ALTER FUNCTION _timescaledb_internal.chunks_local_size(name, name) SET SCHEMA _timescaledb_functions;
-ALTER FUNCTION _timescaledb_internal.chunks_remote_size(name, name) SET SCHEMA _timescaledb_functions;
-ALTER FUNCTION _timescaledb_internal.range_value_to_pretty(bigint, regtype) SET SCHEMA _timescaledb_functions;
-ALTER FUNCTION _timescaledb_internal.data_node_compressed_chunk_stats(name, name, name) SET SCHEMA _timescaledb_functions;
-ALTER FUNCTION _timescaledb_internal.compressed_chunk_local_stats(name, name) SET SCHEMA _timescaledb_functions;
-ALTER FUNCTION _timescaledb_internal.compressed_chunk_remote_stats(name, name) SET SCHEMA _timescaledb_functions;
-ALTER FUNCTION _timescaledb_internal.indexes_local_size(name, name) SET SCHEMA _timescaledb_functions;
-ALTER FUNCTION _timescaledb_internal.data_node_index_size(name, name, name) SET SCHEMA _timescaledb_functions;
-ALTER FUNCTION _timescaledb_internal.indexes_remote_size(name, name, name) SET SCHEMA _timescaledb_functions;
+ALTER FUNCTION _timeudb_internal.relation_size(regclass) SET SCHEMA _timeudb_functions;
+ALTER FUNCTION _timeudb_internal.data_node_hypertable_info(name, name, name) SET SCHEMA _timeudb_functions;
+ALTER FUNCTION _timeudb_internal.data_node_chunk_info(name, name, name) SET SCHEMA _timeudb_functions;
+ALTER FUNCTION _timeudb_internal.hypertable_local_size(name, name) SET SCHEMA _timeudb_functions;
+ALTER FUNCTION _timeudb_internal.hypertable_remote_size(name, name) SET SCHEMA _timeudb_functions;
+ALTER FUNCTION _timeudb_internal.chunks_local_size(name, name) SET SCHEMA _timeudb_functions;
+ALTER FUNCTION _timeudb_internal.chunks_remote_size(name, name) SET SCHEMA _timeudb_functions;
+ALTER FUNCTION _timeudb_internal.range_value_to_pretty(bigint, regtype) SET SCHEMA _timeudb_functions;
+ALTER FUNCTION _timeudb_internal.data_node_compressed_chunk_stats(name, name, name) SET SCHEMA _timeudb_functions;
+ALTER FUNCTION _timeudb_internal.compressed_chunk_local_stats(name, name) SET SCHEMA _timeudb_functions;
+ALTER FUNCTION _timeudb_internal.compressed_chunk_remote_stats(name, name) SET SCHEMA _timeudb_functions;
+ALTER FUNCTION _timeudb_internal.indexes_local_size(name, name) SET SCHEMA _timeudb_functions;
+ALTER FUNCTION _timeudb_internal.data_node_index_size(name, name, name) SET SCHEMA _timeudb_functions;
+ALTER FUNCTION _timeudb_internal.indexes_remote_size(name, name, name) SET SCHEMA _timeudb_functions;
 
-ALTER FUNCTION _timescaledb_internal.generate_uuid() SET SCHEMA _timescaledb_functions;
-ALTER FUNCTION _timescaledb_internal.get_git_commit() SET SCHEMA _timescaledb_functions;
-ALTER FUNCTION _timescaledb_internal.get_os_info() SET SCHEMA _timescaledb_functions;
-ALTER FUNCTION _timescaledb_internal.tsl_loaded() SET SCHEMA _timescaledb_functions;
+ALTER FUNCTION _timeudb_internal.generate_uuid() SET SCHEMA _timeudb_functions;
+ALTER FUNCTION _timeudb_internal.get_git_commit() SET SCHEMA _timeudb_functions;
+ALTER FUNCTION _timeudb_internal.get_os_info() SET SCHEMA _timeudb_functions;
+ALTER FUNCTION _timeudb_internal.tsl_loaded() SET SCHEMA _timeudb_functions;
 
-ALTER FUNCTION _timescaledb_internal.calculate_chunk_interval(int, bigint, bigint) SET SCHEMA _timescaledb_functions;
-ALTER FUNCTION _timescaledb_internal.chunks_in(record, integer[]) SET SCHEMA _timescaledb_functions;
-ALTER FUNCTION _timescaledb_internal.chunk_id_from_relid(oid) SET SCHEMA _timescaledb_functions;
-ALTER FUNCTION _timescaledb_internal.show_chunk(regclass) SET SCHEMA _timescaledb_functions;
-ALTER FUNCTION _timescaledb_internal.get_chunk_relstats(regclass) SET SCHEMA _timescaledb_functions;
-ALTER FUNCTION _timescaledb_internal.get_chunk_colstats(regclass) SET SCHEMA _timescaledb_functions;
+ALTER FUNCTION _timeudb_internal.calculate_chunk_interval(int, bigint, bigint) SET SCHEMA _timeudb_functions;
+ALTER FUNCTION _timeudb_internal.chunks_in(record, integer[]) SET SCHEMA _timeudb_functions;
+ALTER FUNCTION _timeudb_internal.chunk_id_from_relid(oid) SET SCHEMA _timeudb_functions;
+ALTER FUNCTION _timeudb_internal.show_chunk(regclass) SET SCHEMA _timeudb_functions;
+ALTER FUNCTION _timeudb_internal.get_chunk_relstats(regclass) SET SCHEMA _timeudb_functions;
+ALTER FUNCTION _timeudb_internal.get_chunk_colstats(regclass) SET SCHEMA _timeudb_functions;
 
-UPDATE _timescaledb_catalog.hypertable SET chunk_sizing_func_schema = '_timescaledb_functions' WHERE chunk_sizing_func_schema = '_timescaledb_internal' AND chunk_sizing_func_name = 'calculate_chunk_interval';
+UPDATE _timeudb_catalog.hypertable SET chunk_sizing_func_schema = '_timeudb_functions' WHERE chunk_sizing_func_schema = '_timeudb_internal' AND chunk_sizing_func_name = 'calculate_chunk_interval';
 
 DO $$
 DECLARE
@@ -143,93 +143,93 @@ BEGIN
       WHEN prokind = 'a' THEN 'AGGREGATE'
       ELSE 'PROCEDURE'
     END
-    FROM pg_proc WHERE proname = ANY(funcs) AND pronamespace = '_timescaledb_internal'::regnamespace
+    FROM pg_proc WHERE proname = ANY(funcs) AND pronamespace = '_timeudb_internal'::regnamespace
   LOOP
-    EXECUTE format('ALTER %s %s SET SCHEMA _timescaledb_functions', kind, foid);
+    EXECUTE format('ALTER %s %s SET SCHEMA _timeudb_functions', kind, foid);
   END LOOP;
 END;
 $$;
 
-UPDATE _timescaledb_config.bgw_job SET proc_schema = '_timescaledb_functions' WHERE proc_schema = '_timescaledb_internal';
-UPDATE _timescaledb_config.bgw_job SET check_schema = '_timescaledb_functions' WHERE check_schema = '_timescaledb_internal';
+UPDATE _timeudb_config.bgw_job SET proc_schema = '_timeudb_functions' WHERE proc_schema = '_timeudb_internal';
+UPDATE _timeudb_config.bgw_job SET check_schema = '_timeudb_functions' WHERE check_schema = '_timeudb_internal';
 
-ALTER FUNCTION _timescaledb_internal.start_background_workers() SET SCHEMA _timescaledb_functions;
-ALTER FUNCTION _timescaledb_internal.stop_background_workers() SET SCHEMA _timescaledb_functions;
-ALTER FUNCTION _timescaledb_internal.restart_background_workers() SET SCHEMA _timescaledb_functions;
+ALTER FUNCTION _timeudb_internal.start_background_workers() SET SCHEMA _timeudb_functions;
+ALTER FUNCTION _timeudb_internal.stop_background_workers() SET SCHEMA _timeudb_functions;
+ALTER FUNCTION _timeudb_internal.restart_background_workers() SET SCHEMA _timeudb_functions;
 
-ALTER FUNCTION _timescaledb_internal.process_ddl_event() SET SCHEMA _timescaledb_functions;
+ALTER FUNCTION _timeudb_internal.process_ddl_event() SET SCHEMA _timeudb_functions;
 
-ALTER FUNCTION _timescaledb_internal.get_partition_for_key(val anyelement) SET SCHEMA _timescaledb_functions;
-ALTER FUNCTION _timescaledb_internal.get_partition_hash(val anyelement) SET SCHEMA _timescaledb_functions;
+ALTER FUNCTION _timeudb_internal.get_partition_for_key(val anyelement) SET SCHEMA _timeudb_functions;
+ALTER FUNCTION _timeudb_internal.get_partition_hash(val anyelement) SET SCHEMA _timeudb_functions;
 
-UPDATE _timescaledb_catalog.dimension SET partitioning_func_schema = '_timescaledb_functions' WHERE partitioning_func_schema = '_timescaledb_internal' AND partitioning_func IN ('get_partition_for_key','get_partition_hash');
+UPDATE _timeudb_catalog.dimension SET partitioning_func_schema = '_timeudb_functions' WHERE partitioning_func_schema = '_timeudb_internal' AND partitioning_func IN ('get_partition_for_key','get_partition_hash');
 
-ALTER FUNCTION _timescaledb_internal.finalize_agg_ffunc(internal,text,name,name,name[],bytea,anyelement) SET SCHEMA _timescaledb_functions;
-ALTER FUNCTION _timescaledb_internal.finalize_agg_sfunc(internal,text,name,name,name[],bytea,anyelement) SET SCHEMA _timescaledb_functions;
-ALTER FUNCTION _timescaledb_internal.partialize_agg(anyelement) SET SCHEMA _timescaledb_functions;
+ALTER FUNCTION _timeudb_internal.finalize_agg_ffunc(internal,text,name,name,name[],bytea,anyelement) SET SCHEMA _timeudb_functions;
+ALTER FUNCTION _timeudb_internal.finalize_agg_sfunc(internal,text,name,name,name[],bytea,anyelement) SET SCHEMA _timeudb_functions;
+ALTER FUNCTION _timeudb_internal.partialize_agg(anyelement) SET SCHEMA _timeudb_functions;
 
 -- Fix osm chunk ranges
-UPDATE _timescaledb_catalog.dimension_slice ds
+UPDATE _timeudb_catalog.dimension_slice ds
   SET range_start = 9223372036854775806
-FROM _timescaledb_catalog.chunk_constraint cc
-INNER JOIN _timescaledb_catalog.chunk c ON c.id = cc.chunk_id AND c.osm_chunk
+FROM _timeudb_catalog.chunk_constraint cc
+INNER JOIN _timeudb_catalog.chunk c ON c.id = cc.chunk_id AND c.osm_chunk
 WHERE cc.dimension_slice_id = ds.id AND ds.range_start <> 9223372036854775806;
 
 -- OSM support - table must be rebuilt to ensure consistent attribute numbers
 -- we cannot just ALTER TABLE .. ADD COLUMN
-ALTER TABLE _timescaledb_config.bgw_job
+ALTER TABLE _timeudb_config.bgw_job
     DROP CONSTRAINT bgw_job_hypertable_id_fkey;
-ALTER TABLE _timescaledb_catalog.chunk
+ALTER TABLE _timeudb_catalog.chunk
     DROP CONSTRAINT chunk_hypertable_id_fkey;
-ALTER TABLE _timescaledb_catalog.chunk_index
+ALTER TABLE _timeudb_catalog.chunk_index
     DROP CONSTRAINT chunk_index_hypertable_id_fkey;
-ALTER TABLE _timescaledb_catalog.continuous_agg
+ALTER TABLE _timeudb_catalog.continuous_agg
     DROP CONSTRAINT continuous_agg_mat_hypertable_id_fkey,
     DROP CONSTRAINT continuous_agg_raw_hypertable_id_fkey;
-ALTER TABLE _timescaledb_catalog.continuous_aggs_bucket_function
+ALTER TABLE _timeudb_catalog.continuous_aggs_bucket_function
     DROP CONSTRAINT continuous_aggs_bucket_function_mat_hypertable_id_fkey;
-ALTER TABLE _timescaledb_catalog.continuous_aggs_invalidation_threshold
+ALTER TABLE _timeudb_catalog.continuous_aggs_invalidation_threshold
     DROP CONSTRAINT continuous_aggs_invalidation_threshold_hypertable_id_fkey;
-ALTER TABLE _timescaledb_catalog.dimension
+ALTER TABLE _timeudb_catalog.dimension
     DROP CONSTRAINT dimension_hypertable_id_fkey;
-ALTER TABLE _timescaledb_catalog.hypertable
+ALTER TABLE _timeudb_catalog.hypertable
     DROP CONSTRAINT hypertable_compressed_hypertable_id_fkey;
-ALTER TABLE _timescaledb_catalog.hypertable_compression
+ALTER TABLE _timeudb_catalog.hypertable_compression
     DROP CONSTRAINT hypertable_compression_hypertable_id_fkey;
-ALTER TABLE _timescaledb_catalog.hypertable_data_node
+ALTER TABLE _timeudb_catalog.hypertable_data_node
     DROP CONSTRAINT hypertable_data_node_hypertable_id_fkey;
-ALTER TABLE _timescaledb_catalog.tablespace
+ALTER TABLE _timeudb_catalog.tablespace
     DROP CONSTRAINT tablespace_hypertable_id_fkey;
 
-DROP VIEW IF EXISTS timescaledb_information.hypertables;
-DROP VIEW IF EXISTS timescaledb_information.job_stats;
-DROP VIEW IF EXISTS timescaledb_information.jobs;
-DROP VIEW IF EXISTS timescaledb_information.continuous_aggregates;
-DROP VIEW IF EXISTS timescaledb_information.chunks;
-DROP VIEW IF EXISTS timescaledb_information.dimensions;
-DROP VIEW IF EXISTS timescaledb_information.compression_settings;
-DROP VIEW IF EXISTS _timescaledb_internal.hypertable_chunk_local_size;
-DROP VIEW IF EXISTS _timescaledb_internal.compressed_chunk_stats;
-DROP VIEW IF EXISTS timescaledb_experimental.chunk_replication_status;
-DROP VIEW IF EXISTS timescaledb_experimental.policies;
+DROP VIEW IF EXISTS timeudb_information.hypertables;
+DROP VIEW IF EXISTS timeudb_information.job_stats;
+DROP VIEW IF EXISTS timeudb_information.jobs;
+DROP VIEW IF EXISTS timeudb_information.continuous_aggregates;
+DROP VIEW IF EXISTS timeudb_information.chunks;
+DROP VIEW IF EXISTS timeudb_information.dimensions;
+DROP VIEW IF EXISTS timeudb_information.compression_settings;
+DROP VIEW IF EXISTS _timeudb_internal.hypertable_chunk_local_size;
+DROP VIEW IF EXISTS _timeudb_internal.compressed_chunk_stats;
+DROP VIEW IF EXISTS timeudb_experimental.chunk_replication_status;
+DROP VIEW IF EXISTS timeudb_experimental.policies;
 
 -- recreate table
-CREATE TABLE _timescaledb_catalog.hypertable_tmp AS SELECT * FROM _timescaledb_catalog.hypertable;
-CREATE TABLE _timescaledb_catalog.tmp_hypertable_seq_value AS SELECT last_value, is_called FROM _timescaledb_catalog.hypertable_id_seq;
+CREATE TABLE _timeudb_catalog.hypertable_tmp AS SELECT * FROM _timeudb_catalog.hypertable;
+CREATE TABLE _timeudb_catalog.tmp_hypertable_seq_value AS SELECT last_value, is_called FROM _timeudb_catalog.hypertable_id_seq;
 
-ALTER EXTENSION timescaledb DROP TABLE _timescaledb_catalog.hypertable;
-ALTER EXTENSION timescaledb DROP SEQUENCE _timescaledb_catalog.hypertable_id_seq;
+ALTER EXTENSION timeudb DROP TABLE _timeudb_catalog.hypertable;
+ALTER EXTENSION timeudb DROP SEQUENCE _timeudb_catalog.hypertable_id_seq;
 
-SET timescaledb.restoring = on; -- must disable the hooks otherwise we can't do anything without the table _timescaledb_catalog.hypertable
+SET timeudb.restoring = on; -- must disable the hooks otherwise we can't do anything without the table _timeudb_catalog.hypertable
 
-DROP TABLE _timescaledb_catalog.hypertable;
+DROP TABLE _timeudb_catalog.hypertable;
 
-CREATE SEQUENCE _timescaledb_catalog.hypertable_id_seq MINVALUE 1;
-SELECT setval('_timescaledb_catalog.hypertable_id_seq', last_value, is_called) FROM _timescaledb_catalog.tmp_hypertable_seq_value;
-DROP TABLE _timescaledb_catalog.tmp_hypertable_seq_value;
+CREATE SEQUENCE _timeudb_catalog.hypertable_id_seq MINVALUE 1;
+SELECT setval('_timeudb_catalog.hypertable_id_seq', last_value, is_called) FROM _timeudb_catalog.tmp_hypertable_seq_value;
+DROP TABLE _timeudb_catalog.tmp_hypertable_seq_value;
 
-CREATE TABLE _timescaledb_catalog.hypertable (
-    id INTEGER PRIMARY KEY NOT NULL DEFAULT nextval('_timescaledb_catalog.hypertable_id_seq'),
+CREATE TABLE _timeudb_catalog.hypertable (
+    id INTEGER PRIMARY KEY NOT NULL DEFAULT nextval('_timeudb_catalog.hypertable_id_seq'),
     schema_name name NOT NULL,
     table_name name NOT NULL,
     associated_schema_name name NOT NULL,
@@ -244,9 +244,9 @@ CREATE TABLE _timescaledb_catalog.hypertable (
     status integer NOT NULL DEFAULT 0
 );
 
-SET timescaledb.restoring = off;
+SET timeudb.restoring = off;
 
-INSERT INTO _timescaledb_catalog.hypertable (
+INSERT INTO _timeudb_catalog.hypertable (
     id,
     schema_name,
     table_name,
@@ -274,55 +274,55 @@ SELECT
     compressed_hypertable_id,
     replication_factor
 FROM
-    _timescaledb_catalog.hypertable_tmp
+    _timeudb_catalog.hypertable_tmp
 ORDER BY id;
 
-UPDATE _timescaledb_catalog.hypertable h
+UPDATE _timeudb_catalog.hypertable h
 SET status = 3
 WHERE EXISTS (
-  SELECT FROM _timescaledb_catalog.chunk c WHERE c.osm_chunk AND c.hypertable_id = h.id
+  SELECT FROM _timeudb_catalog.chunk c WHERE c.osm_chunk AND c.hypertable_id = h.id
 );
 
-ALTER SEQUENCE _timescaledb_catalog.hypertable_id_seq OWNED BY _timescaledb_catalog.hypertable.id;
-SELECT pg_catalog.pg_extension_config_dump('_timescaledb_catalog.hypertable', 'WHERE id >= 1');
-SELECT pg_catalog.pg_extension_config_dump('_timescaledb_catalog.hypertable_id_seq', '');
+ALTER SEQUENCE _timeudb_catalog.hypertable_id_seq OWNED BY _timeudb_catalog.hypertable.id;
+SELECT pg_catalog.pg_extension_config_dump('_timeudb_catalog.hypertable', 'WHERE id >= 1');
+SELECT pg_catalog.pg_extension_config_dump('_timeudb_catalog.hypertable_id_seq', '');
 
-GRANT SELECT ON _timescaledb_catalog.hypertable TO PUBLIC;
-GRANT SELECT ON _timescaledb_catalog.hypertable_id_seq TO PUBLIC;
+GRANT SELECT ON _timeudb_catalog.hypertable TO PUBLIC;
+GRANT SELECT ON _timeudb_catalog.hypertable_id_seq TO PUBLIC;
 
-DROP TABLE _timescaledb_catalog.hypertable_tmp;
+DROP TABLE _timeudb_catalog.hypertable_tmp;
 -- now add any constraints
-ALTER TABLE _timescaledb_catalog.hypertable
+ALTER TABLE _timeudb_catalog.hypertable
     ADD CONSTRAINT hypertable_associated_schema_name_associated_table_prefix_key UNIQUE (associated_schema_name, associated_table_prefix),
     ADD CONSTRAINT hypertable_table_name_schema_name_key UNIQUE (table_name, schema_name),
-    ADD CONSTRAINT hypertable_schema_name_check CHECK (schema_name != '_timescaledb_catalog'),
+    ADD CONSTRAINT hypertable_schema_name_check CHECK (schema_name != '_timeudb_catalog'),
     ADD CONSTRAINT hypertable_dim_compress_check CHECK (num_dimensions > 0 OR compression_state = 2),
     ADD CONSTRAINT hypertable_chunk_target_size_check CHECK (chunk_target_size >= 0),
     ADD CONSTRAINT hypertable_compress_check CHECK ( (compression_state = 0 OR compression_state = 1 )  OR (compression_state = 2 AND compressed_hypertable_id IS NULL)),
     ADD CONSTRAINT hypertable_replication_factor_check CHECK (replication_factor > 0 OR replication_factor = -1),
-    ADD CONSTRAINT hypertable_compressed_hypertable_id_fkey FOREIGN KEY (compressed_hypertable_id) REFERENCES _timescaledb_catalog.hypertable (id);
+    ADD CONSTRAINT hypertable_compressed_hypertable_id_fkey FOREIGN KEY (compressed_hypertable_id) REFERENCES _timeudb_catalog.hypertable (id);
 
-GRANT SELECT ON TABLE _timescaledb_catalog.hypertable TO PUBLIC;
+GRANT SELECT ON TABLE _timeudb_catalog.hypertable TO PUBLIC;
 
 -- 3. reestablish constraints on other tables
-ALTER TABLE _timescaledb_config.bgw_job
-    ADD CONSTRAINT bgw_job_hypertable_id_fkey FOREIGN KEY (hypertable_id) REFERENCES _timescaledb_catalog.hypertable(id) ON DELETE CASCADE;
-ALTER TABLE _timescaledb_catalog.chunk
-    ADD CONSTRAINT chunk_hypertable_id_fkey FOREIGN KEY (hypertable_id) REFERENCES _timescaledb_catalog.hypertable(id);
-ALTER TABLE _timescaledb_catalog.chunk_index
-    ADD CONSTRAINT chunk_index_hypertable_id_fkey FOREIGN KEY (hypertable_id) REFERENCES _timescaledb_catalog.hypertable(id) ON DELETE CASCADE;
-ALTER TABLE _timescaledb_catalog.continuous_agg
-    ADD CONSTRAINT continuous_agg_mat_hypertable_id_fkey FOREIGN KEY (mat_hypertable_id) REFERENCES _timescaledb_catalog.hypertable(id) ON DELETE CASCADE,
-    ADD CONSTRAINT continuous_agg_raw_hypertable_id_fkey FOREIGN KEY (raw_hypertable_id) REFERENCES _timescaledb_catalog.hypertable(id) ON DELETE CASCADE;
-ALTER TABLE _timescaledb_catalog.continuous_aggs_bucket_function
-    ADD CONSTRAINT continuous_aggs_bucket_function_mat_hypertable_id_fkey FOREIGN KEY (mat_hypertable_id) REFERENCES _timescaledb_catalog.hypertable(id) ON DELETE CASCADE;
-ALTER TABLE _timescaledb_catalog.continuous_aggs_invalidation_threshold
-    ADD CONSTRAINT continuous_aggs_invalidation_threshold_hypertable_id_fkey FOREIGN KEY (hypertable_id) REFERENCES _timescaledb_catalog.hypertable(id) ON DELETE CASCADE;
-ALTER TABLE _timescaledb_catalog.dimension
-    ADD CONSTRAINT dimension_hypertable_id_fkey FOREIGN KEY (hypertable_id) REFERENCES _timescaledb_catalog.hypertable(id) ON DELETE CASCADE;
-ALTER TABLE _timescaledb_catalog.hypertable_compression
-    ADD CONSTRAINT hypertable_compression_hypertable_id_fkey FOREIGN KEY (hypertable_id) REFERENCES _timescaledb_catalog.hypertable(id) ON DELETE CASCADE;
-ALTER TABLE _timescaledb_catalog.hypertable_data_node
-    ADD CONSTRAINT hypertable_data_node_hypertable_id_fkey FOREIGN KEY (hypertable_id) REFERENCES _timescaledb_catalog.hypertable(id);
-ALTER TABLE _timescaledb_catalog.tablespace
-    ADD CONSTRAINT tablespace_hypertable_id_fkey FOREIGN KEY (hypertable_id) REFERENCES _timescaledb_catalog.hypertable(id) ON DELETE CASCADE;
+ALTER TABLE _timeudb_config.bgw_job
+    ADD CONSTRAINT bgw_job_hypertable_id_fkey FOREIGN KEY (hypertable_id) REFERENCES _timeudb_catalog.hypertable(id) ON DELETE CASCADE;
+ALTER TABLE _timeudb_catalog.chunk
+    ADD CONSTRAINT chunk_hypertable_id_fkey FOREIGN KEY (hypertable_id) REFERENCES _timeudb_catalog.hypertable(id);
+ALTER TABLE _timeudb_catalog.chunk_index
+    ADD CONSTRAINT chunk_index_hypertable_id_fkey FOREIGN KEY (hypertable_id) REFERENCES _timeudb_catalog.hypertable(id) ON DELETE CASCADE;
+ALTER TABLE _timeudb_catalog.continuous_agg
+    ADD CONSTRAINT continuous_agg_mat_hypertable_id_fkey FOREIGN KEY (mat_hypertable_id) REFERENCES _timeudb_catalog.hypertable(id) ON DELETE CASCADE,
+    ADD CONSTRAINT continuous_agg_raw_hypertable_id_fkey FOREIGN KEY (raw_hypertable_id) REFERENCES _timeudb_catalog.hypertable(id) ON DELETE CASCADE;
+ALTER TABLE _timeudb_catalog.continuous_aggs_bucket_function
+    ADD CONSTRAINT continuous_aggs_bucket_function_mat_hypertable_id_fkey FOREIGN KEY (mat_hypertable_id) REFERENCES _timeudb_catalog.hypertable(id) ON DELETE CASCADE;
+ALTER TABLE _timeudb_catalog.continuous_aggs_invalidation_threshold
+    ADD CONSTRAINT continuous_aggs_invalidation_threshold_hypertable_id_fkey FOREIGN KEY (hypertable_id) REFERENCES _timeudb_catalog.hypertable(id) ON DELETE CASCADE;
+ALTER TABLE _timeudb_catalog.dimension
+    ADD CONSTRAINT dimension_hypertable_id_fkey FOREIGN KEY (hypertable_id) REFERENCES _timeudb_catalog.hypertable(id) ON DELETE CASCADE;
+ALTER TABLE _timeudb_catalog.hypertable_compression
+    ADD CONSTRAINT hypertable_compression_hypertable_id_fkey FOREIGN KEY (hypertable_id) REFERENCES _timeudb_catalog.hypertable(id) ON DELETE CASCADE;
+ALTER TABLE _timeudb_catalog.hypertable_data_node
+    ADD CONSTRAINT hypertable_data_node_hypertable_id_fkey FOREIGN KEY (hypertable_id) REFERENCES _timeudb_catalog.hypertable(id);
+ALTER TABLE _timeudb_catalog.tablespace
+    ADD CONSTRAINT tablespace_hypertable_id_fkey FOREIGN KEY (hypertable_id) REFERENCES _timeudb_catalog.hypertable(id) ON DELETE CASCADE;

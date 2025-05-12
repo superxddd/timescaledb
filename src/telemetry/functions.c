@@ -49,7 +49,7 @@ typedef struct AllowedFnHashEntry
 //      WHERE refclassid = 'pg_catalog.pg_extension'::pg_catalog.regclass
 //        AND refobjid = extension.oid
 //        AND deptype = 'e'
-//        AND extname IN ('timescaledb','promscale','timescaledb_toolkit')
+//        AND extname IN ('timeudb','promscale','timeudb_toolkit')
 //        AND classid = 'pg_catalog.pg_proc'::regclass;
 static HTAB *
 allowed_extension_functions(const char **visible_extensions, int num_visible_extensions)
@@ -170,7 +170,7 @@ read_shared_map()
  * In general, we should never send telemetry information about any functions
  * except for core functions and those is a specified list of extensions
  * (when originally written, the set of related_extensions along with
- * timescaledb itself), so this function is designed to make it difficult to do
+ * timeudb itself), so this function is designed to make it difficult to do
  * so.
  *
  * @param visible_extensions list of extensions whose functions should be

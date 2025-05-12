@@ -18,7 +18,7 @@ option(SEND_TELEMETRY_DEFAULT "The default value for whether to send telemetry"
 option(
   USE_TELEMETRY
   "Include telemetry functionality in the build. Disabling will exclude all telemetry code from the build."
-  ON)
+  OFF)
 
 option(REGRESS_CHECKS "PostgreSQL regress checks through installcheck" ON)
 option(
@@ -26,6 +26,7 @@ option(
   "Enable OPTIMIZER_DEBUG when building. Requires Postgres server to be built with OPTIMIZER_DEBUG."
   OFF)
 option(ENABLE_DEBUG_UTILS "Enable debug utilities for the extension." ON)
+option(ENABLE_MULTINODE_TESTS "Enable multinode-specific tests" OFF)
 
 # Option to enable assertions. Note that if we include headers from a PostgreSQL
 # build that has assertions enabled, we might inherit that setting without
@@ -96,7 +97,7 @@ set(extschema "@extschema@")
 # Set project name, version, and language. Language needs to be set for compiler
 # checks
 project(
-  timescaledb
+  timeudb
   VERSION ${VERSION}
   LANGUAGES C)
 
@@ -119,7 +120,7 @@ endif()
 
 message(
   STATUS
-    "TimescaleDB version ${PROJECT_VERSION_MOD}. Can be updated from version ${UPDATE_FROM_VERSION}"
+    "TIMEUDB version ${PROJECT_VERSION_MOD}. Can be updated from version ${UPDATE_FROM_VERSION}"
 )
 message(STATUS "Build type is ${CMAKE_BUILD_TYPE}")
 
@@ -296,30 +297,7 @@ if(ENABLE_OPTIMIZER_DEBUG)
   add_definitions(-DOPTIMIZER_DEBUG)
 endif()
 
-# Search paths for Postgres binaries
-if(WIN32)
-  find_path(
-    PG_PATH postgres.exe
-    PATHS "C:/PostgreSQL" "C:/Program Files/PostgreSQL"
-    PATH_SUFFIXES bin 13/bin 14/bin 15/bin
-    DOC "The path to a PostgreSQL installation")
-elseif(UNIX)
-  find_path(
-    PG_PATH postgres
-    PATHS $ENV{HOME} /opt/local/pgsql /usr/local/pgsql /usr/lib/postgresql
-    PATH_SUFFIXES bin 13/bin 14/bin 15/bin
-    DOC "The path to a PostgreSQL installation")
-endif()
-
-find_program(
-  PG_CONFIG pg_config
-  HINTS ${PG_PATH}
-  PATH_SUFFIXES bin
-  DOC "The path to the pg_config of the PostgreSQL version to compile against")
-
-if(NOT PG_CONFIG)
-  message(FATAL_ERROR "Unable to find 'pg_config'")
-endif()
+set(PG_CONFIG "/home/wangcj/unvdb-tudb-24.2.1-linux-x86_64/bin/ud_config")
 
 find_package(Git)
 
@@ -330,7 +308,7 @@ execute_process(
   OUTPUT_STRIP_TRAILING_WHITESPACE)
 
 if(NOT ${PG_VERSION_STRING} MATCHES
-   "^PostgreSQL[ ]+([0-9]+)(\\.([0-9]+)|beta|devel|rc[0-9]+)")
+   "^UnvDB[ ]+([0-9]+)(\\.([0-9]+)|beta|devel|rc[0-9]+)")
   message(FATAL_ERROR "Could not parse PostgreSQL version ${PG_VERSION_STRING}")
 endif()
 
@@ -342,17 +320,12 @@ else()
 endif()
 set(PG_VERSION "${PG_VERSION_MAJOR}.${PG_VERSION_MINOR}")
 
-message(
-  STATUS
-    "Compiling against PostgreSQL version ${PG_VERSION} using pg_config '${PG_CONFIG}'"
-)
-
 # Ensure that PostgreSQL version is supported and consistent with src/compat.h
 # version check
 if((${PG_VERSION_MAJOR} LESS "13")
-   OR (${PG_VERSION_MAJOR} GREATER "16")
+   OR (${PG_VERSION_MAJOR} GREATER "24")
    AND NOT (${EXPERIMENTAL}))
-  message(FATAL_ERROR "TimescaleDB only supports PostgreSQL 13, 14, 15 and 16")
+  message(FATAL_ERROR "TIMEUDB only supports PostgreSQL 13, 14, 15 and 24")
 endif()
 
 # Get PostgreSQL configuration from pg_config
@@ -585,14 +558,14 @@ endif()
 
 # Check if PostgreSQL has OpenSSL enabled by inspecting pg_config.h. Right now,
 # a Postgres header will redefine an OpenSSL function if Postgres is not
-# installed --with-openssl, so in order for TimescaleDB to compile correctly
+# installed --with-openssl, so in order for TIMEUDB to compile correctly
 # with OpenSSL, Postgres must also have OpenSSL enabled.
 check_symbol_exists(USE_OPENSSL ${PG_INCLUDEDIR}/pg_config.h PG_USE_OPENSSL)
 
 if(USE_OPENSSL AND (NOT PG_USE_OPENSSL))
   message(
     FATAL_ERROR
-      "PostgreSQL was built without OpenSSL support, which TimescaleDB needs for full compatibility. Please rebuild PostgreSQL using `--with-openssl` or if you want to continue without OpenSSL, re-run bootstrap with `-DUSE_OPENSSL=0`"
+      "PostgreSQL was built without OpenSSL support, which TIMEUDB needs for full compatibility. Please rebuild PostgreSQL using `--with-openssl` or if you want to continue without OpenSSL, re-run bootstrap with `-DUSE_OPENSSL=0`"
   )
 endif(USE_OPENSSL AND (NOT PG_USE_OPENSSL))
 
@@ -603,12 +576,12 @@ if(USE_OPENSSL)
   if(NOT OPENSSL_FOUND)
     message(
       FATAL_ERROR
-        "TimescaleDB requires OpenSSL but it wasn't found. If you want to continue without OpenSSL, re-run bootstrap with `-DUSE_OPENSSL=0`"
+        "TIMEUDB requires OpenSSL but it wasn't found. If you want to continue without OpenSSL, re-run bootstrap with `-DUSE_OPENSSL=0`"
     )
   endif(NOT OPENSSL_FOUND)
 
   if(${OPENSSL_VERSION} VERSION_LESS "1.0")
-    message(FATAL_ERROR "TimescaleDB requires OpenSSL version 1.0 or greater")
+    message(FATAL_ERROR "TIMEUDB requires OpenSSL version 1.0 or greater")
   endif()
 
   set(_libraries)
@@ -686,7 +659,6 @@ if(UNIX)
 endif(UNIX)
 
 add_subdirectory(sql)
-add_subdirectory(test)
 add_subdirectory(src)
 
 if(NOT APACHE_ONLY)

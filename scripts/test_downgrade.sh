@@ -23,7 +23,7 @@ if [ ! -d "${BUILD_DIR}" ]; then
 	BUILD_DIR="${BUILD_DIR}" ./bootstrap -DCMAKE_BUILD_TYPE=Release -DWARNINGS_AS_ERRORS=OFF -DASSERTIONS=ON -DLINTER=ON -DGENERATE_DOWNGRADE_SCRIPT=ON -DREGRESS_CHECKS=OFF -DTAP_CHECKS=OFF
 fi
 
-if [ ! -f "${PG_EXTENSION_DIR}/timescaledb--${PREV_VERSION}.sql" ]; then
+if [ ! -f "${PG_EXTENSION_DIR}/timeudb--${PREV_VERSION}.sql" ]; then
   echo "Building ${PREV_VERSION}"
   git checkout ${PREV_VERSION}
   make -C "${BUILD_DIR}" -j4 > /dev/null

@@ -6,7 +6,7 @@ DO $$
 DECLARE
   catalog_version TEXT;
 BEGIN
-  SELECT value INTO catalog_version FROM _timescaledb_catalog.metadata WHERE key='timescaledb_version' AND value <> '@START_VERSION@';
+  SELECT value INTO catalog_version FROM _timeudb_catalog.metadata WHERE key='timeudb_version' AND value <> '@START_VERSION@';
   IF FOUND THEN
     RAISE EXCEPTION 'catalog version mismatch, expected "%" seen "%"', '@START_VERSION@', catalog_version;
   END IF;

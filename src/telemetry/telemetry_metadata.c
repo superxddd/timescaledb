@@ -73,7 +73,7 @@ ts_telemetry_events_add(JsonbParseState *state)
 }
 
 /*
- * add all entries from _timescaledb_catalog.metadata
+ * add all entries from _timeudb_catalog.metadata
  */
 void
 ts_telemetry_metadata_add_values(JsonbParseState *state)

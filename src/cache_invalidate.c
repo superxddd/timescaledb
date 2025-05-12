@@ -101,7 +101,7 @@ cache_invalidate_relcache_callback(Datum arg, Oid relid)
 	}
 }
 
-TS_FUNCTION_INFO_V1(ts_timescaledb_invalidate_cache);
+TS_FUNCTION_INFO_V1(ts_timeudb_invalidate_cache);
 
 /*
  * Force a cache invalidation for a catalog table.
@@ -113,7 +113,7 @@ TS_FUNCTION_INFO_V1(ts_timescaledb_invalidate_cache);
  * cache invalidation.
  */
 Datum
-ts_timescaledb_invalidate_cache(PG_FUNCTION_ARGS)
+ts_timeudb_invalidate_cache(PG_FUNCTION_ARGS)
 {
 	ts_catalog_invalidate_cache(PG_GETARG_OID(0), CMD_UPDATE);
 	PG_RETURN_VOID();

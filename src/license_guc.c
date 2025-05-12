@@ -49,7 +49,7 @@ static bool tsl_register_proc_exit = false;
  *      tsl module.
  *
  * In order for restoring libraries to work (e.g. in parallel workers), loading
- * the submodule must happen strictly after the main timescaledb module is
+ * the submodule must happen strictly after the main timeudb module is
  * loaded. In order to ensure that the initial value doesn't break this, we
  * disable loading submodules until the post_load_init.
  *
@@ -103,7 +103,7 @@ ts_license_enable_module_loading(void)
 							   false);
 
 	if (result <= 0)
-		elog(ERROR, "invalid value for timescaledb.license: \"%s\"", ts_guc_license);
+		elog(ERROR, "invalid value for timeudb.license: \"%s\"", ts_guc_license);
 }
 
 /*
@@ -184,7 +184,7 @@ ts_license_guc_check_hook(char **newval, void **extra, GucSource source)
 
 	if (type == LICENSE_TIMESCALE && !tsl_module_load())
 	{
-		GUC_check_errdetail("Could not find TSL timescaledb module.");
+		GUC_check_errdetail("Could not find TSL timeudb module.");
 		GUC_check_errhint("Check that \"%s\" is available.", EXTENSION_TSL_SO);
 		return false;
 	}

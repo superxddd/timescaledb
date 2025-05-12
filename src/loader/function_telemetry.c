@@ -45,7 +45,7 @@ ts_function_telemetry_shmem_startup()
 	if (!found)
 		*lock = &(GetNamedLWLockTranche(FN_TELEMETRY_LWLOCK_TRANCHE_NAME))->lock;
 
-	function_telemetry_hash = ShmemInitHash("timescaledb function telemetry hash",
+	function_telemetry_hash = ShmemInitHash("timeudb function telemetry hash",
 											FN_TELEMETRY_HASH_SIZE,
 											FN_TELEMETRY_HASH_SIZE,
 											&hash_info,

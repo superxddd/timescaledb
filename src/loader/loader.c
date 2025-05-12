@@ -70,7 +70,7 @@
  *
  * 2) We actually don't want to load the extension in two cases:
  *    a) We are upgrading the extension.
- *    b) We set the guc timescaledb.disable_load.
+ *    b) We set the guc timeudb.disable_load.
  *
  * 3) We include a section for the bgw launcher and some workers below the rest, separated with its
  *    own notes, some function definitions are included as they are referenced by other loader
@@ -137,7 +137,7 @@ typedef struct TsExtension
 	/* Shared object library version loaded; empty if none. */
 	char soversion[MAX_VERSION_LEN];
 
-	/* TODO Remove.  Neither timescaledb nor OSM actually have this hook,
+	/* TODO Remove.  Neither timeudb nor OSM actually have this hook,
 	 * never have, and we don't plan to add them. */
 	post_parse_analyze_hook_type post_parse_analyze_hook;
 } TsExtension;
@@ -155,10 +155,10 @@ TsExtension extensions[] = {
 		.post_parse_analyze_hook = NULL,
 	},
 	{
-		.name = "timescaledb_osm",
+		.name = "timeudb_osm",
 		.schema_name = "_osm_catalog",
 		.table_name = "metadata",
-		.guc_disable_load_name = "timescaledb_osm.disable_load",
+		.guc_disable_load_name = "timeudb_osm.disable_load",
 		.guc_disable_load = false,
 		.soversion = "",
 		.post_parse_analyze_hook = NULL,
@@ -379,7 +379,7 @@ stop_workers_on_db_drop(DropdbStmt *drop_db_statement)
 {
 	/*
 	 * Don't check if extension exists here because even though the current
-	 * database might not have TimescaleDB installed the database we are
+	 * database might not have TIMEUDB installed the database we are
 	 * dropping might.
 	 */
 	Oid dropped_db_oid = get_database_oid(drop_db_statement->dbname, drop_db_statement->missing_ok);
@@ -387,7 +387,7 @@ stop_workers_on_db_drop(DropdbStmt *drop_db_statement)
 	if (OidIsValid(dropped_db_oid))
 	{
 		ereport(LOG,
-				(errmsg("TimescaleDB background worker scheduler for database %u will be stopped",
+				(errmsg("TIMEUDB background worker scheduler for database %u will be stopped",
 						dropped_db_oid)));
 		ts_bgw_message_send_and_wait(STOP, dropped_db_oid);
 	}
@@ -514,8 +514,8 @@ post_analyze_hook(ParseState *pstate, Query *query, JumbleState *jstate)
 	{
 		TsExtension *const ext = &extensions[i];
 
-		/* timescaledb.disable_load prevents loading of all extensions.
-		 * timescaledb_osm.disable_load prevents loading of timescaledb_osm.
+		/* timeudb.disable_load prevents loading of all extensions.
+		 * timeudb_osm.disable_load prevents loading of timeudb_osm.
 		 * If we ever had a third extension to load, we might need to make
 		 * this smarter, but not today. */
 		bool const disable_load = extensions[0].guc_disable_load || ext->guc_disable_load;
@@ -552,7 +552,7 @@ post_analyze_hook(ParseState *pstate, Query *query, JumbleState *jstate)
 }
 
 static void
-timescaledb_shmem_startup_hook(void)
+timeudb_shmem_startup_hook(void)
 {
 	if (prev_shmem_startup_hook)
 		prev_shmem_startup_hook();
@@ -568,7 +568,7 @@ timescaledb_shmem_startup_hook(void)
  * it as a normal function for PG < 14 and as a hook for PG 15+.
  */
 static void
-timescaledb_shmem_request_hook(void)
+timeudb_shmem_request_hook(void)
 {
 #if PG15_GE
 	if (prev_shmem_request_hook)
@@ -598,10 +598,10 @@ _PG_init(void)
 	}
 	extension_mark_loader_present();
 
-	elog(INFO, "timescaledb loaded");
+	elog(INFO, "timeudb loaded");
 
 #if PG15_LT
-	timescaledb_shmem_request_hook();
+	timeudb_shmem_request_hook();
 #endif
 
 	ts_bgw_cluster_launcher_register();
@@ -627,7 +627,7 @@ _PG_init(void)
 	DefineCustomIntVariable(GUC_LAUNCHER_POLL_TIME_MS,
 							"Launcher timeout value in milliseconds",
 							"Configure the time the launcher waits "
-							"to look for new TimescaleDB instances",
+							"to look for new TIMEUDB instances",
 							&ts_guc_bgw_launcher_poll_time,
 							BGW_LAUNCHER_POLL_TIME_MS, /* 10 ms or 60 seconds */
 							10,						   /* min: 10ms */
@@ -649,11 +649,11 @@ _PG_init(void)
 	prev_shmem_startup_hook = shmem_startup_hook;
 
 	post_parse_analyze_hook = post_analyze_hook;
-	shmem_startup_hook = timescaledb_shmem_startup_hook;
+	shmem_startup_hook = timeudb_shmem_startup_hook;
 
 #if PG15_GE
 	prev_shmem_request_hook = shmem_request_hook;
-	shmem_request_hook = timescaledb_shmem_request_hook;
+	shmem_request_hook = timeudb_shmem_request_hook;
 #endif
 }
 

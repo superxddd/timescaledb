@@ -1,6 +1,6 @@
 # Security Policy
 
-We aim to keep TimescaleDB safe for everyone. 
+We aim to keep TIMEUDB safe for everyone. 
 Publicly disclosing security bugs in a public forum can put everyone in the Timescale community at risk,
 however. Therefore, we ask that people follow the below instructions to report security vulnerability.
 The entire Timescale community thanks you!
@@ -9,7 +9,7 @@ The entire Timescale community thanks you!
 
 The supported version is always the latest major release available in our repository.
 We also release regular minor versions with fixes and corrections alongside some new features as well as patchfix releases, that you should keep upgrading to.
-Vulnerability fixes are made available as part of these patchfix releases and you can read our list of [Security Advisories](https://github.com/timescale/timescaledb/security/advisories?state=published).
+Vulnerability fixes are made available as part of these patchfix releases and you can read our list of [Security Advisories](https://github.com/timescale/timeudb/security/advisories?state=published).
  
 You can also take a look at our [Support Policy](https://www.timescale.com/legal/support-policy).
 

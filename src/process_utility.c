@@ -586,7 +586,7 @@ process_copy(ProcessUtilityArgs *args)
 	PreventCommandIfReadOnly("COPY FROM");
 
 	/* Performs acl check in here inside `copy_security_check` */
-	timescaledb_DoCopy(stmt, args->query_string, &processed, ht);
+	timeudb_DoCopy(stmt, args->query_string, &processed, ht);
 
 	args->completion_tag->commandTag = CMDTAG_COPY;
 	args->completion_tag->nprocessed = processed;
@@ -2010,7 +2010,7 @@ process_rename_schema(RenameStmt *stmt)
 		{
 			ereport(ERROR,
 					(errcode(ERRCODE_TS_OPERATION_NOT_SUPPORTED),
-					 errmsg("cannot rename schemas used by the TimescaleDB extension")));
+					 errmsg("cannot rename schemas used by the TIMEUDB extension")));
 			return;
 		}
 	}
@@ -2709,13 +2709,13 @@ process_index_start(ProcessUtilityArgs *args)
 		ereport(ERROR,
 				(errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
 				 errmsg(
-					 "cannot use timescaledb.transaction_per_chunk with UNIQUE or PRIMARY KEY")));
+					 "cannot use timeudb.transaction_per_chunk with UNIQUE or PRIMARY KEY")));
 
 	ts_indexing_verify_index(ht->space, stmt);
 
 	if (info.extended_options.multitransaction)
 		PreventInTransactionBlock(true,
-								  "CREATE INDEX ... WITH (timescaledb.transaction_per_chunk)");
+								  "CREATE INDEX ... WITH (timeudb.transaction_per_chunk)");
 
 	if (cagg)
 	{
@@ -3489,7 +3489,7 @@ process_altercontinuousagg_set_with(ContinuousAgg *cagg, Oid view_relid, const L
 	if (list_length(pg_options) > 0)
 		ereport(ERROR,
 				(errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
-				 errmsg("only timescaledb parameters allowed in WITH clause for continuous "
+				 errmsg("only timeudb parameters allowed in WITH clause for continuous "
 						"aggregate")));
 
 	if (list_length(cagg_options) > 0)
@@ -3991,7 +3991,7 @@ process_create_rule_start(ProcessUtilityArgs *args)
 	return DDL_CONTINUE;
 }
 
-/* ALTER TABLE <name> SET ( timescaledb.compress, ...) */
+/* ALTER TABLE <name> SET ( timeudb.compress, ...) */
 static DDLResult
 process_altertable_set_options(AlterTableCmd *cmd, Hypertable *ht)
 {
@@ -4009,7 +4009,7 @@ process_altertable_set_options(AlterTableCmd *cmd, Hypertable *ht)
 	if (pg_options != NIL)
 		ereport(ERROR,
 				(errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
-				 errmsg("only timescaledb.compress parameters allowed when specifying compression "
+				 errmsg("only timeudb.compress parameters allowed when specifying compression "
 						"parameters for hypertable")));
 
 	parse_results = ts_compress_hypertable_set_clause_parse(compress_options);
@@ -4081,7 +4081,7 @@ process_create_table_as(ProcessUtilityArgs *args)
 					 errmsg("unsupported combination of storage parameters"),
 					 errdetail("A continuous aggregate does not support standard storage "
 							   "parameters."),
-					 errhint("Use only parameters with the \"timescaledb.\" prefix when "
+					 errhint("Use only parameters with the \"timeudb.\" prefix when "
 							 "creating a continuous aggregate.")));
 
 		if (!stmt->into->skipData)
@@ -4407,7 +4407,7 @@ process_ddl_sql_drop(EventTriggerDropObject *obj)
  * PostgreSQL.
  */
 static void
-timescaledb_ddl_command_start(PlannedStmt *pstmt, const char *query_string,
+timeudb_ddl_command_start(PlannedStmt *pstmt, const char *query_string,
 #if PG14_GE
 							  bool readonly_tree,
 #endif
@@ -4431,7 +4431,7 @@ timescaledb_ddl_command_start(PlannedStmt *pstmt, const char *query_string,
 		.hypertable_list = NIL
 	};
 
-	bool altering_timescaledb = false;
+	bool altering_timeudb = false;
 	DDLResult result;
 
 	args.parse_state->p_sourcetext = query_string;
@@ -4440,14 +4440,14 @@ timescaledb_ddl_command_start(PlannedStmt *pstmt, const char *query_string,
 	{
 		AlterExtensionStmt *stmt = (AlterExtensionStmt *) args.parsetree;
 
-		altering_timescaledb = (strcmp(stmt->extname, EXTENSION_NAME) == 0);
+		altering_timeudb = (strcmp(stmt->extname, EXTENSION_NAME) == 0);
 	}
 
 	/*
 	 * We don't want to load the extension if we just got the command to alter
 	 * it.
 	 */
-	if (altering_timescaledb || !ts_extension_is_loaded())
+	if (altering_timeudb || !ts_extension_is_loaded())
 	{
 		prev_ProcessUtility(&args);
 		return;
@@ -4502,14 +4502,14 @@ process_ddl_event_sql_drop(EventTriggerData *trigdata)
 		process_ddl_sql_drop(lfirst(lc));
 }
 
-TS_FUNCTION_INFO_V1(ts_timescaledb_process_ddl_event);
+TS_FUNCTION_INFO_V1(ts_timeudb_process_ddl_event);
 
 /*
  * Event trigger hook for DDL commands that have already been handled by
  * PostgreSQL (i.e., "ddl_command_end" and "sql_drop" events).
  */
 Datum
-ts_timescaledb_process_ddl_event(PG_FUNCTION_ARGS)
+ts_timeudb_process_ddl_event(PG_FUNCTION_ARGS)
 {
 	EventTriggerData *trigdata = (EventTriggerData *) fcinfo->context;
 
@@ -4573,7 +4573,7 @@ void
 _process_utility_init(void)
 {
 	prev_ProcessUtility_hook = ProcessUtility_hook;
-	ProcessUtility_hook = timescaledb_ddl_command_start;
+	ProcessUtility_hook = timeudb_ddl_command_start;
 	RegisterXactCallback(process_utility_xact_abort, NULL);
 	RegisterSubXactCallback(process_utility_subxact_abort, NULL);
 }

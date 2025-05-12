@@ -734,7 +734,7 @@ get_job_lock_for_delete(int32 job_id)
 				 * running the job is not sufficient. The scheduler could also be the
 				 * one holding the lock, when transitioning the state of the job back
 				 * to scheduled state. So we must check we don't kill the scheduler.
-				 * See https://github.com/timescale/timescaledb/issues/5224
+				 * See https://github.com/timescale/timeudb/issues/5224
 				 */
 				const char *worker_name = GetBackgroundWorkerTypeByPid(proc->pid);
 
@@ -1207,7 +1207,7 @@ ts_bgw_job_entrypoint(PG_FUNCTION_ARGS)
 		/* The job is responsible for committing or aborting it's own txns */
 		if (IsTransactionState())
 			elog(ERROR,
-				 "TimescaleDB background job \"%s\" failed to end the transaction",
+				 "TIMEUDB background job \"%s\" failed to end the transaction",
 				 NameStr(job->fd.application_name));
 	}
 	PG_CATCH();

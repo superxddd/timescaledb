@@ -73,7 +73,7 @@ if [ ! -d "${BUILD_DIR}" ]; then
 fi
 
 for version in ${VERSIONS}; do
-  if [ ! -f "${PG_EXTENSION_DIR}/timescaledb--${version}.sql" ]; then
+  if [ ! -f "${PG_EXTENSION_DIR}/timeudb--${version}.sql" ]; then
     echo "Building ${version}"
     git checkout ${version}
     make -C "${BUILD_DIR}" -j4 > /dev/null

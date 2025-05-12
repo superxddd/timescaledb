@@ -7,7 +7,7 @@
 -- - columns: an array of column names that shold be used for segment by
 -- - confidence: a number between 0 and 10 (most confident) indicating how sure we are.
 -- - message: a message that should be displayed to the user to evaluate the result.
-CREATE OR REPLACE FUNCTION _timescaledb_functions.get_segmentby_defaults(
+CREATE OR REPLACE FUNCTION _timeudb_functions.get_segmentby_defaults(
     relation regclass
 )
     RETURNS JSONB LANGUAGE PLPGSQL AS
@@ -15,7 +15,7 @@ $BODY$
 DECLARE
     _table_name NAME;
     _schema_name NAME;
-    _hypertable_row _timescaledb_catalog.hypertable;
+    _hypertable_row _timeudb_catalog.hypertable;
     _segmentby NAME;
     _cnt int;
 BEGIN
@@ -24,7 +24,7 @@ BEGIN
     INNER JOIN pg_namespace n ON (n.oid = c.relnamespace)
     WHERE c.oid = relation;
 
-    SELECT * INTO STRICT _hypertable_row FROM _timescaledb_catalog.hypertable h WHERE h.table_name = _table_name AND h.schema_name = schema_name;
+    SELECT * INTO STRICT _hypertable_row FROM _timeudb_catalog.hypertable h WHERE h.table_name = _table_name AND h.schema_name = schema_name;
 
     --STEP 1 if column stats exist use unique indexes. Pick the column that comes first in any such indexes. Ties are broken arbitrarily.
     --Note: this will only pick a column that is NOT unique in a multi-column unique index.
@@ -47,7 +47,7 @@ BEGIN
     --right now stats are from the hypertable itself. Use chunks in the future.
     INNER JOIN pg_stats s ON (s.attname = a.attname and s.schemaname = _schema_name and s.tablename = _table_name)
     WHERE
-      a.attname NOT IN (SELECT column_name FROM _timescaledb_catalog.dimension d WHERE d.hypertable_id = _hypertable_row.id)
+      a.attname NOT IN (SELECT column_name FROM _timeudb_catalog.dimension d WHERE d.hypertable_id = _hypertable_row.id)
       AND s.n_distinct > 1
     ORDER BY i.pos
     LIMIT 1;
@@ -77,7 +77,7 @@ BEGIN
     --right now stats are from the hypertable itself. Use chunks in the future.
     INNER JOIN pg_stats s ON (s.attname = a.attname and s.schemaname = _schema_name and s.tablename = _table_name)
     WHERE
-      a.attname NOT IN (SELECT column_name FROM _timescaledb_catalog.dimension d WHERE d.hypertable_id = _hypertable_row.id)
+      a.attname NOT IN (SELECT column_name FROM _timeudb_catalog.dimension d WHERE d.hypertable_id = _hypertable_row.id)
       AND s.n_distinct > 1
     ORDER BY i.pos
     LIMIT 1;
@@ -108,7 +108,7 @@ BEGIN
     LEFT JOIN
       pg_stats s ON (s.attname = a.attname and s.schemaname = _schema_name and s.tablename = _table_name)
     WHERE
-      a.attname NOT IN (SELECT column_name FROM _timescaledb_catalog.dimension d WHERE d.hypertable_id = _hypertable_row.id)
+      a.attname NOT IN (SELECT column_name FROM _timeudb_catalog.dimension d WHERE d.hypertable_id = _hypertable_row.id)
       AND s.n_distinct is null
       AND a.attidentity = '' AND (ad.adbin IS NULL OR pg_get_expr(adbin, adrelid) not like 'nextval%')
     ORDER BY i.pos
@@ -143,7 +143,7 @@ BEGIN
     LEFT JOIN
       pg_stats s ON (s.attname = a.attname and s.schemaname = _schema_name and s.tablename = _table_name)
     WHERE
-      a.attname NOT IN (SELECT column_name FROM _timescaledb_catalog.dimension d WHERE d.hypertable_id = _hypertable_row.id)
+      a.attname NOT IN (SELECT column_name FROM _timeudb_catalog.dimension d WHERE d.hypertable_id = _hypertable_row.id)
       AND s.n_distinct is null
       AND a.attidentity = '' AND (ad.adbin IS NULL OR pg_get_expr(adbin, adrelid) not like 'nextval%')
     ORDER BY i.pos
@@ -177,7 +177,7 @@ BEGIN
     LEFT JOIN
       pg_catalog.pg_attrdef ad ON (ad.adrelid = relation AND ad.adnum = a.attnum)
     WHERE
-      a.attname NOT IN (SELECT column_name FROM _timescaledb_catalog.dimension d WHERE d.hypertable_id = _hypertable_row.id)
+      a.attname NOT IN (SELECT column_name FROM _timeudb_catalog.dimension d WHERE d.hypertable_id = _hypertable_row.id)
       AND a.attidentity = '' AND (ad.adbin IS NULL OR pg_get_expr(adbin, adrelid) not like 'nextval%');
 
     IF _cnt > 0 THEN
@@ -200,7 +200,7 @@ $BODY$ SET search_path TO pg_catalog, pg_temp;
 -- - clauses: an array of column names and sort order key words that shold be used for order by.
 -- - confidence: a number between 0 and 10 (most confident) indicating how sure we are.
 -- - message: a message that should be shown to the user to evaluate the result.
-CREATE OR REPLACE FUNCTION _timescaledb_functions.get_orderby_defaults(
+CREATE OR REPLACE FUNCTION _timeudb_functions.get_orderby_defaults(
     relation regclass, segment_by_cols text[]
 )
     RETURNS JSONB LANGUAGE PLPGSQL AS
@@ -208,7 +208,7 @@ $BODY$
 DECLARE
     _table_name NAME;
     _schema_name NAME;
-    _hypertable_row _timescaledb_catalog.hypertable;
+    _hypertable_row _timeudb_catalog.hypertable;
     _orderby_names NAME[];
     _dimension_names NAME[];
     _first_index_attrs NAME[];
@@ -220,7 +220,7 @@ BEGIN
     INNER JOIN pg_namespace n ON (n.oid = c.relnamespace)
     WHERE c.oid = relation;
 
-    SELECT * INTO STRICT _hypertable_row FROM _timescaledb_catalog.hypertable h WHERE h.table_name = _table_name AND h.schema_name = schema_name;
+    SELECT * INTO STRICT _hypertable_row FROM _timeudb_catalog.hypertable h WHERE h.table_name = _table_name AND h.schema_name = schema_name;
 
     --start with the unique index columns minus the segment by columns
     with index_attr as (
@@ -253,7 +253,7 @@ BEGIN
     --add dimension colomns to the end. A dimension column like time should probably always be part of the order by.
     SELECT
       array_agg(d.column_name) INTO _dimension_names
-    FROM _timescaledb_catalog.dimension d
+    FROM _timeudb_catalog.dimension d
     WHERE
       d.hypertable_id = _hypertable_row.id
       AND NOT(d.column_name::text = ANY (_orderby_names))
@@ -292,7 +292,7 @@ BEGIN
         format('%I DESC', a.colname)
       END ORDER BY pos), array[]::text[]) INTO STRICT _orderby_clauses
     FROM unnest(_orderby_names) WITH ORDINALITY as a(colname, pos)
-    LEFT JOIN _timescaledb_catalog.dimension d ON (d.column_name = a.colname AND d.hypertable_id = _hypertable_row.id);
+    LEFT JOIN _timeudb_catalog.dimension d ON (d.column_name = a.colname AND d.hypertable_id = _hypertable_row.id);
 
 
     return json_build_object('clauses', _orderby_clauses, 'confidence', _confidence);

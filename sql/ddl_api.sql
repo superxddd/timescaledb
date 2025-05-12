@@ -33,7 +33,7 @@ CREATE OR REPLACE FUNCTION @extschema@.create_hypertable(
     partitioning_func       REGPROC = NULL,
     migrate_data            BOOLEAN = FALSE,
     chunk_target_size       TEXT = NULL,
-    chunk_sizing_func       REGPROC = '_timescaledb_functions.calculate_chunk_interval'::regproc,
+    chunk_sizing_func       REGPROC = '_timeudb_functions.calculate_chunk_interval'::regproc,
     time_partitioning_func  REGPROC = NULL
 ) RETURNS TABLE(hypertable_id INT, schema_name NAME, table_name NAME, created BOOL) AS '@MODULE_PATHNAME@', 'ts_hypertable_create' LANGUAGE C VOLATILE;
 
@@ -47,7 +47,7 @@ CREATE OR REPLACE FUNCTION @extschema@.create_hypertable(
 -- migrate_data (Optional) Set to true to migrate any existing data in the table to chunks
 CREATE OR REPLACE FUNCTION @extschema@.create_hypertable(
     relation                REGCLASS,
-    dimension               _timescaledb_internal.dimension_info,
+    dimension               _timeudb_internal.dimension_info,
     create_default_indexes  BOOLEAN = TRUE,
     if_not_exists           BOOLEAN = FALSE,
     migrate_data            BOOLEAN = FALSE
@@ -58,7 +58,7 @@ CREATE OR REPLACE FUNCTION @extschema@.create_hypertable(
 CREATE OR REPLACE FUNCTION @extschema@.set_adaptive_chunking(
     hypertable                     REGCLASS,
     chunk_target_size              TEXT,
-    INOUT chunk_sizing_func        REGPROC = '_timescaledb_functions.calculate_chunk_interval'::regproc,
+    INOUT chunk_sizing_func        REGPROC = '_timeudb_functions.calculate_chunk_interval'::regproc,
     OUT chunk_target_size          BIGINT
 ) RETURNS RECORD AS '@MODULE_PATHNAME@', 'ts_chunk_adaptive_set' LANGUAGE C VOLATILE;
 
@@ -144,20 +144,20 @@ AS '@MODULE_PATHNAME@', 'ts_dimension_add' LANGUAGE C VOLATILE;
 -- if_not_exists - If set, and the dimension already exists, generate a notice instead of an error
 CREATE OR REPLACE FUNCTION @extschema@.add_dimension(
     hypertable              REGCLASS,
-    dimension               _timescaledb_internal.dimension_info,
+    dimension               _timeudb_internal.dimension_info,
     if_not_exists           BOOLEAN = FALSE
 ) RETURNS TABLE(dimension_id INT, created BOOL)
 AS '@MODULE_PATHNAME@', 'ts_dimension_add_general' LANGUAGE C VOLATILE;
 
 CREATE OR REPLACE FUNCTION @extschema@.by_hash(column_name NAME, number_partitions INTEGER,
                                                partition_func regproc = NULL)
-    RETURNS _timescaledb_internal.dimension_info LANGUAGE C
+    RETURNS _timeudb_internal.dimension_info LANGUAGE C
     AS '@MODULE_PATHNAME@', 'ts_hash_dimension';
 
 CREATE OR REPLACE FUNCTION @extschema@.by_range(column_name NAME,
                                                 partition_interval ANYELEMENT = NULL::bigint,
                                                 partition_func regproc = NULL)
-    RETURNS _timescaledb_internal.dimension_info LANGUAGE C
+    RETURNS _timeudb_internal.dimension_info LANGUAGE C
     AS '@MODULE_PATHNAME@', 'ts_range_dimension';
 
 CREATE OR REPLACE FUNCTION @extschema@.attach_tablespace(

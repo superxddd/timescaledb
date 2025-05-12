@@ -23,11 +23,11 @@ typedef enum
 	 */
 	ORIGIN_POSTGRES = 0,
 	/*
-	 * Function is provided by TimescaleDB.
+	 * Function is provided by TIMEUDB.
 	 */
 	ORIGIN_TIMESCALE = 1,
 	/*
-	 * Function is provided by TimescaleDB and is experimental.
+	 * Function is provided by TIMEUDB and is experimental.
 	 * It should be looked for in the experimental schema.
 	 */
 	ORIGIN_TIMESCALE_EXPERIMENTAL = 2,

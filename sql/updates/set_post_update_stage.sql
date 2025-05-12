@@ -1,1 +1,1 @@
-set timescaledb.update_script_stage = 'post';
+set timeudb.update_script_stage = 'post';

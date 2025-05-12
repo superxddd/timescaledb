@@ -338,7 +338,7 @@ check_trigger_exists_hypertable(Oid relid, char *trigname)
  * Add continuous agg invalidation trigger to hypertable
  * relid - oid of hypertable
  * hypertableid - argument to pass to trigger
- * (the hypertable id from timescaledb catalog)
+ * (the hypertable id from timeudb catalog)
  */
 static void
 cagg_add_trigger_hypertable(Oid relid, int32 hypertable_id)

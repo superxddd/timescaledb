@@ -80,11 +80,11 @@ static const CompressionAlgorithmDefinition definitions[_END_COMPRESSION_ALGORIT
 /* The prefix of a logical replication message which is inserted into the
  * replication stream right before decompression inserts are happening
  */
-#define DECOMPRESSION_MARKER_START "::timescaledb-decompression-start"
+#define DECOMPRESSION_MARKER_START "::timeudb-decompression-start"
 /* The prefix of a logical replication message which is inserted into the
  * replication stream right after all decompression inserts have finished
  */
-#define DECOMPRESSION_MARKER_END "::timescaledb-decompression-end"
+#define DECOMPRESSION_MARKER_END "::timeudb-decompression-end"
 #endif
 
 static inline void
@@ -2283,7 +2283,7 @@ decompress_batches_for_insert(const ChunkInsertState *cis, TupleTableSlot *slot)
 		ereport(ERROR,
 				(errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
 				 errmsg("inserting into compressed chunk with unique constraints disabled"),
-				 errhint("Set timescaledb.enable_dml_decompression to TRUE.")));
+				 errhint("Set timeudb.enable_dml_decompression to TRUE.")));
 
 	Oid comp_relid = ts_chunk_get_relid(cis->compressed_chunk_id, false);
 	Relation in_rel = relation_open(comp_relid, RowExclusiveLock);
@@ -3284,7 +3284,7 @@ decompress_chunk_walker(PlanState *ps, struct decompress_chunk_context *ctx)
 					ereport(ERROR,
 							(errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
 							 errmsg("UPDATE/DELETE is disabled on compressed chunks"),
-							 errhint("Set timescaledb.enable_dml_decompression to TRUE.")));
+							 errhint("Set timeudb.enable_dml_decompression to TRUE.")));
 
 				decompress_batches_for_update_delete(ctx->ht_state,
 													 current_chunk,

@@ -1,4 +1,4 @@
-# TimescaleDB Changelog
+# TIMEUDB Changelog
 
 **Please note: When updating your database, you should connect using
 `psql` with the `-X` flag to prevent any `.psqlrc` commands from
@@ -23,7 +23,7 @@ In addition, it includes these noteworthy features:
 * Recommend users to [migrate their old Continuous Aggregate format to the new one](https://docs.timescale.com/use-timescale/latest/continuous-aggregates/migrate/) because it support will be completely removed in next releases prevent them to migrate.
 * This is the last release supporting PostgreSQL 13.
 
-**For on-premise users and this release only**, you will need to run [this SQL script](https://github.com/timescale/timescaledb-extras/blob/master/utils/2.15.X-fix_hypertable_foreign_keys.sql) after running `ALTER EXTENSION`. More details can be found in the pull request [#6786](https://github.com/timescale/timescaledb/pull/6797).
+**For on-premise users and this release only**, you will need to run [this SQL script](https://github.com/timescale/timeudb-extras/blob/master/utils/2.15.X-fix_hypertable_foreign_keys.sql) after running `ALTER EXTENSION`. More details can be found in the pull request [#6786](https://github.com/timescale/timeudb/pull/6797).
 
 **Features**
 * #6382 Support for time_bucket with origin and offset in CAggs
@@ -33,7 +33,7 @@ In addition, it includes these noteworthy features:
 * #6767 Add metadata table `_timestaledb_internal.bgw_job_stat_history` for tracking job execution history
 * #6798 Prevent usage of deprecated time_bucket_ng in CAgg definition
 * #6810 Add telemetry for access methods
-* #6811 Remove no longer relevant timescaledb.allow_install_without_preload GUC
+* #6811 Remove no longer relevant timeudb.allow_install_without_preload GUC
 * #6837 Add migration path for CAggs using time_bucket_ng
 * #6865 Update the watermark when truncating a CAgg
 
@@ -116,17 +116,17 @@ New compression settings take effect on any new chunks that are compressed after
 **For this release only**, you will need to restart the database before running `ALTER EXTENSION`
 
 **Multi-node support removal announcement**
-Following the deprecation announcement for Multi-node in TimescaleDB 2.13,
-Multi-node is no longer supported starting with TimescaleDB 2.14.
+Following the deprecation announcement for Multi-node in TIMEUDB 2.13,
+Multi-node is no longer supported starting with TIMEUDB 2.14.
 
-TimescaleDB 2.13 is the last version that includes multi-node support. Learn more about it [here](docs/MultiNodeDeprecation.md).
+TIMEUDB 2.13 is the last version that includes multi-node support. Learn more about it [here](docs/MultiNodeDeprecation.md).
 
-If you want to migrate from multi-node TimescaleDB to single-node TimescaleDB, read the
+If you want to migrate from multi-node TIMEUDB to single-node TIMEUDB, read the
 [migration documentation](https://docs.timescale.com/migrate/latest/multi-node-to-timescale-service/).
 
 **Deprecation notice: recompress_chunk procedure**
-TimescaleDB 2.14 is the last version that will include the recompress_chunk procedure. Its
-functionality will be replaced by the compress_chunk function, which, starting on TimescaleDB 2.14, 
+TIMEUDB 2.14 is the last version that will include the recompress_chunk procedure. Its
+functionality will be replaced by the compress_chunk function, which, starting on TIMEUDB 2.14, 
 works on both uncompressed and partially compressed chunks. 
 The compress_chunk function should be used going forward to fully compress all types of chunks or even recompress 
 old fully compressed chunks using new compression settings (through the newly introduced recompress optional parameter).
@@ -209,17 +209,17 @@ In addition, it includes these noteworthy features:
 * Track chunk creation time used in retention/compression policies
 
 **Deprecation notice: Multi-node support**
-TimescaleDB 2.13 is the last version that will include multi-node support. Multi-node
+TIMEUDB 2.13 is the last version that will include multi-node support. Multi-node
 support in 2.13 is available for PostgreSQL 13, 14 and 15. Learn more about it
 [here](docs/MultiNodeDeprecation.md).
 
-If you want to migrate from multi-node TimescaleDB to single-node TimescaleDB read the
+If you want to migrate from multi-node TIMEUDB to single-node TIMEUDB read the
 [migration documentation](https://docs.timescale.com/migrate/latest/multi-node-to-timescale-service/).
 
 **PostgreSQL 13 deprecation announcement**
-We will continue supporting PostgreSQL 13 until April 2024. Sooner to that time, we will announce the specific version of TimescaleDB in which PostgreSQL 13 support will not be included going forward.
+We will continue supporting PostgreSQL 13 until April 2024. Sooner to that time, we will announce the specific version of TIMEUDB in which PostgreSQL 13 support will not be included going forward.
 
-**Starting from TimescaleDB 2.13.0**
+**Starting from TIMEUDB 2.13.0**
 * No Amazon Machine Images (AMI) are published. If you previously used AMI, please 
 use another [installation method](https://docs.timescale.com/self-hosted/latest/install/)
 * Continuous Aggregates are materialized only (non-realtime) by default
@@ -248,7 +248,7 @@ use another [installation method](https://docs.timescale.com/self-hosted/latest/
 * #6289 Add support for startup chunk exclusion with aggs 
 * #6290 Repair relacl on upgrade
 * #6297 Fix segfault when creating a cagg using a NULL width in time bucket function
-* #6305 Make timescaledb_functions.makeaclitem strict
+* #6305 Make timeudb_functions.makeaclitem strict
 * #6332 Fix typmod and collation for segmentby columns
 * #6339 Fix tablespace with constraints
 * #6343 Enable segmentwise recompression in compression policy
@@ -294,7 +294,7 @@ and continuous aggregates and bug fixes since the 2.11.2 release.
 We recommend that you upgrade at the next available opportunity.
 
 This release moves all internal functions from the _timescaleb_internal
-schema into the _timescaledb_functions schema. This separates code from
+schema into the _timeudb_functions schema. This separates code from
 internal data objects and improves security by allowing more restrictive
 permissions for the code schema. If you are calling any of those internal
 functions you should adjust your code as soon as possible. This version
@@ -302,10 +302,10 @@ also includes a compatibility layer that allows calling them in the old
 location but that layer will be removed in 2.14.0.
 
 **PostgreSQL 12 support removal announcement**
-Following the deprecation announcement for PostgreSQL 12 in TimescaleDB 2.10,
-PostgreSQL 12 is not supported starting with TimescaleDB 2.12.
+Following the deprecation announcement for PostgreSQL 12 in TIMEUDB 2.10,
+PostgreSQL 12 is not supported starting with TIMEUDB 2.12.
 Currently supported PostgreSQL major versions are 13, 14 and 15.
-PostgreSQL 16 support will be added with a following TimescaleDB release.
+PostgreSQL 16 support will be added with a following TIMEUDB release.
 
 **Features**
 * #5137 Insert into index during chunk compression
@@ -327,8 +327,8 @@ PostgreSQL 16 support will be added with a following TimescaleDB release.
 **Bugfixes**
 * #5860 Fix interval calculation for hierarchical CAggs
 * #5894 Check unique indexes when enabling compression
-* #5951 _timescaledb_internal.create_compressed_chunk doesn't account for existing uncompressed rows
-* #5988 Move functions to _timescaledb_functions schema
+* #5951 _timeudb_internal.create_compressed_chunk doesn't account for existing uncompressed rows
+* #5988 Move functions to _timeudb_functions schema
 * #5788 Chunk_create must add an existing table or fail
 * #5872 Fix duplicates on partially compressed chunk reads
 * #5918 Fix crash in COPY from program returning error
@@ -356,7 +356,7 @@ This release contains bug fixes since the 2.11.1 release.
 We recommend that you upgrade at the next available opportunity.
 
 **Features**
-* #5923 Feature flags for TimescaleDB features
+* #5923 Feature flags for TIMEUDB features
 **Bugfixes**
 * #5680 Fix DISTINCT query with JOIN on multiple segmentby columns
 * #5774 Fixed two bugs in decompression sorted merge code 
@@ -458,7 +458,7 @@ This release includes these noteworthy features:
 * #5470 Ensure superuser perms during copy/move chunk
 * #5500 Fix when no FROM clause in continuous aggregate definition
 * #5433 Fix join rte in CAggs with joins
-* #5556 Fix duplicated entries on timescaledb_experimental.policies view
+* #5556 Fix duplicated entries on timeudb_experimental.policies view
 * #5462 Fix segfault after column drop on compressed table
 * #5543 Copy scheduled_jobs list before sorting it
 * #5497 Allow named time_bucket arguments in Cagg definition
@@ -471,7 +471,7 @@ This release includes these noteworthy features:
 * @S-imo-n for reporting the issue on Background Worker Scheduler crash
 * @geezhu for reporting issue on segfault in historgram()
 * @mwahlhuetter for reporting the issue with joins in CAggs
-* @mwahlhuetter for reporting issue with duplicated entries on timescaledb_experimental.policies view
+* @mwahlhuetter for reporting issue with duplicated entries on timeudb_experimental.policies view
 * @H25E for reporting error refreshing from beginning of a Continuous Aggregate with variable time bucket
 
 
@@ -510,13 +510,13 @@ This release includes these noteworthy features:
 * Full PostgreSQL 15 support for all existing features. Support for the newly introduced MERGE command on hypertables will be introduced on a follow-up release.
 
 **PostgreSQL 12 deprecation announcement**
-We will continue supporting PostgreSQL 12 until July 2023. Sooner to that time, we will announce the specific version of TimescaleDB in which PostgreSQL 12 support will not be included going forward.
+We will continue supporting PostgreSQL 12 until July 2023. Sooner to that time, we will announce the specific version of TIMEUDB in which PostgreSQL 12 support will not be included going forward.
 
 **Old format of Continuous Aggregates deprecation announcement**
-TimescaleDB 2.7 introduced a new format for continuous aggregates that improves performance.
+TIMEUDB 2.7 introduced a new format for continuous aggregates that improves performance.
 All instances with Continuous Aggregates using the old format should [migrate to the new format](https://docs.timescale.com/api/latest/continuous-aggregates/cagg_migrate/) by July 2023,
 when support for the old format will be removed.
-Sooner to that time, we will announce the specific version of TimescaleDB in which support for this feature will not be included going forward.
+Sooner to that time, we will announce the specific version of TIMEUDB in which support for this feature will not be included going forward.
 
 **Features**
 * #4874 Allow joins in continuous aggregates
@@ -540,7 +540,7 @@ Sooner to that time, we will announce the specific version of TimescaleDB in whi
 ## 2.9.3 (2023-02-03)
 
 This release contains bug fixes since the 2.9.2 release and a fix for a security vulnerability (#5259).
-You can check the security advisory(https://github.com/timescale/timescaledb/security/advisories/GHSA-44jh-j22r-33wq)
+You can check the security advisory(https://github.com/timescale/timeudb/security/advisories/GHSA-44jh-j22r-33wq)
 for more information on the vulnerability and the platforms that are affected.
 
 This release is high priority for upgrade. We strongly recommend that you upgrade as soon as possible.
@@ -626,7 +626,7 @@ This release also includes several bug fixes.
 * #4745 Fix FK constraint violation error while insert into hypertable which references partitioned table
 * #4756 Improve compression job IO performance
 * #4770 Continue compressing other chunks after an error
-* #4794 Fix degraded performance seen on timescaledb_internal.hypertable_local_size() function
+* #4794 Fix degraded performance seen on timeudb_internal.hypertable_local_size() function
 * #4807 Fix segmentation fault during INSERT into compressed hypertable
 * #4822 Fix missing segmentby compression option in CAGGs
 * #4823 Fix a crash that could occur when using nested user-defined functions with hypertables
@@ -736,7 +736,7 @@ This release includes these noteworthy features:
 * #4512 Fix unaligned pointer access
 * #4519 Throw better error message on incompatible row fetcher settings
 * #4549 Fix dump_meta_data for windows
-* #4553 Fix timescaledb_post_restore GUC handling
+* #4553 Fix timeudb_post_restore GUC handling
 * #4573 Load TSL library on compressed_data_out call
 * #4575 Fix use of `get_partition_hash` and `get_partition_for_key` inside an IMMUTABLE function
 * #4577 Fix segfaults in compression code with corrupt data
@@ -789,7 +789,7 @@ This release is a patch release. We recommend that you upgrade at the
 next available opportunity.
 
 **Bugfixes**
-* #4494 Handle timescaledb versions aptly in multinode
+* #4494 Handle timeudb versions aptly in multinode
 * #4493 Segfault when executing IMMUTABLE functions
 * #4482 Fix race conditions during chunk (de)compression
 * #4367 Improved buffer management in the copy operator
@@ -852,9 +852,9 @@ those hypertables.
 * #3899 Fix segfault in Continuous Aggregates
 * #4225 Fix TRUNCATE error as non-owner on hypertable
 * #4236 Fix potential wrong order of results for compressed hypertable with a non-default collation
-* #4249 Fix option "timescaledb.create_group_indexes"
+* #4249 Fix option "timeudb.create_group_indexes"
 * #4251 Fix INSERT into compressed chunks with dropped columns
-* #4255 Fix option "timescaledb.create_group_indexes"
+* #4255 Fix option "timeudb.create_group_indexes"
 * #4259 Fix logic bug in extension update script
 * #4269 Fix bad Continuous Aggregate view definition reported in #4233
 * #4289 Support moving compressed chunks between data nodes
@@ -903,7 +903,7 @@ This release adds major new features since the 2.5.2 release, including:
 * Experimental support for timezones in continuous aggregates
 * Experimental support for monthly buckets in continuous aggregates
 
-The release also includes several bug fixes. Telemetry reports now include new and more detailed statistics on regular tables and views, compression, distributed hypertables, and continuous aggregates, which will help us improve TimescaleDB.
+The release also includes several bug fixes. Telemetry reports now include new and more detailed statistics on regular tables and views, compression, distributed hypertables, and continuous aggregates, which will help us improve TIMEUDB.
 
 **Features**
 * #3768 Allow ALTER TABLE ADD COLUMN with DEFAULT on compressed hypertable
@@ -1090,7 +1090,7 @@ function supports years, months, days, hours, minutes, and seconds.
 
 We’re committed to developing these experiments, giving the community
  a chance to provide early feedback and influence the direction of
-TimescaleDB’s development. We’ll travel faster with your input!
+TIMEUDB’s development. We’ll travel faster with your input!
 
 Please create your feedback as a GitHub issue (using the
 experimental-schema label), describe what you found, and tell us the
@@ -1101,10 +1101,10 @@ This release also includes several bug fixes.
 PostgreSQL 11 deprecation announcement
 Timescale is working hard on our next exciting features. To make that
 possible, we require functionality that is available in Postgres 12 and
-above. Postgres 11 is not supported with TimescaleDB 2.4.
+above. Postgres 11 is not supported with TIMEUDB 2.4.
 
 **Experimental Features**
-* #3293 Add timescaledb_experimental schema
+* #3293 Add timeudb_experimental schema
 * #3302 Add block_new_chunks and allow_new_chunks API to experimental
 schema. Add chunk based refresh_continuous_aggregate.
 * #3211 Introduce experimental time_bucket_ng function
@@ -1253,7 +1253,7 @@ Timescale is working hard on our next exciting features. To make that
 possible, we require functionality that is unfortunately absent on
 PostgreSQL 11. For this reason, we will continue supporting PostgreSQL
 11 until mid-June 2021. Sooner to that time, we will announce the
-specific version of TimescaleDB in which PostgreSQL 11 support will
+specific version of TIMEUDB in which PostgreSQL 11 support will
 not be included going forward.
 
 **Major Features**
@@ -1285,11 +1285,11 @@ deem it high priority for upgrading.
 The bug fixes in this release address issues with CREATE INDEX and
 UPSERT for hypertables, custom jobs, and gapfill queries.
 
-This release marks TimescaleDB as a trusted extension in PG13, so that
+This release marks TIMEUDB as a trusted extension in PG13, so that
 superuser privileges are not required anymore to install the extension.
 
 **Minor features**
-* #2998 Mark timescaledb as trusted extension
+* #2998 Mark timeudb as trusted extension
 
 **Bugfixes**
 * #2948 Fix off by 4 error in histogram deserialize
@@ -1311,12 +1311,12 @@ superuser privileges are not required anymore to install the extension.
 This release adds major new features since the 2.0.2 release.
 We deem it moderate priority for upgrading.
 
-This release adds the long-awaited support for PostgreSQL 13 to TimescaleDB.
+This release adds the long-awaited support for PostgreSQL 13 to TIMEUDB.
 The minimum required PostgreSQL 13 version is 13.2 due to a security vulnerability
-affecting TimescaleDB functionality present in earlier versions of PostgreSQL 13.
+affecting TIMEUDB functionality present in earlier versions of PostgreSQL 13.
 
 This release also relaxes some restrictions for compressed hypertables;
-namely, TimescaleDB now supports adding columns to compressed hypertables
+namely, TIMEUDB now supports adding columns to compressed hypertables
 and renaming columns of compressed hypertables.
 
 **Major Features**
@@ -1360,7 +1360,7 @@ lot of invalidations.
 
 This maintenance release contains bugfixes since the 1.7.4 release.
 Most of these fixes were backported from the 2.0.0 and 2.0.1 releases.
-We deem it high priority for upgrading for users on TimescaleDB 1.7.4
+We deem it high priority for upgrading for users on TIMEUDB 1.7.4
 or previous versions.
 
 In particular the fixes contained in this maintenance release address
@@ -1431,22 +1431,22 @@ and when upgrading from previous versions.
 
 ## 2.0.0 (2020-12-18)
 
-With this release, we are officially moving TimescaleDB 2.0 to GA,
+With this release, we are officially moving TIMEUDB 2.0 to GA,
 concluding several release candidates.
 
-TimescaleDB 2.0 adds the much-anticipated support for distributed
-hypertables (multi-node TimescaleDB), as well as new features and
+TIMEUDB 2.0 adds the much-anticipated support for distributed
+hypertables (multi-node TIMEUDB), as well as new features and
 enhancements to core functionality to give users better clarity and
 more control and flexibility over their data.
 
-Multi-node architecture:  In particular, with TimescaleDB 2.0, users
+Multi-node architecture:  In particular, with TIMEUDB 2.0, users
 can now create distributed hypertables across multiple instances of
-TimescaleDB, configured so that one instance serves as an access node
+TIMEUDB, configured so that one instance serves as an access node
 and multiple others as data nodes. All queries for a distributed
 hypertable are issued to the access node, but inserted data and queries
 are pushed down across data nodes for greater scale and performance.
 
-Multi-node TimescaleDB can be self managed or, for easier operation,
+Multi-node TIMEUDB can be self managed or, for easier operation,
 launched within Timescale's fully-managed cloud services.
 
 This release also adds:
@@ -1461,22 +1461,22 @@ This release also adds:
 * Redesigned informational views, including new (and more general)
   views for information about hypertable's dimensions and chunks,
   policies and user-defined actions, as well as support for multi-node
-  TimescaleDB.
+  TIMEUDB.
 * Moving all formerly enterprise features into our Community Edition,
   and updating Timescale License, which now provides additional (more
   permissive) rights to users and developers.
 
 Some of the changes above (e.g., continuous aggregates, updated
 informational views) do introduce breaking changes to APIs and are not
-backwards compatible. While the update scripts in TimescaleDB 2.0 will
-upgrade databases running TimescaleDB 1.x automatically, some of these
+backwards compatible. While the update scripts in TIMEUDB 2.0 will
+upgrade databases running TIMEUDB 1.x automatically, some of these
 API and feature changes may require changes to clients and/or upstream
 scripts that rely on the previous APIs.  Before upgrading, we recommend
 reviewing upgrade documentation at docs.timescale.com for more details.
 
 **Major Features**
 
-TimescaleDB 2.0 moves the following major features to GA:
+TIMEUDB 2.0 moves the following major features to GA:
 * #1923 Add support for distributed hypertables
 * #2006 Add support for user-defined actions
 * #2125 #2221 Improve Continuous Aggregate API
@@ -1510,7 +1510,7 @@ Since the last release candidate 4, there are several bugfixes:
 
 **Thanks**
 
-Thanks to all contributors for the TimescaleDB 2.0 release:
+Thanks to all contributors for the TIMEUDB 2.0 release:
 * @airton-neto for reporting a bug in executing some queries with UNION
 * @nshah14285 for reporting an issue with propagating privileges
 * @kalman5 for reporting an issue with renaming constraints
@@ -1633,15 +1633,15 @@ This release adds major new features and bugfixes since the 1.7.4 release.
 We deem it moderate priority for upgrading.
 
 This release adds the long-awaited support for distributed hypertables to
-TimescaleDB. With 2.0, users can create distributed hypertables across
-multiple instances of TimescaleDB, configured so that one instance serves
+TIMEUDB. With 2.0, users can create distributed hypertables across
+multiple instances of TIMEUDB, configured so that one instance serves
 as an access node and multiple others as data nodes. All queries for a
 distributed hypertable are issued to the access node, but inserted data
 and queries are pushed down across data nodes for greater scale and
 performance.
 
 This release also adds support for user-defined actions allowing users to
-define actions that are run by the TimescaleDB automation framework.
+define actions that are run by the TIMEUDB automation framework.
 
 In addition to these major new features, the 2.0 branch introduces _breaking_ changes
 to APIs and existing features, such as continuous aggregates. These changes are not
@@ -1706,7 +1706,7 @@ retention_policy.
 ## 1.7.4 (2020-09-07)
 
 This maintenance release contains bugfixes since the 1.7.3 release. We deem it
-high priority for upgrading if TimescaleDB is deployed with replicas (synchronous
+high priority for upgrading if TIMEUDB is deployed with replicas (synchronous
 or asynchronous).
 
 In particular the fixes contained in this maintenance release address an issue with
@@ -1857,7 +1857,7 @@ aggregates with real-time aggregation and PostgreSQL 12 support.
 * #1864 Fix issue with subplan selection in parallel ChunkAppend
 * #1868 Add support for WHERE, HAVING clauses with real time aggregates
 * #1869 Fix real time aggregate support for multiple continuous aggregates
-* #1871 Don't rely on timescaledb.restoring for upgrade
+* #1871 Don't rely on timeudb.restoring for upgrade
 * #1875 Fix hypertable detection in subqueries
 * #1884 Fix crash on SELECT WHERE NOT with empty table
 
@@ -1877,7 +1877,7 @@ aggregates with real-time aggregation and PostgreSQL 12 support.
 This release adds major new features and bugfixes since the 1.6.1 release.
 We deem it moderate priority for upgrading.
 
-This release adds the long-awaited support for PostgreSQL 12 to TimescaleDB.
+This release adds the long-awaited support for PostgreSQL 12 to TIMEUDB.
 
 This release also adds a new default behavior when querying continuous
 aggregates that we call real-time aggregation. A query on a continuous
@@ -1888,10 +1888,10 @@ Note that only newly created continuous aggregates will have this
 real-time query behavior, although it can be enabled on existing
 continuous aggregates with a configuration setting as follows:
 
-ALTER VIEW continuous_view_name SET (timescaledb.materialized_only=false);
+ALTER VIEW continuous_view_name SET (timeudb.materialized_only=false);
 
 This release also moves several data management lifecycle features
-to the Community version of TimescaleDB (from Enterprise), including
+to the Community version of TIMEUDB (from Enterprise), including
 data reordering and data retention policies.
 
 **Major Features**
@@ -1899,7 +1899,7 @@ data reordering and data retention policies.
 * #1685 Add support for real-time aggregation on continuous aggregates
 
 **Bugfixes**
-* #1665 Add ignore_invalidation_older_than to timescaledb_information.continuous_aggregates view
+* #1665 Add ignore_invalidation_older_than to timeudb_information.continuous_aggregates view
 * #1750 Handle undefined ignore_invalidation_older_than
 * #1757 Restrict watermark to max for continuous aggregates
 * #1769 Add rescan function to CompressChunkDml CustomScan node
@@ -1988,10 +1988,10 @@ value in the table. This change requires that an integer_now func be set on
 hypertables with integer-based time columns to use continuous aggregates on
 this table.
 
-We added a timescaledb.ignore_invalidation_older_than parameter for continuous
+We added a timeudb.ignore_invalidation_older_than parameter for continuous
 aggregates. This parameter accept a time-interval (e.g. 1 month). If set,
 it limits the amount of time for which to process invalidation. Thus, if
-timescaledb.ignore_invalidation_older_than = '1 month', then any modifications
+timeudb.ignore_invalidation_older_than = '1 month', then any modifications
 for data older than 1 month from the current timestamp at modification time may
 not cause continuous aggregate to be updated. This limits the amount of work
 that a backfill can trigger. By default, all invalidations are processed.
@@ -2011,7 +2011,7 @@ that a backfill can trigger. By default, all invalidations are processed.
 * #1603 Add join info to compressed chunk
 * #1606 Fix constify params during runtime exclusion
 * #1607 Delete compression policy when drop hypertable
-* #1608 Add jobs to timescaledb_information.policy_stats
+* #1608 Add jobs to timeudb_information.policy_stats
 * #1609 Fix bug with parent table in decompression
 * #1624 Fix drop_chunks for ApacheOnly
 * #1632 Check for NULL before dereferencing variable
@@ -2200,7 +2200,7 @@ supports space partitioning and ordering by time_bucket.
 * #1273 Propagate quals to joined hypertables
 * #1317 Support time bucket functions in Ordered Append
 * #1331 Add warning message for REFRESH MATERIALIZED VIEW
-* #1332 Add job statistics columns to timescaledb_information.continuous_aggregate_stats view
+* #1332 Add job statistics columns to timeudb_information.continuous_aggregate_stats view
 * #1326 Add architecture and bit size to telemetry
 
 **Bugfixes**
@@ -2238,7 +2238,7 @@ We deem it low-to-moderate priority for upgrading.
 
 In particular, the fixes contained in this maintenance release do not address any
 security vulnerabilities, while the only one affecting system stability is related
-to TimescaleDB running on PostgreSQL 11.  More details below.
+to TIMEUDB running on PostgreSQL 11.  More details below.
 
 **Bugfixes**
 * #1220 Fix detecting JOINs for continuous aggs
@@ -2281,7 +2281,7 @@ high-write amplification associated with trigger-based approaches. Instead,
 we use invalidation techniques to track what data has changed, and then correct
 the materialized aggregate the next time that the automated process executes.
 
-More information can be found on [our docs overview](http://docs.timescale.com/using-timescaledb/continuous-aggregates)
+More information can be found on [our docs overview](http://docs.timescale.com/using-timeudb/continuous-aggregates)
 or in this [tutorial](http://docs.timescale.com/tutorials/continuous-aggs-tutorial).
 
 **Major Features**
@@ -2333,7 +2333,7 @@ This release contains bugfixes.
 * #1060 Fix sort_transform optimization
 
 **Thanks**
-* @esatterwhite for reporting a bug when using timescaledb with zombodb
+* @esatterwhite for reporting a bug when using timeudb with zombodb
 * @eeeebbbbrrrr for fixing compatibility with extensions that also define planner_hook
 * @naquad for reporting a segfault when using ON conflict in stored procedures
 * @aaronkaplan for reporting an issue with ALTER DATABASE SET TABLESPACE
@@ -2603,7 +2603,7 @@ This release is our 1.0 release candidate. We expect to only merge bug fixes bet
 
 *Scheduler framework:* This release introduces a background job framework and scheduler. Each database running within a PostgreSQL instance has a scheduler that schedules recurring jobs from a new jobs table while maintaining statistics that inform the scheduler's policy. Future releases will leverage this scheduler framework for more automated management of data retention, archiving, analytics, and the like.
 
-*Telemetry:* Using this new scheduler framework, TimescaleDB databases now send anonymized usage information to a telemetry server via HTTPS, as well as perform version checking to notify users if a newer version is available. For transparency, a new `get_telemetry_report` function details the exact JSON that is sent, and users may also opt out of this telemetry and version check.
+*Telemetry:* Using this new scheduler framework, TIMEUDB databases now send anonymized usage information to a telemetry server via HTTPS, as well as perform version checking to notify users if a newer version is available. For transparency, a new `get_telemetry_report` function details the exact JSON that is sent, and users may also opt out of this telemetry and version check.
 
 *Continued hardening:* This release addresses several issues around more robust backup and recovery, handling large numbers of chunks, and additional test coverage.
 
@@ -2687,7 +2687,7 @@ This release is our 1.0 release candidate. We expect to only merge bug fixes bet
 * Fixed pruning in CustomScan when the subplan is not a Scan type that caused a crash with LATERALs.
 * Corrected size reporting that was not accurately counting TOAST size
 * Updated error messages that more closely conform to PG style.
-* Corrected handling of table and schema name changes to chunks; TimescaleDB metadata catalogs are now properly updated
+* Corrected handling of table and schema name changes to chunks; TIMEUDB metadata catalogs are now properly updated
 
 **Notable commits**
 * [8b58500] Fix bug where dropping triggers caused dangling references in pg_depend, disallow disabling triggers on hypertables
@@ -2850,7 +2850,7 @@ original table has lots of data
 ## 0.8.0 (2017-12-19)
 
 **High-level changes**
-* TimescaleDB now builds and runs on Windows! Now in addition to using
+* TIMEUDB now builds and runs on Windows! Now in addition to using
 Docker, users can choose to build the extension from source and install
 on 64-bit Windows
 * Update functions `add_dimension` and `set_chunk_time_interval` to take `INTERVAL` types
@@ -2865,7 +2865,7 @@ to do
 
 **Notable commits**
 * [26971d2] Make `tablespace_show` function return Name instead of CString
-* [2fe447b] Make TimescaleDB work with pg_upgrade
+* [2fe447b] Make TIMEUDB work with pg_upgrade
 * [90c7a6f] Fix logic for one space partition
 * [6cfdd79] Prevent native partitioning attachment of hypertables
 * [438d79d] Fix trigger relcache handling for COPY
@@ -2918,13 +2918,13 @@ to do
 complete, depending on the size of your database**
 
 **High-level changes**
-* **Initial PostgreSQL 10 support**. TimescaleDB now should work on both PostgreSQL 9.6 and 10. As this is our first release supporting PG10, we look forward to community feedback and testing. _Some release channels, like Ubuntu & RPM-based distros will remain on 9.6 for now_
+* **Initial PostgreSQL 10 support**. TIMEUDB now should work on both PostgreSQL 9.6 and 10. As this is our first release supporting PG10, we look forward to community feedback and testing. _Some release channels, like Ubuntu & RPM-based distros will remain on 9.6 for now_
 * Support for `CLUSTER` on hypertables to recursively apply to chunks
 * Improve constraint handling of edge cases for `DATE` and `TIMESTAMP`
 * Fix `range_start` and `range_end` to properly handle the full 32-bit int space
 * Allow users to specify their desired partitioning function
 * Enforce `NOT NULL` constraint on time columns
-* Add testing infrastructure to use Coverity and test PostgreSQL regression tests in TimescaleDB
+* Add testing infrastructure to use Coverity and test PostgreSQL regression tests in TIMEUDB
 * Switch to the CMake build system for better cross-platform support
 * Several other bug fixes, cleanups, and improvements
 
@@ -2992,7 +2992,7 @@ complete, depending on the size of your database**
 **High-level changes**
 
 * Fix bugs where hypertable-specific handlers were affecting normal Postgres tables.
-* Make it so that all TimescaleDB commands can run as a normal user rather than a superuser.
+* Make it so that all TIMEUDB commands can run as a normal user rather than a superuser.
 * Updates to the code to make the extension compileable on Windows; future changes will add steps to properly build.
 * Move `time_bucket` functions out of `public` schema (put in schema where extension is).
 * Several other bugs fixes.
@@ -3130,13 +3130,13 @@ considered mutable like `NOW()`.
 
 **IMPORTANT NOTE**
 
-Starting with this release, TimescaleDB will now
+Starting with this release, TIMEUDB will now
 support upgrading between extension versions using the typical
 `ALTER EXTENSION` command, unless otherwise noted in future release notes. This
-important step should make it easier to test TimescaleDB and be able
-to get the latest benefits from new versions of TimescaleDB. If you
+important step should make it easier to test TIMEUDB and be able
+to get the latest benefits from new versions of TIMEUDB. If you
 were previously using a version with the `-beta` tag, you will need
-to `DROP` any databases currently using TimescaleDB and re-create them
+to `DROP` any databases currently using TIMEUDB and re-create them
 in order to upgrade to this new version. To backup and migrate data,
 use `pg_dump` to save the table schemas and `COPY` to write hypertable
 data to CSV for re-importing after upgrading is complete. We describe
@@ -3192,13 +3192,13 @@ the next release.
 * [f2b42eb] Fix problems with partitioning logic for padded fields
 * [997029a] if_not_exist flag to create_hypertable now works on hypertables with data as well
 * [347a8bd] Reference the correct column when scanning partition epochs
-* [88a9849] Fix bug with timescaledb.allow_install_without_preload GUC not working
+* [88a9849] Fix bug with timeudb.allow_install_without_preload GUC not working
 
 ## 0.0.11-beta (2017-05-24)
 
 **High-level changes**
 * New `first(value, time)` and `last(value, time)` aggregates
-* Remove `setup_timescaledb()` function to streamline setup
+* Remove `setup_timeudb()` function to streamline setup
 * Allow for use cases where restarting the server is not feasible by force loading the library
 * Disable time series optimizations on non-hypertables
 * Add some default indexes for hypertables if they do not exist
@@ -3209,8 +3209,8 @@ the next release.
 * [8ccc8cc] Add if_not_exists flag to create_hypertable()
 * [2bc60c7] Fix time interval field name in hypertable cache entry
 * [4638688] Improve GUC handling
-* [cedcafc] Remove setup_timescaledb() and fix pg_dump/pg_restore.
-* [34ad9a0] Add error when timescaledb library is not preloaded.
+* [cedcafc] Remove setup_timeudb() and fix pg_dump/pg_restore.
+* [34ad9a0] Add error when timeudb library is not preloaded.
 * [fc4ddd6] Fix bug with dropping chunks on tables with indexes
 * [32215ff] Add default indexes for hypertables
 * [b2900f9] Disable query optimization on regular tables (non-hypertables)

@@ -11,7 +11,7 @@
 -- so that it knows how to restore the hypertable without user intervention.
 --
 -- It only works for hypertables with up to 2 dimensions.
-CREATE OR REPLACE FUNCTION _timescaledb_functions.get_create_command(
+CREATE OR REPLACE FUNCTION _timeudb_functions.get_create_command(
     table_name NAME
 )
     RETURNS TEXT LANGUAGE PLPGSQL VOLATILE AS
@@ -28,7 +28,7 @@ DECLARE
     ret              TEXT;
 BEGIN
     SELECT h.id, h.schema_name
-    FROM _timescaledb_catalog.hypertable AS h
+    FROM _timeudb_catalog.hypertable AS h
     WHERE h.table_name = get_create_command.table_name
     INTO h_id, schema_name;
 
@@ -38,7 +38,7 @@ BEGIN
     END IF;
 
     SELECT COUNT(*)
-    FROM _timescaledb_catalog.dimension d
+    FROM _timeudb_catalog.dimension d
     WHERE d.hypertable_id = h_id
     INTO STRICT dimension_cnt;
 
@@ -49,7 +49,7 @@ BEGIN
 
     FOR dimension_row IN
         SELECT *
-        FROM _timescaledb_catalog.dimension d
+        FROM _timeudb_catalog.dimension d
         WHERE d.hypertable_id = h_id
         LOOP
         IF dimension_row.interval_length IS NOT NULL THEN

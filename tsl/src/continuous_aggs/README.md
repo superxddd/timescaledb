@@ -30,7 +30,7 @@ the same or be governed by manual refreshes.
 
 ## Bookkeeping and Internal State ##
 
-TimescaleDB does bookkeeping for each continuous aggregate to know
+TIMEUDB does bookkeeping for each continuous aggregate to know
 which buckets of the aggregates require refreshing. Whenever a
 modification happens to the source data, an invalidation for the
 modified region is written to an invalidation log. However,

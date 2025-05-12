@@ -1,5 +1,5 @@
 @echo off
-:: This bootstrap scripts set up the build environment for TimescaleDB
+:: This bootstrap scripts set up the build environment for TIMEUDB
 :: Any flags will be passed on to CMake, e.g.,
 :: ./bootstrap.bat -DCMAKE_BUILD_TYPE="Debug"
 
@@ -27,6 +27,6 @@ cd "%BUILD_DIR%"
 cmake %SRC_DIR% -A x64 %*
 
 ECHO ---
-ECHO TimescaleDB build system initialized in %BUILD_DIR%.
+ECHO TIMEUDB build system initialized in %BUILD_DIR%.
 ECHO To compile, do:
 ECHO     cmake --build %BUILD_DIR% --config Release

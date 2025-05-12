@@ -39,7 +39,7 @@
  * "import" in submodules.
  */
 #ifndef TS_SUBMODULE
-/* In the core timescaledb TSDLLEXPORT is export */
+/* In the core timeudb TSDLLEXPORT is export */
 #define TSDLLEXPORT PGDLLEXPORT
 
 #elif defined(PGDLLIMPORT)

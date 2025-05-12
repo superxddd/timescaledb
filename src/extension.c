@@ -39,7 +39,7 @@
  * Call ts_extension_schema_name() or ts_experimental_schema_name() for
  * consistency. Don't use this macro directly.
  */
-#define TS_EXPERIMENTAL_SCHEMA_NAME "timescaledb_experimental"
+#define TS_EXPERIMENTAL_SCHEMA_NAME "timeudb_experimental"
 static Oid extension_proxy_oid = InvalidOid;
 
 /*

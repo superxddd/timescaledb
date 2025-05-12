@@ -1158,7 +1158,7 @@ ts_dimension_slice_get_chunkids_to_compress(int32 dimension_id, StrategyNumber s
 }
 
 /* This function checks for overlap between the range we want to update
- for the OSM chunk and the chunks currently in timescaledb (not managed by OSM)
+ for the OSM chunk and the chunks currently in timeudb (not managed by OSM)
  */
 bool
 ts_osm_chunk_range_overlaps(int32 osm_dimension_slice_id, int32 dimension_id, int64 range_start,

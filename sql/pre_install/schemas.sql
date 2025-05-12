@@ -4,22 +4,22 @@
 
 SET LOCAL search_path TO pg_catalog, pg_temp;
 
-CREATE SCHEMA _timescaledb_catalog;
-CREATE SCHEMA _timescaledb_functions;
-CREATE SCHEMA _timescaledb_internal;
-CREATE SCHEMA _timescaledb_cache;
-CREATE SCHEMA _timescaledb_config;
-CREATE SCHEMA timescaledb_experimental;
-CREATE SCHEMA timescaledb_information;
-CREATE SCHEMA _timescaledb_debug;
+CREATE SCHEMA _timeudb_catalog;
+CREATE SCHEMA _timeudb_functions;
+CREATE SCHEMA _timeudb_internal;
+CREATE SCHEMA _timeudb_cache;
+CREATE SCHEMA _timeudb_config;
+CREATE SCHEMA timeudb_experimental;
+CREATE SCHEMA timeudb_information;
+CREATE SCHEMA _timeudb_debug;
 
 GRANT USAGE ON SCHEMA
-      _timescaledb_cache,
-      _timescaledb_catalog,
-      _timescaledb_functions,
-      _timescaledb_internal,
-      _timescaledb_config,
-      timescaledb_information,
-      timescaledb_experimental
+      _timeudb_cache,
+      _timeudb_catalog,
+      _timeudb_functions,
+      _timeudb_internal,
+      _timeudb_config,
+      timeudb_information,
+      timeudb_experimental
 TO PUBLIC;
 

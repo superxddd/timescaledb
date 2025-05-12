@@ -1,10 +1,10 @@
-# Contributing to TimescaleDB
+# Contributing to TIMEUDB
 
-We appreciate any help the community can provide to make TimescaleDB better!  
+We appreciate any help the community can provide to make TIMEUDB better!  
 
 You can help in different ways:
 
-* Open an [issue](https://github.com/timescale/timescaledb/issues) with a
+* Open an [issue](https://github.com/timescale/timeudb/issues) with a
   bug report, build issue, feature request, suggestion, etc.
 
 * Fork this repository and submit a pull request
@@ -15,13 +15,13 @@ discuss your proposed improvement (and its implementation) with the core
 development team.
 
 Before we accept any code contributions, Timescale contributors need to
-sign the [Contributor License Agreement](https://cla-assistant.io/timescale/timescaledb) (CLA). By signing a CLA, we can
+sign the [Contributor License Agreement](https://cla-assistant.io/timescale/timeudb) (CLA). By signing a CLA, we can
 ensure that the community is free and confident in its ability to use your
 contributions.
 
-## Getting and building TimescaleDB
+## Getting and building TIMEUDB
 
-Please follow our README for [instructions on installing from source](https://github.com/timescale/timescaledb/blob/main/README.md#option-3---from-source).
+Please follow our README for [instructions on installing from source](https://github.com/timescale/timeudb/blob/main/README.md#option-3---from-source).
 
 ## Style guide
 
@@ -30,7 +30,7 @@ our [Style Guide](docs/StyleGuide.md).
 
 ## Code review workflow
 
-* Sign the [Contributor License Agreement](https://cla-assistant.io/timescale/timescaledb) (CLA) if you're a new contributor.
+* Sign the [Contributor License Agreement](https://cla-assistant.io/timescale/timeudb) (CLA) if you're a new contributor.
 
 * Develop on your local branch:
 
@@ -54,7 +54,7 @@ our [Style Guide](docs/StyleGuide.md).
       followed by the longer description.
 
     * When committing, link which GitHub issue of [this 
-      repository](https://github.com/timescale/timescaledb/issues) is fixed or 
+      repository](https://github.com/timescale/timeudb/issues) is fixed or 
       closed by the commit with a [linking keyword recognised by 
       GitHub](https://docs.github.com/en/github/managing-your-work-on-github/linking-a-pull-request-to-an-issue#linking-a-pull-request-to-an-issue-using-a-keyword). 
       For example, if the commit fixes bug 123, add a line at the end of the 
@@ -93,7 +93,7 @@ our [Style Guide](docs/StyleGuide.md).
       request, either mention them (preferably by GitHub name) in the PR's
       body or [assign them as a reviewer](https://help.github.com/articles/assigning-issues-and-pull-requests-to-other-github-users/).
 
-    * If you get a test failure in the CI, check them under [Github Actions](https://github.com/timescale/timescaledb/actions)
+    * If you get a test failure in the CI, check them under [Github Actions](https://github.com/timescale/timeudb/actions)
 
     * Address feedback by amending your commit(s). If your change contains
       multiple commits, address each piece of feedback by amending that
@@ -121,6 +121,6 @@ make installcheck
 ```
 
 All submitted pull requests are also automatically
-run against our test suite via [Github Actions](https://github.com/timescale/timescaledb/actions)
+run against our test suite via [Github Actions](https://github.com/timescale/timeudb/actions)
 (that link shows the latest build status of the repository).
 

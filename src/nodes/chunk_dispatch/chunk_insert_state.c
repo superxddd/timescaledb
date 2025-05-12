@@ -707,7 +707,7 @@ ts_chunk_insert_state_create(Oid chunk_relid, const ChunkDispatch *dispatch)
 		 * before passing it on to the FDW handler function. In the
 		 * FDW, the ChunkInsertState will be at the offset defined by
 		 * the FdwModifyPrivateChunkInsertState (see
-		 * tsl/src/fdw/timescaledb_fdw.c).
+		 * tsl/src/fdw/timeudb_fdw.c).
 		 */
 		fdwprivate = lappend(list_copy(fdwprivate), state);
 		relinfo->ri_FdwRoutine->BeginForeignModify(mtstate,

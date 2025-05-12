@@ -28,7 +28,7 @@
 #define is_supported_pg_version_13(version) ((version >= 130002) && (version < 140000))
 #define is_supported_pg_version_14(version) ((version >= 140000) && (version < 150000))
 #define is_supported_pg_version_15(version) ((version >= 150000) && (version < 160000))
-#define is_supported_pg_version_16(version) ((version >= 160000) && (version < 170000))
+#define is_supported_pg_version_16(version) ((version >= 160000) && (version < 250000))
 
 /*
  * PG16 support is a WIP and not complete yet.
@@ -49,8 +49,8 @@
 #define PG14_GE (PG_VERSION_NUM >= 140000)
 #define PG15_LT (PG_VERSION_NUM < 150000)
 #define PG15_GE (PG_VERSION_NUM >= 150000)
-#define PG16_LT (PG_VERSION_NUM < 160000)
-#define PG16_GE (PG_VERSION_NUM >= 160000)
+#define PG16_LT (PG_VERSION_NUM < 240000)
+#define PG16_GE (PG_VERSION_NUM >= 240000)
 
 #if !(is_supported_pg_version(PG_VERSION_NUM))
 #error "Unsupported PostgreSQL version"

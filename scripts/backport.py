@@ -48,7 +48,7 @@ def get_referenced_issue(pr_number):
         string.Template(
             """
         query {
-            repository(owner: "timescale", name: "timescaledb") {
+            repository(owner: "timescale", name: "timeudb") {
               pullRequest(number: $pr_number) {
                 closingIssuesReferences(first: 1) {
                   nodes {
@@ -144,13 +144,13 @@ target_repo_name = source_repo_name
 
 if not source_repo_name:
     # We are running manually for debugging, probably want to modify a fork.
-    source_repo_name = "timescale/timescaledb"
+    source_repo_name = "timescale/timeudb"
     target_repo_name = os.environ.get("BACKPORT_TARGET_REPO")
     target_remote = os.environ.get("BACKPORT_TARGET_REMOTE")
     if not target_repo_name or not target_remote:
         print(
             "Please specify the target repositories for debugging, using the "
-            "environment variables BACKPORT_TARGET_REPO (e.g. `timescale/timescaledb`) "
+            "environment variables BACKPORT_TARGET_REPO (e.g. `timescale/timeudb`) "
             "and BACKPORT_TARGET_REMOTE (e.g. `origin`).",
             file=sys.stderr,
         )
@@ -477,7 +477,7 @@ for index, pr_info in enumerate(prs_to_backport.values()):
         "\n"
         "\n"
         "For more details, please see the [documentation]"
-        "(https://github.com/timescale/eng-database/wiki/Releasing-TimescaleDB#automated-cherry-picking-of-bug-fixes)"
+        "(https://github.com/timescale/eng-database/wiki/Releasing-TIMEUDB#automated-cherry-picking-of-bug-fixes)"
     )
 
     # Add original PR description. Comment out the Github issue reference

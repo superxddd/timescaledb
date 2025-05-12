@@ -1,9 +1,9 @@
 # Background worker jobs
 
-TimescaleDB needs to run multiple background jobs. This module
+TIMEUDB needs to run multiple background jobs. This module
 implements a simple scheduler so that jobs inserted into a jobs table
 can be run on a schedule. Each database in an instance runs it's own
-scheduler because different databases may run different TimescaleDB
+scheduler because different databases may run different TIMEUDB
 extension versions which may require different scheduler logic.
 
 ## Schedules

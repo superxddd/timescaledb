@@ -3,7 +3,7 @@
  * Please see the included NOTICE for copyright information and
  * LICENSE-APACHE for a copy of the license.
  */
-/* This file will be used by the versioned timescaledb extension and the loader
+/* This file will be used by the versioned timeudb extension and the loader
  * Because we want the loader not to export symbols all files here should be static
  * and be included via #include "extension_utils.c" instead of the regular linking process
  */
@@ -190,16 +190,16 @@ extension_load_without_preload()
 
 		ereport(FATAL,
 				(errmsg("extension \"%s\" must be preloaded", EXTENSION_NAME),
-				 errhint("Please preload the timescaledb library via "
+				 errhint("Please preload the timeudb library via "
 						 "shared_preload_libraries.\n\n"
 						 "This can be done by editing the config file at: %1$s\n"
-						 "and adding 'timescaledb' to the list in the shared_preload_libraries "
+						 "and adding 'timeudb' to the list in the shared_preload_libraries "
 						 "config.\n"
 						 "	# Modify postgresql.conf:\n	shared_preload_libraries = "
-						 "'timescaledb'\n\n"
+						 "'timeudb'\n\n"
 						 "Another way to do this, if not preloading other libraries, is with "
 						 "the command:\n"
-						 "	echo \"shared_preload_libraries = 'timescaledb'\" >> %1$s \n\n"
+						 "	echo \"shared_preload_libraries = 'timeudb'\" >> %1$s \n\n"
 						 "(Will require a database restart.)\n\n",
 						 config_file)));
 	}
@@ -207,15 +207,15 @@ extension_load_without_preload()
 	{
 		ereport(FATAL,
 				(errmsg("extension \"%s\" must be preloaded", EXTENSION_NAME),
-				 errhint("Please preload the timescaledb library via shared_preload_libraries.\n\n"
+				 errhint("Please preload the timeudb library via shared_preload_libraries.\n\n"
 						 "This can be done by editing the postgres config file \n"
-						 "and adding 'timescaledb' to the list in the shared_preload_libraries "
+						 "and adding 'timeudb' to the list in the shared_preload_libraries "
 						 "config.\n"
 						 "	# Modify postgresql.conf:\n	shared_preload_libraries = "
-						 "'timescaledb'\n\n"
+						 "'timeudb'\n\n"
 						 "Another way to do this, if not preloading other libraries, is with the "
 						 "command:\n"
-						 "	echo \"shared_preload_libraries = 'timescaledb'\" >> "
+						 "	echo \"shared_preload_libraries = 'timeudb'\" >> "
 						 "/path/to/config/file \n\n"
 						 "(Will require a database restart.)\n\n")));
 	}

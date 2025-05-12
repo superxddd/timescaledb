@@ -208,8 +208,8 @@ validate_chunk_cache_sizes(int hypertable_chunks, int insert_chunks)
 						   insert_chunks,
 						   hypertable_chunks),
 				 errhint("This is a configuration problem. Either increase "
-						 "timescaledb.max_cached_chunks_per_hypertable (preferred) or decrease "
-						 "timescaledb.max_open_chunks_per_insert.")));
+						 "timeudb.max_cached_chunks_per_hypertable (preferred) or decrease "
+						 "timeudb.max_open_chunks_per_insert.")));
 	}
 }
 
@@ -327,7 +327,7 @@ _guc_init(void)
 							 NULL);
 
 	DefineCustomBoolVariable(MAKE_EXTOPTION("enable_optimizations"),
-							 "Enable TimescaleDB query optimizations",
+							 "Enable TIMEUDB query optimizations",
 							 NULL,
 							 &ts_guc_enable_optimizations,
 							 true,
@@ -693,7 +693,7 @@ _guc_init(void)
 							   "Function to use for calculating default segment_by setting for "
 							   "compression",
 							   /* valueAddr= */ &ts_guc_default_segmentby_fn,
-							   /* Value= */ "_timescaledb_functions.get_segmentby_defaults",
+							   /* Value= */ "_timeudb_functions.get_segmentby_defaults",
 							   /* context= */ PGC_USERSET,
 							   /* flags= */ 0,
 							   /* check_hook= */ check_segmentby_func,
@@ -706,7 +706,7 @@ _guc_init(void)
 							   "Function to use for calculating default order_by setting for "
 							   "compression",
 							   /* valueAddr= */ &ts_guc_default_orderby_fn,
-							   /* Value= */ "_timescaledb_functions.get_orderby_defaults",
+							   /* Value= */ "_timeudb_functions.get_orderby_defaults",
 							   /* context= */ PGC_USERSET,
 							   /* flags= */ 0,
 							   /* check_hook= */ check_orderby_func,
@@ -714,7 +714,7 @@ _guc_init(void)
 							   /* show_hook= */ NULL);
 
 	DefineCustomStringVariable(/* name= */ MAKE_EXTOPTION("license"),
-							   /* short_desc= */ "TimescaleDB license type",
+							   /* short_desc= */ "TIMEUDB license type",
 							   /* long_desc= */ "Determines which features are enabled",
 							   /* valueAddr= */ &ts_guc_license,
 							   /* bootValue= */ TS_LICENSE_DEFAULT,
@@ -726,7 +726,7 @@ _guc_init(void)
 
 	DefineCustomStringVariable(/* name= */ MAKE_EXTOPTION("last_tuned"),
 							   /* short_desc= */ "last tune run",
-							   /* long_desc= */ "records last time timescaledb-tune ran",
+							   /* long_desc= */ "records last time timeudb-tune ran",
 							   /* valueAddr= */ &ts_last_tune_time,
 							   /* bootValue= */ NULL,
 							   /* context= */ PGC_SIGHUP,
@@ -736,8 +736,8 @@ _guc_init(void)
 							   /* show_hook= */ NULL);
 
 	DefineCustomStringVariable(/* name= */ MAKE_EXTOPTION("last_tuned_version"),
-							   /* short_desc= */ "version of timescaledb-tune",
-							   /* long_desc= */ "version of timescaledb-tune used to tune",
+							   /* short_desc= */ "version of timeudb-tune",
+							   /* long_desc= */ "version of timeudb-tune used to tune",
 							   /* valueAddr= */ &ts_last_tune_version,
 							   /* bootValue= */ NULL,
 							   /* context= */ PGC_SIGHUP,
@@ -772,7 +772,7 @@ _guc_init(void)
 							 /* show_hook= */ NULL);
 
 #ifdef USE_TELEMETRY
-	DefineCustomStringVariable(/* name= */ "timescaledb_telemetry.cloud",
+	DefineCustomStringVariable(/* name= */ "timeudb_telemetry.cloud",
 							   /* short_desc= */ "cloud provider",
 							   /* long_desc= */ "cloud provider used for this instance",
 							   /* valueAddr= */ &ts_telemetry_cloud,

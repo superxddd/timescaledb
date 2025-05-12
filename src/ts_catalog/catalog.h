@@ -16,9 +16,9 @@
 #include "scanner.h"
 
 /*
- * TimescaleDB catalog.
+ * TIMEUDB catalog.
  *
- * The TimescaleDB catalog contains schema metadata for hypertables, among other
+ * The TIMEUDB catalog contains schema metadata for hypertables, among other
  * things. The metadata is stored in regular tables. This header file contains
  * definitions for those tables and should match any table declarations in
  * sql/pre_install/tables.sql.
@@ -1234,7 +1234,7 @@ typedef struct CatalogSecurityContext
 #define HYPERTABLE_STATUS_OSM 1
 /*
  * Currently, the time slice range metadata is updated in
- * the timescaledb catalog with the min and max of the range managed by OSM.
+ * the timeudb catalog with the min and max of the range managed by OSM.
  * However, this range has to be contiguous in order to
  * update our catalog with its min and max value. If it is not contiguous,
  * then we cannot store the min and max in our catalog because tuple routing

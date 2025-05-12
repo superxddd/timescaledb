@@ -2,40 +2,40 @@
 -- Please see the included NOTICE for copyright information and
 -- LICENSE-APACHE for a copy of the license.
 
-CREATE OR REPLACE PROCEDURE _timescaledb_functions.policy_retention(job_id INTEGER, config JSONB)
+CREATE OR REPLACE PROCEDURE _timeudb_functions.policy_retention(job_id INTEGER, config JSONB)
 AS '@MODULE_PATHNAME@', 'ts_policy_retention_proc'
 LANGUAGE C;
 
-CREATE OR REPLACE FUNCTION _timescaledb_functions.policy_retention_check(config JSONB)
+CREATE OR REPLACE FUNCTION _timeudb_functions.policy_retention_check(config JSONB)
 RETURNS void AS '@MODULE_PATHNAME@', 'ts_policy_retention_check'
 LANGUAGE C;
 
-CREATE OR REPLACE PROCEDURE _timescaledb_functions.policy_reorder(job_id INTEGER, config JSONB)
+CREATE OR REPLACE PROCEDURE _timeudb_functions.policy_reorder(job_id INTEGER, config JSONB)
 AS '@MODULE_PATHNAME@', 'ts_policy_reorder_proc'
 LANGUAGE C;
 
-CREATE OR REPLACE FUNCTION _timescaledb_functions.policy_reorder_check(config JSONB)
+CREATE OR REPLACE FUNCTION _timeudb_functions.policy_reorder_check(config JSONB)
 RETURNS void AS '@MODULE_PATHNAME@', 'ts_policy_reorder_check'
 LANGUAGE C;
 
-CREATE OR REPLACE PROCEDURE _timescaledb_functions.policy_recompression(job_id INTEGER, config JSONB)
+CREATE OR REPLACE PROCEDURE _timeudb_functions.policy_recompression(job_id INTEGER, config JSONB)
 AS '@MODULE_PATHNAME@', 'ts_policy_recompression_proc'
 LANGUAGE C;
 
-CREATE OR REPLACE FUNCTION _timescaledb_functions.policy_compression_check(config JSONB)
+CREATE OR REPLACE FUNCTION _timeudb_functions.policy_compression_check(config JSONB)
 RETURNS void AS '@MODULE_PATHNAME@', 'ts_policy_compression_check'
 LANGUAGE C;
 
-CREATE OR REPLACE PROCEDURE _timescaledb_functions.policy_refresh_continuous_aggregate(job_id INTEGER, config JSONB)
+CREATE OR REPLACE PROCEDURE _timeudb_functions.policy_refresh_continuous_aggregate(job_id INTEGER, config JSONB)
 AS '@MODULE_PATHNAME@', 'ts_policy_refresh_cagg_proc'
 LANGUAGE C;
 
-CREATE OR REPLACE FUNCTION _timescaledb_functions.policy_refresh_continuous_aggregate_check(config JSONB)
+CREATE OR REPLACE FUNCTION _timeudb_functions.policy_refresh_continuous_aggregate_check(config JSONB)
 RETURNS void AS '@MODULE_PATHNAME@', 'ts_policy_refresh_cagg_check'
 LANGUAGE C;
 
 CREATE OR REPLACE PROCEDURE
-_timescaledb_functions.policy_compression_execute(
+_timeudb_functions.policy_compression_execute(
   job_id              INTEGER,
   htid                INTEGER,
   lag                 ANYELEMENT,
@@ -65,7 +65,7 @@ BEGIN
   SET LOCAL search_path TO pg_catalog, pg_temp;
 
   SELECT format('%I.%I', schema_name, table_name) INTO htoid
-  FROM _timescaledb_catalog.hypertable
+  FROM _timeudb_catalog.hypertable
   WHERE id = htid;
 
   -- for the integer cases, we have to compute the lag w.r.t
@@ -75,7 +75,7 @@ BEGIN
     IF use_creation_time IS TRUE THEN
         RAISE EXCEPTION 'job % cannot use creation time with integer_now function', job_id;
     END IF;
-    lag := _timescaledb_functions.subtract_integer_from_now(htoid, lag::BIGINT);
+    lag := _timeudb_functions.subtract_integer_from_now(htoid, lag::BIGINT);
   END IF;
 
   -- if use_creation_time has been specified then the lag needs to be used with the
@@ -93,7 +93,7 @@ BEGIN
       @extschema@.show_chunks(htoid, older_than => lag, created_before => creation_lag) AS show(oid)
       INNER JOIN pg_class pgc ON pgc.oid = show.oid
       INNER JOIN pg_namespace pgns ON pgc.relnamespace = pgns.oid
-      INNER JOIN _timescaledb_catalog.chunk ch ON ch.table_name = pgc.relname AND ch.schema_name = pgns.nspname AND ch.hypertable_id = htid
+      INNER JOIN _timeudb_catalog.chunk ch ON ch.table_name = pgc.relname AND ch.schema_name = pgns.nspname AND ch.hypertable_id = htid
     WHERE
       NOT ch.dropped AND NOT ch.osm_chunk
       AND (
@@ -129,8 +129,8 @@ BEGIN
       BEGIN
         -- first check if there's an index. Might have to use a heuristic to determine if index usage would be efficient,
         -- or if we'd better fall back to decompressing & recompressing entire chunk
-        IF _timescaledb_functions.get_compressed_chunk_index_for_recompression(chunk_rec.oid) IS NOT NULL THEN
-          PERFORM _timescaledb_functions.recompress_chunk_segmentwise(chunk_rec.oid);
+        IF _timeudb_functions.get_compressed_chunk_index_for_recompression(chunk_rec.oid) IS NOT NULL THEN
+          PERFORM _timeudb_functions.recompress_chunk_segmentwise(chunk_rec.oid);
         ELSE
           PERFORM @extschema@.decompress_chunk(chunk_rec.oid, if_compressed => true);
           PERFORM @extschema@.compress_chunk(chunk_rec.oid);
@@ -169,7 +169,7 @@ END;
 $$ LANGUAGE PLPGSQL;
 
 CREATE OR REPLACE PROCEDURE
-_timescaledb_functions.policy_compression(job_id INTEGER, config JSONB)
+_timeudb_functions.policy_compression(job_id INTEGER, config JSONB)
 AS $$
 DECLARE
   dimtype             REGTYPE;
@@ -207,8 +207,8 @@ BEGIN
 
   -- find primary dimension type --
   SELECT dim.column_type INTO dimtype
-  FROM  _timescaledb_catalog.hypertable ht
-        JOIN _timescaledb_catalog.dimension dim ON ht.id = dim.hypertable_id
+  FROM  _timeudb_catalog.hypertable ht
+        JOIN _timeudb_catalog.dimension dim ON ht.id = dim.hypertable_id
   WHERE ht.id = htid
   ORDER BY dim.id
   LIMIT 1;
@@ -229,22 +229,22 @@ BEGIN
   -- execute the properly type casts for the lag value
   CASE dimtype
     WHEN 'TIMESTAMP'::regtype, 'TIMESTAMPTZ'::regtype, 'DATE'::regtype, 'INTERVAL' ::regtype  THEN
-      CALL _timescaledb_functions.policy_compression_execute(
+      CALL _timeudb_functions.policy_compression_execute(
         job_id, htid, lag_value::INTERVAL,
         maxchunks, verbose_log, recompress_enabled, use_creation_time
       );
     WHEN 'BIGINT'::regtype THEN
-      CALL _timescaledb_functions.policy_compression_execute(
+      CALL _timeudb_functions.policy_compression_execute(
         job_id, htid, lag_value::BIGINT,
         maxchunks, verbose_log, recompress_enabled, use_creation_time
       );
     WHEN 'INTEGER'::regtype THEN
-      CALL _timescaledb_functions.policy_compression_execute(
+      CALL _timeudb_functions.policy_compression_execute(
         job_id, htid, lag_value::INTEGER,
         maxchunks, verbose_log, recompress_enabled, use_creation_time
       );
     WHEN 'SMALLINT'::regtype THEN
-      CALL _timescaledb_functions.policy_compression_execute(
+      CALL _timeudb_functions.policy_compression_execute(
         job_id, htid, lag_value::SMALLINT,
         maxchunks, verbose_log, recompress_enabled, use_creation_time
       );

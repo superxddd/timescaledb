@@ -684,9 +684,9 @@ ts_catalog_delete_tid(Relation rel, ItemPointer tid)
 }
 
 /*
- * Invalidate TimescaleDB catalog caches.
+ * Invalidate TIMEUDB catalog caches.
  *
- * This function should be called whenever a TimescaleDB catalog table changes
+ * This function should be called whenever a TIMEUDB catalog table changes
  * in a way that might invalidate associated caches. It is currently called in
  * two distinct ways:
  *

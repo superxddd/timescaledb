@@ -3,7 +3,7 @@
 #### Building from source (Unix-based systems)
 
 If you are building from source for **non-development purposes**
-(i.e., you want to run TimescaleDB, not submit a patch), you should
+(i.e., you want to run TIMEUDB, not submit a patch), you should
 **always use a release-tagged commit and not build from `main`**.
 See the Releases tab for the latest release.
 
@@ -16,8 +16,8 @@ for Linux, Postgres.app for MacOS)
 - [CMake](https://cmake.org/) version 3.4 or greater
 
 ```bash
-git clone git@github.com:timescale/timescaledb.git
-cd timescaledb
+git clone git@github.com:timescale/timeudb.git
+cd timeudb
 # Find the latest release and checkout, e.g. for 2.5.0:
 git checkout 2.5.0
 # Bootstrap the build system
@@ -36,7 +36,7 @@ Please see our [additional configuration instructions](https://docs.timescale.co
 #### Building from source (Windows)
 
 If you are building from source for **non-development purposes**
-(i.e., you want to run TimescaleDB, not submit a patch), you should
+(i.e., you want to run TIMEUDB, not submit a patch), you should
 **always use a release-tagged commit and not build from `main`**.
 See the Releases tab for the latest release.
 
@@ -55,8 +55,8 @@ Visual Studio which will take care of the rest.
 If you are using an earlier version of Visual Studio, then it can
 be built in the following way:
 ```bash
-git clone git@github.com:timescale/timescaledb.git
-cd timescaledb
+git clone git@github.com:timescale/timeudb.git
+cd timeudb
 
 # Find the latest release and checkout, e.g. for 2.5.0:
 git checkout 2.5.0
@@ -68,5 +68,5 @@ cmake --build ./build --config Release
 cmake --build ./build --config Release --target install
 
 # Alternatively, build in Visual Studio via its built-in support for
-# CMake or by opening the generated build/timescaledb.sln solution file.
+# CMake or by opening the generated build/timeudb.sln solution file.
 ```

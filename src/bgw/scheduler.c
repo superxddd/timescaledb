@@ -375,7 +375,7 @@ bgw_scheduler_on_postmaster_death(void)
 	on_exit_reset();
 	ereport(FATAL,
 			(errcode(ERRCODE_ADMIN_SHUTDOWN),
-			 errmsg("postmaster exited while TimescaleDB scheduler was working")));
+			 errmsg("postmaster exited while TIMEUDB scheduler was working")));
 }
 
 /*

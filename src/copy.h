@@ -31,6 +31,6 @@ typedef struct CopyChunkState
 	Node *where_clause;
 } CopyChunkState;
 
-extern void timescaledb_DoCopy(const CopyStmt *stmt, const char *queryString, uint64 *processed,
+extern void timeudb_DoCopy(const CopyStmt *stmt, const char *queryString, uint64 *processed,
 							   Hypertable *ht);
-extern void timescaledb_move_from_table_to_chunks(Hypertable *ht, LOCKMODE lockmode);
+extern void timeudb_move_from_table_to_chunks(Hypertable *ht, LOCKMODE lockmode);

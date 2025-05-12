@@ -5,10 +5,10 @@
 -- for the standard functions. To make this work, we need to
 -- temporarily set the update stage to the post-update stage, which
 -- will allow the ALTER MATERIALIZED VIEW to rewrite the query. If
--- that is not done, the TimescaleDB-specific hooks will not be used
+-- that is not done, the TIMEUDB-specific hooks will not be used
 -- and you will get an error message saying that, for example,
 -- `conditions_summary` is not a materialized view.
-SET timescaledb.update_script_stage TO 'post';
+SET timeudb.update_script_stage TO 'post';
 DO $$
 DECLARE
  vname regclass;
@@ -16,13 +16,13 @@ DECLARE
  altercmd text;
  ts_version TEXT;
 BEGIN
-    FOR vname, materialized_only IN select format('%I.%I', cagg.user_view_schema, cagg.user_view_name)::regclass, cagg.materialized_only from _timescaledb_catalog.continuous_agg cagg
+    FOR vname, materialized_only IN select format('%I.%I', cagg.user_view_schema, cagg.user_view_name)::regclass, cagg.materialized_only from _timeudb_catalog.continuous_agg cagg
     LOOP
-	altercmd := format('ALTER MATERIALIZED VIEW %s SET (timescaledb.materialized_only=%L) ', vname::text, materialized_only);
+	altercmd := format('ALTER MATERIALIZED VIEW %s SET (timeudb.materialized_only=%L) ', vname::text, materialized_only);
         EXECUTE altercmd;
     END LOOP;
     EXCEPTION WHEN OTHERS THEN RAISE;
 END
 $$;
-RESET timescaledb.update_script_stage;
+RESET timeudb.update_script_stage;
 

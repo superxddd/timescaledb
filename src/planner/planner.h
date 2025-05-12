@@ -18,7 +18,7 @@
  * Constraints created during planning to improve chunk exclusion
  * will be marked with this value as location so they can be easily
  * identified and removed when they are no longer needed.
- * Removal happens in timescaledb_set_rel_pathlist hook.
+ * Removal happens in timeudb_set_rel_pathlist hook.
  */
 #define PLANNER_LOCATION_MAGIC -29811
 

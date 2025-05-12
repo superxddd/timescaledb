@@ -12,10 +12,10 @@
  * are able to track some utility statements, for example COPY ... FROM.
  *
  * To be able to track it on ts_stat_statements here we introduce some
- * callbacks in order to hook pgss_store from TimescaleDB and store
+ * callbacks in order to hook pgss_store from TIMEUDB and store
  * information about the execution of those statements.
  *
- * Hooking ts_stat_statements from TimescaleDB is controlled by a new GUC
+ * Hooking ts_stat_statements from TIMEUDB is controlled by a new GUC
  * named `enable_tss_callbacks`.
  */
 
@@ -64,9 +64,9 @@ is_tss_enabled(void)
 			{
 				ereport(WARNING,
 						(errcode(ERRCODE_INTERNAL_ERROR),
-						 errmsg("version mismatch between timescaledb and ts_stat_statements "
+						 errmsg("version mismatch between timeudb and ts_stat_statements "
 								"callbacks"),
-						 errdetail("Callbacks versions: TimescaleDB (%d) and ts_stat_statements "
+						 errdetail("Callbacks versions: TIMEUDB (%d) and ts_stat_statements "
 								   "(%d)",
 								   TSS_CALLBACKS_VERSION,
 								   ptr->version_num)));

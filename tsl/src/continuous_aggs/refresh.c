@@ -101,7 +101,7 @@ cagg_get_hypertable_or_fail(int32 hypertable_id)
  * internal restrictions.
  *
  * The largest bucketed window is governed by restrictions set by the type and
- * internal, TimescaleDB-specific legacy details (see get_max_window above for
+ * internal, TIMEUDB-specific legacy details (see get_max_window above for
  * further explanation).
  */
 static InternalTimeRange

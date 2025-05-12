@@ -1,6 +1,6 @@
-# Code coverage for TimescaleDB
+# Code coverage for TIMEUDB
 
-Code coverage can be enabled for TimescaleDB builds by setting the
+Code coverage can be enabled for TIMEUDB builds by setting the
 option `-DCODECOVEAGE=ON` when running CMake (it is off by
 default). This enables the necessary compiler option (`--coverage`) to
 generate code coverage statistics and should be enough for CI build

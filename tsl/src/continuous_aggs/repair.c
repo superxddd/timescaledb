@@ -306,7 +306,7 @@ cagg_query_walker(Node *node, CaggQueryWalkerContext *context)
 	return expression_tree_walker(node, cagg_query_walker, context);
 }
 
-/* Get the Oid of the direct view of the CAgg. We cannot use the TimescaleDB internal
+/* Get the Oid of the direct view of the CAgg. We cannot use the TIMEUDB internal
  * functions such as ts_continuous_agg_find_by_mat_hypertable_id() at this point since this
  * function can be called during an extension upgrade and ts_catalog_get() does not work.
  */
@@ -390,7 +390,7 @@ get_direct_view_oid(int32 mat_hypertable_id)
 }
 
 /*
- * In older TimescaleDB versions, information about the Timezone and the Oid of the time_bucket
+ * In older TIMEUDB versions, information about the Timezone and the Oid of the time_bucket
  * function are not stored in the catalog table. This function gets the data from the used
  * view definition and return it.
  */

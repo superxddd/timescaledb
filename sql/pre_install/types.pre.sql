@@ -5,9 +5,9 @@
 --
 -- The general compressed_data type;
 --
-CREATE TYPE _timescaledb_internal.compressed_data;
+CREATE TYPE _timeudb_internal.compressed_data;
 
 --placeholder to allow creation of functions below
 
-CREATE TYPE _timescaledb_internal.dimension_info;
+CREATE TYPE _timeudb_internal.dimension_info;
 

@@ -57,7 +57,7 @@ throw_segment_by_error(char *segment_by)
 	ereport(ERROR,
 			(errcode(ERRCODE_SYNTAX_ERROR),
 			 errmsg("unable to parse segmenting option \"%s\"", segment_by),
-			 errhint("The option timescaledb.compress_segmentby must"
+			 errhint("The option timeudb.compress_segmentby must"
 					 " be a set of columns separated by commas.")));
 }
 
@@ -143,7 +143,7 @@ parse_segment_collist(char *inpstr, Hypertable *hypertable)
 			ereport(ERROR,
 					(errcode(ERRCODE_SYNTAX_ERROR),
 					 errmsg("column \"%s\" does not exist", colname),
-					 errhint("The timescaledb.compress_segmentby option must reference a valid "
+					 errhint("The timeudb.compress_segmentby option must reference a valid "
 							 "column.")));
 		}
 
@@ -155,7 +155,7 @@ parse_segment_collist(char *inpstr, Hypertable *hypertable)
 			ereport(ERROR,
 					(errcode(ERRCODE_SYNTAX_ERROR),
 					 errmsg("duplicate column name \"%s\"", colname),
-					 errhint("The timescaledb.compress_segmentby option must reference distinct "
+					 errhint("The timeudb.compress_segmentby option must reference distinct "
 							 "column.")));
 
 		segmentby = ts_array_add_element_text(segmentby, pstrdup(colname));
@@ -170,7 +170,7 @@ throw_order_by_error(char *order_by)
 	ereport(ERROR,
 			(errcode(ERRCODE_SYNTAX_ERROR),
 			 errmsg("unable to parse ordering option \"%s\"", order_by),
-			 errhint("The timescaledb.compress_orderby option must be a set of column"
+			 errhint("The timeudb.compress_orderby option must be a set of column"
 					 " names with sort options, separated by commas."
 					 " It is the same format as an ORDER BY clause.")));
 }
@@ -253,7 +253,7 @@ ts_compress_parse_order_collist(char *inpstr, Hypertable *hypertable)
 			ereport(ERROR,
 					(errcode(ERRCODE_SYNTAX_ERROR),
 					 errmsg("column \"%s\" does not exist", NameStr(col->colname)),
-					 errhint("The timescaledb.compress_orderby option must reference a valid "
+					 errhint("The timeudb.compress_orderby option must reference a valid "
 							 "column.")));
 
 		Oid col_type = get_atttype(hypertable->main_table_relid, col_attno);
@@ -273,7 +273,7 @@ ts_compress_parse_order_collist(char *inpstr, Hypertable *hypertable)
 			ereport(ERROR,
 					(errcode(ERRCODE_SYNTAX_ERROR),
 					 errmsg("duplicate column name \"%s\"", colname),
-					 errhint("The timescaledb.compress_orderby option must reference distinct "
+					 errhint("The timeudb.compress_orderby option must reference distinct "
 							 "column.")));
 
 		if (sort_by->sortby_dir != SORTBY_ASC && sort_by->sortby_dir != SORTBY_DESC &&
@@ -317,7 +317,7 @@ ts_compress_hypertable_parse_segment_by(WithClauseResult *parsed_options, Hypert
 }
 
 /* returns List of CompressedParsedCol
- * E.g. timescaledb.compress_orderby = 'col1 asc nulls first,col2 desc,col3'
+ * E.g. timeudb.compress_orderby = 'col1 asc nulls first,col2 desc,col3'
  */
 OrderBySettings
 ts_compress_hypertable_parse_order_by(WithClauseResult *parsed_options, Hypertable *hypertable)
@@ -328,7 +328,7 @@ ts_compress_hypertable_parse_order_by(WithClauseResult *parsed_options, Hypertab
 }
 
 /* returns List of CompressedParsedCol
- * E.g. timescaledb.compress_orderby = 'col1 asc nulls first,col2 desc,col3'
+ * E.g. timeudb.compress_orderby = 'col1 asc nulls first,col2 desc,col3'
  */
 Interval *
 ts_compress_hypertable_parse_chunk_time_interval(WithClauseResult *parsed_options,

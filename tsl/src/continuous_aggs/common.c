@@ -128,7 +128,7 @@ RemoveRangeTableEntries(Query *query)
  *                  UNION ALL
  *                  SELECT * from q2 where existing_qual and <coale_qual>
  * where coale_qual is: time < ----> (or >= )
- * COALESCE(_timescaledb_functions.to_timestamp(_timescaledb_functions.cagg_watermark( <htid>)),
+ * COALESCE(_timeudb_functions.to_timestamp(_timeudb_functions.cagg_watermark( <htid>)),
  * '-infinity'::timestamp with time zone)
  * The WHERE clause of the final view is removed.
  */
@@ -1385,7 +1385,7 @@ makeRangeTblEntry(Query *query, const char *aliasname)
  *                  SELECT * from q2 where existing_qual and <coale_qual>
  * where coale_qual is: time < ----> (or >= )
  *
- * COALESCE(_timescaledb_functions.to_timestamp(_timescaledb_functions.cagg_watermark(<htid>)),
+ * COALESCE(_timeudb_functions.to_timestamp(_timeudb_functions.cagg_watermark(<htid>)),
  * '-infinity'::timestamp with time zone)
  *
  * See build_union_query_quals for COALESCE clauses.

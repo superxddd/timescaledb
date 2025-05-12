@@ -100,7 +100,7 @@ constify_cagg_watermark_walker(Node *node, ConstifyWatermarkContext *context)
 			else
 			{
 				/* For non int64 partitioned tables, the watermark function is wrapped into a cast
-				 * for example: COALESCE((_timescaledb_functions.cagg_watermark(11))::integer,
+				 * for example: COALESCE((_timeudb_functions.cagg_watermark(11))::integer,
 				 * '-2147483648'::integer))
 				 */
 				Node *coalesce_arg = linitial(context->parent_coalesce_expr->args);

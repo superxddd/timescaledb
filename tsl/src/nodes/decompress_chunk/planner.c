@@ -141,7 +141,7 @@ build_decompression_map(PlannerInfo *root, DecompressionMapContext *context,
 #endif
 	/*
 	 * FIXME this way to determine which columns are used is actually wrong, see
-	 * https://github.com/timescale/timescaledb/issues/4195#issuecomment-1104238863
+	 * https://github.com/timescale/timeudb/issues/4195#issuecomment-1104238863
 	 * Left as is for now, because changing it uncovers a whole new story with
 	 * ctid.
 	 */

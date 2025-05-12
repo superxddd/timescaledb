@@ -71,7 +71,7 @@ else()
   list(APPEND SOURCE_FILES without_telemetry.sql)
 endif()
 
-# Compatibility layer for timescaledb 2.12 for internal functions that got moved into _timescaledb_functions
+# Compatibility layer for timeudb 2.12 for internal functions that got moved into _timeudb_functions
 list(APPEND SOURCE_FILES
   compat.sql)
 

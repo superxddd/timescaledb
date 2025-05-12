@@ -30,7 +30,7 @@
 
 /*
  * func_cache - a cache for quick identification of, and access to, functions
- * useful for TimescaleDB. The function info is used in various query
+ * useful for TIMEUDB. The function info is used in various query
  * optimizations, for instance, we provide custom group estimate functions for
  * use when grouping on time buckets. We also provide functions that allow
  * sorting time buckets using an index on the non-bucketed expression/column.

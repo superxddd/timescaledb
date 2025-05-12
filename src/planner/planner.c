@@ -132,7 +132,7 @@ static const char *TS_CTE_EXPAND = "ts_expand";
  * A simplehash hash table that records the chunks and their corresponding
  * hypertables, and also the plain baserels. We use it to tell whether a
  * relation is a hypertable chunk, inside the classify_relation function.
- * It is valid inside the scope of timescaledb_planner().
+ * It is valid inside the scope of timeudb_planner().
  * That function can be called recursively, e.g. when we evaluate a SQL function,
  * and this cache is initialized only at the top-level call.
  */
@@ -462,7 +462,7 @@ preprocess_query(Node *node, PreprocessQueryContext *context)
 }
 
 static PlannedStmt *
-timescaledb_planner(Query *parse, const char *query_string, int cursor_opts,
+timeudb_planner(Query *parse, const char *query_string, int cursor_opts,
 					ParamListInfo bound_params)
 {
 	PlannedStmt *stmt;
@@ -488,7 +488,7 @@ timescaledb_planner(Query *parse, const char *query_string, int cursor_opts,
 	if (ts_baserel_info == NULL)
 	{
 		/*
-		 * The calls to timescaledb_planner can be recursive (e.g. when
+		 * The calls to timeudb_planner can be recursive (e.g. when
 		 * evaluating an immutable SQL function at planning time). We want to
 		 * create and destroy the per-query baserel info table only at the
 		 * top-level call, hence this flag.
@@ -1159,7 +1159,7 @@ dml_involves_hypertable(PlannerInfo *root, Hypertable *ht, Index rti)
 }
 
 static void
-timescaledb_set_rel_pathlist(PlannerInfo *root, RelOptInfo *rel, Index rti, RangeTblEntry *rte)
+timeudb_set_rel_pathlist(PlannerInfo *root, RelOptInfo *rel, Index rti, RangeTblEntry *rte)
 {
 	TsRelType reltype;
 	Hypertable *ht;
@@ -1236,7 +1236,7 @@ timescaledb_set_rel_pathlist(PlannerInfo *root, RelOptInfo *rel, Index rti, Rang
  * chunk relations that we need during planning. We also expand hypertables
  * here. */
 static void
-timescaledb_get_relation_info_hook(PlannerInfo *root, Oid relation_objectid, bool inhparent,
+timeudb_get_relation_info_hook(PlannerInfo *root, Oid relation_objectid, bool inhparent,
 								   RelOptInfo *rel)
 {
 	if (prev_get_relation_info_hook != NULL)
@@ -1481,7 +1481,7 @@ replace_hypertable_modify_paths(PlannerInfo *root, List *pathlist, RelOptInfo *i
 }
 
 static void
-timescaledb_create_upper_paths_hook(PlannerInfo *root, UpperRelationKind stage,
+timeudb_create_upper_paths_hook(PlannerInfo *root, UpperRelationKind stage,
 									RelOptInfo *input_rel, RelOptInfo *output_rel, void *extra)
 {
 	Query *parse = root->parse;
@@ -1693,15 +1693,15 @@ void
 _planner_init(void)
 {
 	prev_planner_hook = planner_hook;
-	planner_hook = timescaledb_planner;
+	planner_hook = timeudb_planner;
 	prev_set_rel_pathlist_hook = set_rel_pathlist_hook;
-	set_rel_pathlist_hook = timescaledb_set_rel_pathlist;
+	set_rel_pathlist_hook = timeudb_set_rel_pathlist;
 
 	prev_get_relation_info_hook = get_relation_info_hook;
-	get_relation_info_hook = timescaledb_get_relation_info_hook;
+	get_relation_info_hook = timeudb_get_relation_info_hook;
 
 	prev_create_upper_paths_hook = create_upper_paths_hook;
-	create_upper_paths_hook = timescaledb_create_upper_paths_hook;
+	create_upper_paths_hook = timeudb_create_upper_paths_hook;
 }
 
 void

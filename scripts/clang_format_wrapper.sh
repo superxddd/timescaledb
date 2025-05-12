@@ -8,7 +8,7 @@
 
 SCRIPT_DIR=$(cd "$(dirname $0)"; pwd)
 BASE_DIR=$(dirname $SCRIPT_DIR)
-TEMP_DIR="/tmp/timescaledb_format"
+TEMP_DIR="/tmp/timeudb_format"
 
 OPTIONS=("${@}")
 

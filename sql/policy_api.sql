@@ -87,7 +87,7 @@ LANGUAGE C VOLATILE;
 
 /* Add policies */
 /* Unsupported drop_created_before/compress_created_before in add/alter for caggs */
-CREATE OR REPLACE FUNCTION timescaledb_experimental.add_policies(
+CREATE OR REPLACE FUNCTION timeudb_experimental.add_policies(
     relation REGCLASS,
     if_not_exists BOOL = false,
     refresh_start_offset "any" = NULL,
@@ -99,7 +99,7 @@ AS '@MODULE_PATHNAME@', 'ts_policies_add'
 LANGUAGE C VOLATILE;
 
 /* Remove policies */
-CREATE OR REPLACE FUNCTION timescaledb_experimental.remove_policies(
+CREATE OR REPLACE FUNCTION timeudb_experimental.remove_policies(
     relation REGCLASS,
     if_exists BOOL = false,
     VARIADIC policy_names TEXT[] = NULL)
@@ -108,7 +108,7 @@ AS '@MODULE_PATHNAME@', 'ts_policies_remove'
 LANGUAGE C VOLATILE;
 
 /* Remove all policies */
-CREATE OR REPLACE FUNCTION timescaledb_experimental.remove_all_policies(
+CREATE OR REPLACE FUNCTION timeudb_experimental.remove_all_policies(
     relation REGCLASS,
     if_exists BOOL = false)
 RETURNS BOOL
@@ -116,7 +116,7 @@ AS '@MODULE_PATHNAME@', 'ts_policies_remove_all'
 LANGUAGE C VOLATILE;
 
 /* Alter policies */
-CREATE OR REPLACE FUNCTION timescaledb_experimental.alter_policies(
+CREATE OR REPLACE FUNCTION timeudb_experimental.alter_policies(
     relation REGCLASS,
     if_exists BOOL = false,
     refresh_start_offset "any" = NULL,
@@ -128,7 +128,7 @@ AS '@MODULE_PATHNAME@', 'ts_policies_alter'
 LANGUAGE C VOLATILE;
 
 /* Show policies info */
-CREATE OR REPLACE FUNCTION timescaledb_experimental.show_policies(
+CREATE OR REPLACE FUNCTION timeudb_experimental.show_policies(
     relation REGCLASS)
 RETURNS SETOF JSONB
 AS '@MODULE_PATHNAME@', 'ts_policies_show'

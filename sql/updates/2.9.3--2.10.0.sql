@@ -1,4 +1,4 @@
-CREATE OR REPLACE VIEW timescaledb_information.job_errors
+CREATE OR REPLACE VIEW timeudb_information.job_errors
 WITH (security_barrier = true) AS
 SELECT
     job_id,
@@ -23,9 +23,9 @@ SELECT
     END
     AS err_message
 FROM
-    _timescaledb_internal.job_errors
+    _timeudb_internal.job_errors
 LEFT JOIN
-    _timescaledb_config.bgw_job ON (bgw_job.id = job_errors.job_id)
+    _timeudb_config.bgw_job ON (bgw_job.id = job_errors.job_id)
 WHERE
     pg_catalog.pg_has_role(current_user,
 			   (SELECT pg_catalog.pg_get_userbyid(datdba)
@@ -34,4 +34,4 @@ WHERE
 			   'MEMBER') IS TRUE
     OR pg_catalog.pg_has_role(current_user, owner, 'MEMBER') IS TRUE;
 
-REVOKE ALL ON _timescaledb_internal.job_errors FROM PUBLIC;
+REVOKE ALL ON _timeudb_internal.job_errors FROM PUBLIC;

@@ -50,7 +50,7 @@ typedef struct PartializeWalkerState
  *
  * The partialize function is an expression of the form:
  *
- * _timescaledb_functions.partialize_agg(avg(temp))
+ * _timeudb_functions.partialize_agg(avg(temp))
  *
  * where avg(temp) can be replaced by any aggregate that can be partialized.
  *
@@ -783,7 +783,7 @@ ts_pushdown_partial_agg(PlannerInfo *root, Hypertable *ht, RelOptInfo *input_rel
 	if (existing_agg_path == NULL)
 		return;
 
-	/* Skip partial aggregations already created by _timescaledb_functions.partialize_agg */
+	/* Skip partial aggregations already created by _timeudb_functions.partialize_agg */
 	if (existing_agg_path->aggsplit == AGGSPLIT_INITIAL_SERIAL)
 		return;
 
@@ -943,7 +943,7 @@ ts_pushdown_partial_agg(PlannerInfo *root, Hypertable *ht, RelOptInfo *input_rel
  * instance:
  *
  *  SELECT time_bucket('1 day', time), device,
- *  _timescaledb_functions.partialize_agg(avg(temp))
+ *  _timeudb_functions.partialize_agg(avg(temp))
  *  GROUP BY 1, 2;
  *
  * Would compute the partial aggregate of avg(temp).

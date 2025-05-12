@@ -37,7 +37,7 @@ on_postmaster_death(void)
 	on_exit_reset();
 	ereport(FATAL,
 			(errcode(ERRCODE_ADMIN_SHUTDOWN),
-			 errmsg("postmaster exited while timescaledb scheduler was working")));
+			 errmsg("postmaster exited while timeudb scheduler was working")));
 }
 
 static int64

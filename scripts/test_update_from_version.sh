@@ -35,7 +35,7 @@ run_sql_file() {
 }
 
 check_version() {
-  psql -X -c "DO \$\$BEGIN PERFORM from pg_available_extension_versions WHERE name='timescaledb' AND version='$1'; IF NOT FOUND THEN RAISE 'Version $1 not available'; END IF; END\$\$;" > /dev/null
+  psql -X -c "DO \$\$BEGIN PERFORM from pg_available_extension_versions WHERE name='timeudb' AND version='$1'; IF NOT FOUND THEN RAISE 'Version $1 not available'; END IF; END\$\$;" > /dev/null
 }
 
 trap cleanup EXIT
@@ -58,7 +58,7 @@ mkdir -p "${OUTPUT_DIR}/data"
 UNIX_SOCKET_DIR=$(readlink -f "${OUTPUT_DIR}")
 
 initdb > "${OUTPUT_DIR}/initdb.log" 2>&1
-pg_ctl -l "${OUTPUT_DIR}/postgres.log" start -o "-c unix_socket_directories='${UNIX_SOCKET_DIR}' -c timezone=GMT -c client_min_messages=warning -c port=${PGPORT} -c max_prepared_transactions=100 -c shared_preload_libraries=timescaledb -c timescaledb.telemetry_level=off -c max_worker_processes=0"
+pg_ctl -l "${OUTPUT_DIR}/postgres.log" start -o "-c unix_socket_directories='${UNIX_SOCKET_DIR}' -c timezone=GMT -c client_min_messages=warning -c port=${PGPORT} -c max_prepared_transactions=100 -c shared_preload_libraries=timeudb -c timeudb.telemetry_level=off -c max_worker_processes=0"
 pg_isready -t 30 > /dev/null
 
 echo -e "\nUpdate test for ${FROM_VERSION} -> ${TO_VERSION}\n"
@@ -73,7 +73,7 @@ echo "Creating baseline database"
 {
   run_sql "CREATE DATABASE baseline;"
   PGDATABASE=baseline
-  run_sql "CREATE EXTENSION timescaledb VERSION \"${TO_VERSION}\";"
+  run_sql "CREATE EXTENSION timeudb VERSION \"${TO_VERSION}\";"
   run_sql_file test/sql/updates/pre.testing.sql
   run_sql_file test/sql/updates/setup.${TEST_VERSION}.sql
   run_sql "CHECKPOINT;"
@@ -84,11 +84,11 @@ echo "Creating updated database"
 {
   run_sql "CREATE DATABASE updated;" > "${OUTPUT_DIR}/updated.log"
   PGDATABASE=updated
-  run_sql "CREATE EXTENSION timescaledb VERSION \"${FROM_VERSION}\";"
+  run_sql "CREATE EXTENSION timeudb VERSION \"${FROM_VERSION}\";"
   run_sql_file test/sql/updates/pre.testing.sql
   run_sql_file test/sql/updates/setup.${TEST_VERSION}.sql
   run_sql "CHECKPOINT;" >> "${OUTPUT_DIR}/updated.log"
-  run_sql "ALTER EXTENSION timescaledb UPDATE TO \"${TO_VERSION}\";"
+  run_sql "ALTER EXTENSION timeudb UPDATE TO \"${TO_VERSION}\";"
   run_sql_file test/sql/updates/setup.check.sql
 } > "${OUTPUT_DIR}/updated.log" 2>&1
 
@@ -96,11 +96,11 @@ echo "Creating restored database"
 {
   run_sql "CREATE DATABASE restored;"
   PGDATABASE=restored
-  run_sql "CREATE EXTENSION timescaledb VERSION \"${TO_VERSION}\";"
-  run_sql "ALTER DATABASE restored SET timescaledb.restoring='on';"
+  run_sql "CREATE EXTENSION timeudb VERSION \"${TO_VERSION}\";"
+  run_sql "ALTER DATABASE restored SET timeudb.restoring='on';"
   pg_dump -Fc -d updated > "${OUTPUT_DIR}/updated.dump"
   pg_restore -d restored "${OUTPUT_DIR}/updated.dump"
-  run_sql "ALTER DATABASE restored RESET timescaledb.restoring;"
+  run_sql "ALTER DATABASE restored RESET timeudb.restoring;"
 } > "${OUTPUT_DIR}/restored.log" 2>&1
 
 run_sql_file test/sql/updates/post.${TEST_VERSION}.sql baseline > "${OUTPUT_DIR}/post.baseline.log"
@@ -112,9 +112,9 @@ if [ "${TEST_REPAIR}" = "true" ]; then
   {
     run_sql "CREATE DATABASE repair;"
     PGDATABASE=repair
-    run_sql "CREATE EXTENSION timescaledb VERSION \"${FROM_VERSION}\";"
+    run_sql "CREATE EXTENSION timeudb VERSION \"${FROM_VERSION}\";"
     run_sql_file test/sql/updates/setup.repair.sql baseline
-    run_sql "ALTER EXTENSION timescaledb UPDATE TO \"${TO_VERSION}\";"
+    run_sql "ALTER EXTENSION timeudb UPDATE TO \"${TO_VERSION}\";"
     run_sql_file test/sql/updates/post.repair.sql baseline
     run_sql_file test/sql/updates/post.integrity_test.sql baseline
   } > "${OUTPUT_DIR}/repair.log" 2>&1

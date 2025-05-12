@@ -9,7 +9,7 @@
 
 #include "export.h"
 
-/* TimescaleDB-specific ranges for valid timestamps and dates: */
+/* TIMEUDB-specific ranges for valid timestamps and dates: */
 #define TS_EPOCH_DIFF (POSTGRES_EPOCH_JDATE - UNIX_EPOCH_JDATE)
 #define TS_EPOCH_DIFF_MICROSECONDS (TS_EPOCH_DIFF * USECS_PER_DAY)
 
@@ -24,7 +24,7 @@
 #define TS_TIMESTAMP_INTERNAL_END (TS_TIMESTAMP_END + TS_EPOCH_DIFF_MICROSECONDS)
 
 /* For Dates, we're limited by the timestamp range (since we internally first
- * convert dates to timestamps). Naturally the TimescaleDB-specific timestamp
+ * convert dates to timestamps). Naturally the TIMEUDB-specific timestamp
  * limits apply as well. */
 #define TS_DATE_MIN (DATETIME_MIN_JULIAN - POSTGRES_EPOCH_JDATE)
 #define TS_DATE_MAX (TS_DATE_END - 1)

@@ -229,8 +229,8 @@ ts_compression_settings_update(CompressionSettings *settings)
 						(errcode(ERRCODE_SYNTAX_ERROR),
 						 errmsg("cannot use column \"%s\" for both ordering and segmenting",
 								TextDatumGetCString(datum)),
-						 errhint("Use separate columns for the timescaledb.compress_orderby and"
-								 " timescaledb.compress_segmentby options.")));
+						 errhint("Use separate columns for the timeudb.compress_orderby and"
+								 " timeudb.compress_segmentby options.")));
 		}
 	}
 

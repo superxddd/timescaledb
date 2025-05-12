@@ -3,14 +3,14 @@
 -- LICENSE-APACHE for a copy of the license.
 
 -- create constraint on newly created chunk based on hypertable constraint
-CREATE OR REPLACE FUNCTION _timescaledb_functions.chunk_constraint_add_table_constraint(
-    chunk_constraint_row  _timescaledb_catalog.chunk_constraint
+CREATE OR REPLACE FUNCTION _timeudb_functions.chunk_constraint_add_table_constraint(
+    chunk_constraint_row  _timeudb_catalog.chunk_constraint
 )
     RETURNS VOID LANGUAGE PLPGSQL AS
 $BODY$
 DECLARE
-    chunk_row _timescaledb_catalog.chunk;
-    hypertable_row _timescaledb_catalog.hypertable;
+    chunk_row _timeudb_catalog.chunk;
+    hypertable_row _timeudb_catalog.hypertable;
     constraint_oid OID;
     constraint_type CHAR;
     check_sql TEXT;
@@ -18,8 +18,8 @@ DECLARE
     indx_tablespace NAME;
     tablespace_def TEXT;
 BEGIN
-    SELECT * INTO STRICT chunk_row FROM _timescaledb_catalog.chunk c WHERE c.id = chunk_constraint_row.chunk_id;
-    SELECT * INTO STRICT hypertable_row FROM _timescaledb_catalog.hypertable h WHERE h.id = chunk_row.hypertable_id;
+    SELECT * INTO STRICT chunk_row FROM _timeudb_catalog.chunk c WHERE c.id = chunk_constraint_row.chunk_id;
+    SELECT * INTO STRICT hypertable_row FROM _timeudb_catalog.hypertable h WHERE h.id = chunk_row.hypertable_id;
 
     IF chunk_constraint_row.dimension_slice_id IS NOT NULL THEN
 	    RAISE 'cannot create dimension constraint %', chunk_constraint_row;
@@ -76,7 +76,7 @@ END
 $BODY$ SET search_path TO pg_catalog, pg_temp;
 
 -- Clone fk constraint from a hypertable to a compressed chunk
-CREATE OR REPLACE FUNCTION _timescaledb_functions.constraint_clone(
+CREATE OR REPLACE FUNCTION _timeudb_functions.constraint_clone(
     constraint_oid OID,
     target_oid REGCLASS
 )

@@ -39,7 +39,7 @@ else()
   execute_process(COMMAND ${GCOV} --version)
 
   # Final tracefile for code coverage
-  set(OUTPUT_FILE "timescaledb-codecov.info")
+  set(OUTPUT_FILE "timeudb-codecov.info")
 
   # Directory where to generate the HTML report
   set(REPORT_DIR "codecov-report")
@@ -61,7 +61,7 @@ else()
       --base-directory ${CMAKE_SOURCE_DIR} --directory ${CMAKE_BINARY_DIR}
       --output-file ${OUTPUT_FILE}.base --gcov-tool
       ${CMAKE_CURRENT_BINARY_DIR}/gcov
-    DEPENDS timescaledb-tsl timescaledb timescaledb-loader
+    DEPENDS timeudb-tsl timeudb timeudb-loader
             ${CMAKE_CURRENT_BINARY_DIR}/gcov)
 
   add_custom_target(coverage_base DEPENDS ${OUTPUT_FILE}.base)
@@ -116,7 +116,7 @@ else()
         "Generating HTML code coverage report in ${CMAKE_CURRENT_BINARY_DIR}/${REPORT_DIR}"
       COMMAND
         ${GENHTML} --prefix ${CMAKE_SOURCE_DIR} --branch-coverage
-        --ignore-errors source --legend --title "TimescaleDB" --output-directory
+        --ignore-errors source --legend --title "TIMEUDB" --output-directory
         ${REPORT_DIR} ${OUTPUT_FILE}
       DEPENDS ${OUTPUT_FILE})
     add_custom_target(coverage DEPENDS ${REPORT_DIR}/index.html)

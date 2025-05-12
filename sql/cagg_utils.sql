@@ -2,7 +2,7 @@
 -- Please see the included NOTICE for copyright information and
 -- LICENSE-APACHE for a copy of the license.
 
-CREATE OR REPLACE FUNCTION _timescaledb_functions.cagg_validate_query(
+CREATE OR REPLACE FUNCTION _timeudb_functions.cagg_validate_query(
     query TEXT,
     OUT is_valid BOOLEAN,
     OUT error_level TEXT,

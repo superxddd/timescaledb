@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
-# This bootstrap scripts set up the build environment for TimescaleDB
+# This bootstrap scripts set up the build environment for TIMEUDB
 # Any flags will be passed on to CMake, e.g.,
 # ./bootstrap -DCMAKE_BUILD_TYPE="Debug"
 
 ## Check to make cmake is installed
 if ! command -v cmake >/dev/null 2>&1; then
-	echo "cmake is required to build TimescaleDB. Please install via your system's preferred method."
+	echo "cmake is required to build TIMEUDB. Please install via your system's preferred method."
 	exit 1
 fi
 
@@ -38,5 +38,5 @@ mkdir -p ${BUILD_DIR} && \
     cd ${BUILD_DIR} && \
     cmake ${SRC_DIR} "$@"
 
-echo "TimescaleDB build system initialized in ${BUILD_DIR}. To compile, do:"
+echo "TIMEUDB build system initialized in ${BUILD_DIR}. To compile, do:"
 echo -e "\033[1mcd ${BUILD_DIR} && make\033[0m"
