@@ -1,0 +1,1 @@
+DROP FUNCTION IF EXISTS _timeudb_internal.refresh_continuous_aggregate;

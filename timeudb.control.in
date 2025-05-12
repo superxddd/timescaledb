@@ -1,0 +1,8 @@
+# timeudb extension
+comment = 'Enables scalable inserts and complex queries for time-series data (@LICENSE_EDITION@)'
+default_version = '@PROJECT_VERSION_MOD@'
+module_pathname = '$libdir/timeudb-@PROJECT_VERSION_MOD@'
+#extension cannot be relocatable once installed because it uses multiple schemas and that is forbidden by UNVDB.
+#(though this extension is relocatable during installation).
+relocatable = false
+trusted = true
